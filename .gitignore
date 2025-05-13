@@ -1,33 +1,84 @@
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+# ---------------------------------
+# 💻 시스템 & OS 관련 무조건 무시
+# ---------------------------------
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
+# ---------------------------------
+# 🧰 IDE & 에디터 관련 (VSCode, JetBrains 등)
+# ---------------------------------
 .vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# ---------------------------------
+# 🚀 Node.js / React / Next.js / Vue 등 웹 프로젝트
+# ---------------------------------
+node_modules/
+dist/
+build/
+npm-debug.log
+yarn-error.log
+package-lock.json
+pnpm-lock.yaml
+
+# ---------------------------------
+# 🐍 Python 프로젝트
+# ---------------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+.env
+venv/
+ENV/
+env/
+
+# ---------------------------------
+# ☕ Java 프로젝트 (Maven, Gradle 등)
+# ---------------------------------
+*.class
+*.jar
+*.war
+*.ear
+target/
+bin/
+out/
+*.iml
+
+# ---------------------------------
+# 🔐 환경 변수, 인증, 개인 정보 파일
+# ---------------------------------
+.env
+*.env.*
+*.local
+
+# ---------------------------------
+# 📋 Logs & Coverage
+# ---------------------------------
+*.log
+coverage/
+*.lcov
+
+# ---------------------------------
+# 🛑 기타 임시/백업/캐시 파일
+# ---------------------------------
+*.tmp
+*.bak
+*.swp
+*.swo
+*.orig
+*.rej
+*.gz
+
+# ---------------------------------
+# ⚙ Git 자체 ignore 파일
+# ---------------------------------
+.gitignore
+
