@@ -4,3 +4,4 @@
 한솔 수정
 ###kimizzang###
 수0514정
+readme수정
