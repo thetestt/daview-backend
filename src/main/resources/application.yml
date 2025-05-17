@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: daview-backend
+
+  datasource:
+    url: jdbc:log4jdbc:mysql://localhost:3306/dvdb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: rootpw
+    driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy # com.mysql.cj.jdbc.Driver
+
+logging:
+  level:
+    jdbc: debug
+    jdbc.sqlonly: debug
+    jdbc.sqltiming: debug
+    jdbc.resultset: debug
+    jdbc.audit: off
+    jdbc.connection: off
+    
+mybatis:
+  mapper-locations: classpath:mapper/*.xml  # MyBatis 매퍼 XML 파일 위치
+  configuration:
+    map-underscore-to-camel-case: true  # DB 필드명 snake_case → Java camelCase 자동 변환
+    # log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl  # MyBatis 로그 SLF4J 사용   
+    
+server:
+  servlet:
+    session:
+      timeout: 30m
