@@ -1,12 +1,15 @@
 package com.daview.dto;
 
+import java.util.List;
+
 public class FacilityDTO {
     private String facilityId;
     private String facilityName;
-    private int facilityCharge;
+    private Integer facilityCharge;
     private String facilityAddressLocation;
     private String facilityAddressCity;
-    private String facilityTheme;
+    private String photoUrl; // ✅ 단일 이미지 필드
+
 
     // ✅ Getter/Setter
     public String getFacilityId() { return facilityId; }
@@ -24,6 +27,18 @@ public class FacilityDTO {
     public String getFacilityAddressCity() { return facilityAddressCity; }
     public void setFacilityAddressCity(String facilityAddressCity) { this.facilityAddressCity = facilityAddressCity; }
 
-    public String getFacilityTheme() { return facilityTheme; }
-    public void setFacilityTheme(String facilityTheme) { this.facilityTheme = facilityTheme; }
+	public void setFacilityCharge(Integer facilityCharge) {
+		this.facilityCharge = facilityCharge;
+		
+		
+		
+	}
+	public String getPhotoUrl() {
+		return photoUrl;
+	}
+	public void setPhotoUrl(String photoUrl) {
+		this.photoUrl = photoUrl;
+	}
+    
+    
 }

@@ -4,16 +4,33 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.daview.mapper.FacilityMapper">
-  <select id="getAllSilvertowns" resultType="com.daview.dto.FacilityDTO">
+
+  <resultMap id="FacilityWithPhotoMap" type="com.daview.dto.FacilityDTO">
+    <result property="facilityId" column="facility_id"/>
+    <result property="facilityName" column="facility_name"/>
+    <result property="facilityCharge" column="facility_charge"/>
+    <result property="facilityAddressLocation" column="facility_address_location"/>
+    <result property="facilityAddressCity" column="facility_address_city"/>
+    <result property="photoUrl" column="photo_url"/> <!-- ✅ 단일 필드 -->
+  </resultMap>
+
+  <select id="getAllSilvertowns" resultMap="FacilityWithPhotoMap">
     SELECT 
-      facility_id,
-      facility_name,
-      facility_charge,
-      facility_address_location,
-      facility_address_city,
-      facility_theme
-    FROM facility
-    WHERE facility_type = '실버타운'
-      AND trash_can = 0
+      f.facility_id,
+      f.facility_name,
+      f.facility_charge,
+      f.facility_address_location,
+      f.facility_address_city,
+      p.photo_url
+    FROM facility f
+    LEFT JOIN (
+      SELECT facility_id, MIN(photo_id) AS min_photo_id
+      FROM facility_photo
+      GROUP BY facility_id
+    ) first_photo ON f.facility_id = first_photo.facility_id
+    LEFT JOIN facility_photo p ON p.photo_id = first_photo.min_photo_id
+    WHERE f.facility_type = '실버타운'
+      AND f.trash_can = 0
   </select>
+
 </mapper>
