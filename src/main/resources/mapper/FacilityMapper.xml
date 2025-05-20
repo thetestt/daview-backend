@@ -33,4 +33,52 @@
       AND f.trash_can = 0
   </select>
 
+
+
+	<resultMap id="FacilityDetailMap" type="com.daview.dto.FacilityDTO">
+  <result property="facilityId" column="facility_id"/>
+  <result property="facilityName" column="facility_name"/>
+  <result property="facilityCharge" column="facility_charge"/>
+  <result property="facilityAddressLocation" column="facility_address_location"/>
+  <result property="facilityAddressCity" column="facility_address_city"/>
+  <result property="facilityDetailAddress" column="facility_detail_address"/>
+  <result property="facilityTheme" column="facility_theme"/>
+  <result property="facilityHomepage" column="facility_homepage"/>
+  <result property="facilityPhone" column="facility_phone"/>
+</resultMap>
+
+<select id="getSilvertownDetail" resultMap="FacilityDetailMap" parameterType="String">
+  SELECT *
+  FROM facility
+  WHERE facility_id = #{facilityId}
+    AND facility_type = '실버타운'
+    AND trash_can = 0
+</select>
+
+<select id="getFacilityPhotos" resultType="string" parameterType="String">
+  SELECT photo_url
+  FROM facility_photo
+  WHERE facility_id = #{facilityId}
+</select>
+
+<select id="getFacilityTags" resultType="string" parameterType="String">
+  SELECT facility_tag
+  FROM facility_tag
+  WHERE facility_id = #{facilityId}
+</select>
+
+<select id="getFacilityNotices" resultType="com.daview.dto.NoticeDTO" parameterType="String">
+  SELECT
+    notice_title AS title,
+    notice_is_fixed AS isFixed
+  FROM facility_notice
+  WHERE facility_id = #{facilityId}
+    AND notice_deleted_at IS NULL
+  ORDER BY isFixed DESC, notice_created_at DESC
+  LIMIT 5
+</select>
+
+
 </mapper>
+
+

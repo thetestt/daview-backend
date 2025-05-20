@@ -8,7 +8,62 @@ public class FacilityDTO {
     private Integer facilityCharge;
     private String facilityAddressLocation;
     private String facilityAddressCity;
-    private String photoUrl; // ✅ 단일 이미지 필드
+    private String facilityDetailAddress;
+    private String facilityTheme;
+    private String facilityHomepage;
+    
+    
+    
+    public String getFacilityDetailAddress() {
+		return facilityDetailAddress;
+	}
+	public void setFacilityDetailAddress(String facilityDetailAddress) {
+		this.facilityDetailAddress = facilityDetailAddress;
+	}
+	public String getFacilityTheme() {
+		return facilityTheme;
+	}
+	public void setFacilityTheme(String facilityTheme) {
+		this.facilityTheme = facilityTheme;
+	}
+	public String getFacilityHomepage() {
+		return facilityHomepage;
+	}
+	public void setFacilityHomepage(String facilityHomepage) {
+		this.facilityHomepage = facilityHomepage;
+	}
+	public String getFacilityPhone() {
+		return facilityPhone;
+	}
+	public void setFacilityPhone(String facilityPhone) {
+		this.facilityPhone = facilityPhone;
+	}
+	public List<String> getPhotos() {
+		return photos;
+	}
+	public void setPhotos(List<String> photos) {
+		this.photos = photos;
+	}
+	public List<String> getTags() {
+		return tags;
+	}
+	public void setTags(List<String> tags) {
+		this.tags = tags;
+	}
+	public List<NoticeDTO> getNotices() {
+		return notices;
+	}
+	public void setNotices(List<NoticeDTO> notices) {
+		this.notices = notices;
+	}
+	private String facilityPhone;
+
+    private String photoUrl;            // 메인 포토
+    private List<String> photos;        // 썸네일 포함 모든 사진
+    private List<String> tags;          // 태그들
+    private List<NoticeDTO> notices;    // 공지사항
+
+    // Getters and Setters 생략 (자동 생성 또는 IDE로 생성 가능)
 
 
     // ✅ Getter/Setter
