@@ -35,6 +35,13 @@ public class FacilityController {
         return ResponseEntity.ok(detail);
     }
     
+    @GetMapping("/nursinghome")
+    public List<FacilityDTO> getNursingHomes() {
+        return facilityService.getNursinghomes();
+    }
+    
+    
+    
     
 }
 

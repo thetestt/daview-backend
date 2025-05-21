@@ -30,4 +30,10 @@ public class FacilityService {
 
         return facility;
     }
+    
+    
+    public List<FacilityDTO> getNursinghomes() {
+        return facilityMapper.getAllNursingHomes();
+    }
+
 }
