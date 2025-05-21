@@ -36,4 +36,18 @@ public class FacilityService {
         return facilityMapper.getAllNursingHomes();
     }
 
+    
+    
+    public FacilityDTO getNursingHomeDetail(String facilityId) {
+        // ✅ 이름 수정 (XML과 동일하게 getSilvertownDetail)
+        FacilityDTO facility = facilityMapper.getNursingHomeDetail(facilityId);
+
+        if (facility != null) {
+            facility.setPhotos(facilityMapper.getFacilityPhotos(facilityId));
+            facility.setTags(facilityMapper.getFacilityTags(facilityId));
+            facility.setNotices(facilityMapper.getFacilityNotices(facilityId));
+        }
+
+        return facility;
+    }
 }
