@@ -19,4 +19,10 @@ public interface FacilityMapper {
     List<String> getFacilityTags(@Param("facilityId") String facilityId);
 
     List<NoticeDTO> getFacilityNotices(@Param("facilityId") String facilityId);
+    
+    
+    List<FacilityDTO> getAllNursingHomes();
+
+    FacilityDTO getNursingHomeDetail(@Param("facilityId") String facilityId);
+
 }

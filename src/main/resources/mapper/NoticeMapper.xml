@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.daview.mapper.NoticeMapper">
+
+  <select id="getNoticesByFacilityId" resultType="com.daview.dto.NoticeDTO">
+    SELECT
+      fn.notice_id AS noticeId,
+      fn.facility_id AS facilityId,
+      fn.notice_title AS noticeTitle,
+      fn.notice_content AS noticeContent,
+      fn.notice_is_fixed AS noticeIsFixed,
+      fn.notice_created_at AS noticeCreatedAt,
+      f.facility_name AS facilityName,
+      f.facility_type AS facilityType
+    FROM facility_notice fn
+    JOIN facility f ON fn.facility_id = f.facility_id
+    WHERE fn.facility_id = #{facilityId}
+      AND fn.notice_deleted_at IS NULL
+    ORDER BY fn.notice_is_fixed DESC, fn.notice_created_at DESC
+  </select>
+
+</mapper>
