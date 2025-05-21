@@ -12,6 +12,15 @@ public class FacilityDTO {
     private String facilityTheme;
     private String facilityHomepage;
     
+    private String facilityPhone;
+    
+    private String photoUrl;            // 메인 포토
+    private List<String> photos;        // 썸네일 포함 모든 사진
+    private List<String> tags;          // 태그들
+    private List<NoticeDTO> notices;    // 공지사항
+    
+    // Getters and Setters 생략 (자동 생성 또는 IDE로 생성 가능)
+    
     
     
     public String getFacilityDetailAddress() {
@@ -56,14 +65,6 @@ public class FacilityDTO {
 	public void setNotices(List<NoticeDTO> notices) {
 		this.notices = notices;
 	}
-	private String facilityPhone;
-
-    private String photoUrl;            // 메인 포토
-    private List<String> photos;        // 썸네일 포함 모든 사진
-    private List<String> tags;          // 태그들
-    private List<NoticeDTO> notices;    // 공지사항
-
-    // Getters and Setters 생략 (자동 생성 또는 IDE로 생성 가능)
 
 
     // ✅ Getter/Setter

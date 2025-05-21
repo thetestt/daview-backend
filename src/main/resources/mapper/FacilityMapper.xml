@@ -69,12 +69,14 @@
 
 <select id="getFacilityNotices" resultType="com.daview.dto.NoticeDTO" parameterType="String">
   SELECT
-    notice_title AS title,
-    notice_is_fixed AS isFixed
+    notice_id AS noticeId,
+    notice_title AS noticeTitle,
+    notice_is_fixed AS noticeIsFixed,
+    notice_update_at AS noticeUpdatedAt
   FROM facility_notice
   WHERE facility_id = #{facilityId}
     AND notice_deleted_at IS NULL
-  ORDER BY isFixed DESC, notice_created_at DESC
+  ORDER BY notice_is_fixed DESC, notice_created_at DESC
   LIMIT 5
 </select>
 

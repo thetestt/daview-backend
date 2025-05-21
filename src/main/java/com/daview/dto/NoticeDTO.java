@@ -9,8 +9,17 @@ public class NoticeDTO {
     private String noticeCreatedAt; // LocalDateTime → String
     private String facilityName;
     private String facilityType;
+    private String noticeUpdatedAt;
 
-    public int getNoticeId() {
+    public String getNoticeUpdatedAt() {
+		return noticeUpdatedAt;
+	}
+
+	public void setNoticeUpdatedAt(String noticeUpdatedAt) {
+		this.noticeUpdatedAt = noticeUpdatedAt;
+	}
+
+	public int getNoticeId() {
         return noticeId;
     }
 
