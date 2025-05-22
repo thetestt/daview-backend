@@ -24,5 +24,11 @@ public interface FacilityMapper {
     List<FacilityDTO> getAllNursingHomes();
 
     FacilityDTO getNursingHomeDetail(@Param("facilityId") String facilityId);
+    
+    List<FacilityDTO> searchByTypeAndKeyword(
+            @Param("type") String type,
+            @Param("keyword") String keyword
+        );
+
 
 }

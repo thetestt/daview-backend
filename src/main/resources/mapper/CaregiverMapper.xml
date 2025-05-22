@@ -56,4 +56,20 @@
   JOIN dv_users u ON c.member_id = u.member_id
   WHERE c.caregiver_id = #{caregiverId}
 </select>
+
+
+<select id="searchByKeyword" resultType="CaregiverDTO">
+  SELECT 
+    c.*,
+    u.name AS user_name,
+    u.phone AS user_phone,
+    u.user_gender AS user_gender,
+    u.email AS user_email
+  FROM caregiver c
+  JOIN dv_users u ON c.member_id = u.member_id
+  WHERE u.name LIKE CONCAT('%', #{keyword}, '%')
+     OR c.introduction LIKE CONCAT('%', #{keyword}, '%')
+</select>
+
+
 </mapper>
