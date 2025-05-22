@@ -136,7 +136,31 @@
 </select>
 
 
-
+<select id="searchByTypeAndKeyword" resultType="FacilityDTO">
+  SELECT 
+    f.facility_id,
+    f.facility_name,
+    f.facility_charge,
+    f.facility_type,
+    f.facility_address_location,
+    f.facility_address_city,
+    f.facility_theme,
+    f.facility_detail_address,
+    f.facility_homepage,
+    f.facility_phone,
+    ft.facility_tag,
+    fp.photo_url
+  FROM facility f
+  LEFT JOIN facility_tag ft ON f.facility_id = ft.facility_id
+  LEFT JOIN facility_photo fp ON f.facility_id = fp.facility_id
+  WHERE f.facility_type = #{type}
+    AND (
+      f.facility_name LIKE CONCAT('%', #{keyword}, '%')
+      OR f.facility_address_location LIKE CONCAT('%', #{keyword}, '%')
+      OR f.facility_theme LIKE CONCAT('%', #{keyword}, '%')
+    )
+    AND f.trash_can = 0
+</select>
 
 
 </mapper>

@@ -32,4 +32,8 @@ public class CaregiverService {
         }
         return dto;
     }
+    
+    public List<CaregiverDTO> searchByKeyword(String keyword) {
+        return caregiverMapper.searchByKeyword(keyword);
+    }
 }

@@ -50,4 +50,9 @@ public class FacilityService {
 
         return facility;
     }
+    
+    
+    public List<FacilityDTO> searchByTypeAndKeyword(String type, String keyword) {
+        return facilityMapper.searchByTypeAndKeyword(type, keyword);
+    }
 }
