@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+
+<mapper namespace="com.daview.mapper.NoticeMapper">
+
+  <!-- ✅ resultMap 정의 -->
+  <resultMap id="NoticeDetailMap" type="com.daview.dto.NoticeDTO">
+    <id property="noticeId" column="notice_id"/>
+    <result property="facilityId" column="facility_id"/>
+    <result property="noticeTitle" column="notice_title"/>
+    <result property="noticeContent" column="notice_content"/>
+    <result property="noticeIsFixed" column="notice_is_fixed"/>
+    <result property="noticeCreatedAt" column="notice_created_at"/>
+    <result property="noticeUpdatedAt" column="notice_update_at"/>
+    <result property="facilityName" column="facility_name"/>
+    <result property="facilityType" column="facility_type"/>
+  </resultMap>
+
+  <!-- ✅ 전체 목록용 (resultType은 camelCase 맞춰서 반환함) -->
+  <select id="getNoticesByFacilityId" resultType="com.daview.dto.NoticeDTO">
+    SELECT
+      fn.notice_id AS noticeId,
+      fn.facility_id AS facilityId,
+      fn.notice_title AS noticeTitle,
+      fn.notice_content AS noticeContent,
+      fn.notice_is_fixed AS noticeIsFixed,
+      fn.notice_created_at AS noticeCreatedAt,
+      f.facility_name AS facilityName,
+      f.facility_type AS facilityType
+    FROM facility_notice fn
+    JOIN facility f ON fn.facility_id = f.facility_id
+    WHERE fn.facility_id = #{facilityId}
+      AND fn.notice_deleted_at IS NULL
+    ORDER BY fn.notice_is_fixed DESC, fn.notice_created_at DESC
+  </select>
+
+  <!-- ✅ 상세보기용 (이제 resultMap 사용) -->
+  <select id="getNoticeDetail" resultMap="NoticeDetailMap">
+    SELECT
+      fn.notice_id,
+      fn.facility_id,
+      fn.notice_title,
+      fn.notice_content,
+      fn.notice_is_fixed,
+      fn.notice_created_at,
+      fn.notice_update_at,
+      f.facility_name,
+      f.facility_type
+    FROM facility_notice fn
+    JOIN facility f ON fn.facility_id = f.facility_id
+    WHERE fn.facility_id = #{facilityId}
+      AND fn.notice_id = #{noticeId}
+      AND fn.notice_deleted_at IS NULL
+  </select>
+
+</mapper>

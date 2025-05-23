@@ -31,7 +31,7 @@ public class CaregiverController {
         return caregiverService.getCaregiverById(caregiverId);
     }
 
-    // ✅ 로그인한 요양사 본인 정보 반환 (추가된 기능)
+    // ✅ 로그인한 요양사 본인 정보 반환
     @GetMapping("/me")
     public ResponseEntity<CaregiverDTO> getMyCaregiverProfile(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         Long memberId = userPrincipal.getId(); // 로그인한 사용자의 member_id

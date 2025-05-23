@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.daview.mapper.FacilityMapper">
+
+  <resultMap id="FacilityWithPhotoMap" type="com.daview.dto.FacilityDTO">
+    <result property="facilityId" column="facility_id"/>
+    <result property="facilityName" column="facility_name"/>
+    <result property="facilityCharge" column="facility_charge"/>
+    <result property="facilityAddressLocation" column="facility_address_location"/>
+    <result property="facilityAddressCity" column="facility_address_city"/>
+    <result property="photoUrl" column="photo_url"/> <!-- ✅ 단일 필드 -->
+  </resultMap>
+
+  <select id="getAllSilvertowns" resultMap="FacilityWithPhotoMap">
+    SELECT 
+      f.facility_id,
+      f.facility_name,
+      f.facility_charge,
+      f.facility_address_location,
+      f.facility_address_city,
+      p.photo_url
+    FROM facility f
+    LEFT JOIN (
+      SELECT facility_id, MIN(photo_id) AS min_photo_id
+      FROM facility_photo
+      GROUP BY facility_id
+    ) first_photo ON f.facility_id = first_photo.facility_id
+    LEFT JOIN facility_photo p ON p.photo_id = first_photo.min_photo_id
+    WHERE f.facility_type = '실버타운'
+      AND f.trash_can = 0
+  </select>
+
+
+
+	<resultMap id="FacilityDetailMap" type="com.daview.dto.FacilityDTO">
+  <result property="facilityId" column="facility_id"/>
+  <result property="facilityName" column="facility_name"/>
+  <result property="facilityCharge" column="facility_charge"/>
+  <result property="facilityAddressLocation" column="facility_address_location"/>
+  <result property="facilityAddressCity" column="facility_address_city"/>
+  <result property="facilityDetailAddress" column="facility_detail_address"/>
+  <result property="facilityTheme" column="facility_theme"/>
+  <result property="facilityHomepage" column="facility_homepage"/>
+  <result property="facilityPhone" column="facility_phone"/>
+</resultMap>
+
+<select id="getSilvertownDetail" resultMap="FacilityDetailMap" parameterType="String">
+  SELECT *
+  FROM facility
+  WHERE facility_id = #{facilityId}
+    AND facility_type = '실버타운'
+    AND trash_can = 0
+</select>
+
+<select id="getFacilityPhotos" resultType="string" parameterType="String">
+  SELECT photo_url
+  FROM facility_photo
+  WHERE facility_id = #{facilityId}
+</select>
+
+<select id="getFacilityTags" resultType="string" parameterType="String">
+  SELECT facility_tag
+  FROM facility_tag
+  WHERE facility_id = #{facilityId}
+</select>
+
+<select id="getFacilityNotices" resultType="com.daview.dto.NoticeDTO" parameterType="String">
+  SELECT
+    notice_id AS noticeId,
+    notice_title AS noticeTitle,
+    notice_is_fixed AS noticeIsFixed,
+    notice_update_at AS noticeUpdatedAt
+  FROM facility_notice
+  WHERE facility_id = #{facilityId}
+    AND notice_deleted_at IS NULL
+  ORDER BY notice_is_fixed DESC, notice_created_at DESC
+  LIMIT 5
+</select>
+
+
+
+
+
+
+  <resultMap id="NursingHomeWithPhotoMap" type="com.daview.dto.FacilityDTO">
+    <result property="facilityId" column="facility_id"/>
+    <result property="facilityName" column="facility_name"/>
+    <result property="facilityCharge" column="facility_charge"/>
+    <result property="facilityAddressLocation" column="facility_address_location"/>
+    <result property="facilityAddressCity" column="facility_address_city"/>
+    <result property="photoUrl" column="photo_url"/> <!-- ✅ 단일 필드 -->
+  </resultMap>
+
+  <select id="getAllNursingHomes" resultMap="NursingHomeWithPhotoMap">
+    SELECT 
+      f.facility_id,
+      f.facility_name,
+      f.facility_charge,
+      f.facility_address_location,
+      f.facility_address_city,
+      p.photo_url
+    FROM facility f
+    LEFT JOIN (
+      SELECT facility_id, MIN(photo_id) AS min_photo_id
+      FROM facility_photo
+      GROUP BY facility_id
+    ) first_photo ON f.facility_id = first_photo.facility_id
+    LEFT JOIN facility_photo p ON p.photo_id = first_photo.min_photo_id
+    WHERE f.facility_type = '요양원'
+      AND f.trash_can = 0
+  </select>
+  
+  
+  
+  <resultMap id="NursingHomeDetailMap" type="com.daview.dto.FacilityDTO">
+  <result property="facilityId" column="facility_id"/>
+  <result property="facilityName" column="facility_name"/>
+  <result property="facilityCharge" column="facility_charge"/>
+  <result property="facilityAddressLocation" column="facility_address_location"/>
+  <result property="facilityAddressCity" column="facility_address_city"/>
+  <result property="facilityDetailAddress" column="facility_detail_address"/>
+  <result property="facilityTheme" column="facility_theme"/>
+  <result property="facilityHomepage" column="facility_homepage"/>
+  <result property="facilityPhone" column="facility_phone"/>
+</resultMap>
+
+<select id="getNursingHomeDetail" resultMap="NursingHomeDetailMap" parameterType="String">
+  SELECT *
+  FROM facility
+  WHERE facility_id = #{facilityId}
+    AND facility_type = '요양원'
+    AND trash_can = 0
+</select>
+
+
+<select id="searchByTypeAndKeyword" resultType="FacilityDTO">
+  SELECT 
+    f.facility_id,
+    f.facility_name,
+    f.facility_charge,
+    f.facility_type,
+    f.facility_address_location,
+    f.facility_address_city,
+    f.facility_theme,
+    f.facility_detail_address,
+    f.facility_homepage,
+    f.facility_phone,
+    ft.facility_tag,
+    fp.photo_url
+  FROM facility f
+  LEFT JOIN facility_tag ft ON f.facility_id = ft.facility_id
+  LEFT JOIN facility_photo fp ON f.facility_id = fp.facility_id
+  WHERE f.facility_type = #{type}
+    AND (
+      f.facility_name LIKE CONCAT('%', #{keyword}, '%')
+      OR f.facility_address_location LIKE CONCAT('%', #{keyword}, '%')
+      OR f.facility_theme LIKE CONCAT('%', #{keyword}, '%')
+    )
+    AND f.trash_can = 0
+</select>
+
+
+</mapper>
+
+
