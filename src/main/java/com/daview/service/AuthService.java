@@ -13,11 +13,12 @@ public class AuthService {
     public Map<String, Object> login(LoginRequest request) {
         Map<String, Object> result = new HashMap<>();
 
-        // 테스트용 로그인 검사
-        if (request.getUsername().equals("test") && request.getPassword().equals("1234")) {
+        // 테스트용 로ㄱ인
+        if (request.getUsername().equals("test") && request.getPassword().equals("ch1234567")) {
             String token = JwtUtil.generateToken(request.getUsername());
             result.put("success", true);
             result.put("token", token);
+            result.put("username", request.getUsername());
 
         } else {
             result.put("success", false);
