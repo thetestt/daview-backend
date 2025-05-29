@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.daview.dto.LoginRequest;
+import com.daview.dto.SignupRequest;
 import com.daview.service.AuthService;
 
 @RestController
