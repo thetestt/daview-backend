@@ -32,4 +32,15 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 실패");
         }
     }
+
+    @PostMapping("/signup")
+    public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
+        boolean result = authService.signup(request);
+        if (result) {
+            return ResponseEntity.ok("회원가입 성공");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입 실패");
+        }
+    }
+
 }
