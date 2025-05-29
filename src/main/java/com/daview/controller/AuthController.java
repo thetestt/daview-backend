@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.daview.dto.LoginRequest;
-import com.daview.dto.SignupRequest;
 import com.daview.service.AuthService;
 
 @RestController
@@ -26,6 +25,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         Map<String, Object> result = authService.login(request);
+
         if ((boolean) result.get("success")) {
             return ResponseEntity.ok(result); // token 포함 응답
         } else {
@@ -42,4 +42,5 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입 실패");
         }
     }
+
 }

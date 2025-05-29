@@ -24,7 +24,7 @@ public class FacilityController {
         return facilityService.getSilvertowns();
     }
     
-    @GetMapping("/{id}")
+    @GetMapping("/silvertown/{id}")
     public ResponseEntity<FacilityDTO> getFacilityDetail(@PathVariable("id") String id) {
     	System.out.println("💡 요청된 ID: " + id);
         FacilityDTO detail = facilityService.getFacilityDetail(id);
@@ -34,6 +34,25 @@ public class FacilityController {
         }
         return ResponseEntity.ok(detail);
     }
+    
+    @GetMapping("/nursinghomes")
+    public List<FacilityDTO> getNursingHomes() {
+        return facilityService.getNursinghomes();
+    }
+    
+    
+    @GetMapping("/nursinghome/{id}")
+    public ResponseEntity<FacilityDTO> getNursingHomeDetail(@PathVariable("id") String id) {
+    	System.out.println("💡 요청된 ID: " + id);
+        FacilityDTO detail = facilityService.getNursingHomeDetail(id);
+        System.out.println("💡 결과: " + detail);
+        if (detail == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(detail);
+    }
+    
+    
     
     
 }
