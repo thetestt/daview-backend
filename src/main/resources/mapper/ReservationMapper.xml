@@ -4,5 +4,24 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.daview.mapper.ReservationMapper">
-
+	<insert id="insertReservation" parameterType="com.daview.dto.ReservationDTO">
+		INSERT INTO
+		reservation (
+		rsv_id, member_id, prod_id,
+		prod_type, prod_price,
+		prod_nm, prod_detail, prod_date, rsv_type,
+		rsv_date
+		)
+		VALUES (
+		#{rsvId}, #{memberId}, #{prodId}, #{prodType},
+		#{prodPrice},
+		#{prodNm}, #{prodDetail} , #{prodDate}, 1, NOW()
+		)
+	</insert>
+	<select id="selectReservationById" resultType="com.daview.dto.ReservationDTO">
+		SELECT * 
+		FROM reservation 
+		WHERE member_id = #{memberId}
+		AND rsv_type != 2
+	</select>
 </mapper>
