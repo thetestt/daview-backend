@@ -1,5 +1,14 @@
 package com.daview.mapper;
 
-public class ReservationMapper {
+import java.util.List;
 
+import org.apache.ibatis.annotations.Mapper;
+
+import com.daview.dto.ReservationDTO;
+
+@Mapper
+public interface ReservationMapper {
+	int insertReservation(ReservationDTO reservation);
+	
+	List<ReservationDTO> selectReservationById(int memberId);
 }
