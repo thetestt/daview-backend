@@ -1,36 +1,52 @@
 package com.daview.service;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.springframework.stereotype.Service;
-
+import com.daview.domain.user.User;
 import com.daview.dto.LoginRequest;
 import com.daview.dto.SignupRequest;
+import com.daview.repository.UserRepository;
 import com.daview.util.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class AuthService {
 
+    @Autowired
+    private UserRepository userRepository;
+
     public boolean signup(SignupRequest request) {
-        System.out.println("회원가입 요청: " + request.getUsername());
-        return true; // 일단 성공했다고 생각
+        // username 중복 확인
+        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+            return false;
+        }
+
+        User user = new User();
+        user.setUsername(request.getUsername());
+        user.setPassword(request.getPassword());
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setRole(request.getRole());
+
+        userRepository.save(user);
+        return true;
     }
 
     public Map<String, Object> login(LoginRequest request) {
         Map<String, Object> result = new HashMap<>();
 
-        if (request.getUsername().equals("test") && request.getPassword().equals("ch1234567")) {
-            String token = JwtUtil.generateToken(request.getUsername());
-            result.put("success", true);
-            result.put("token", token);
-            result.put("username", request.getUsername());
-        } else {
-            result.put("success", false);
-        }
-
-        System.out.println("입력한 아이디: " + request.getUsername());
-        System.out.println("입력한 비밀번호: " + request.getPassword());
+        userRepository.findByUsername(request.getUsername()).ifPresentOrElse(user -> {
+            if (user.getPassword().equals(request.getPassword())) {
+                String token = JwtUtil.generateToken(user.getUsername());
+                result.put("success", true);
+                result.put("token", token);
+                result.put("username", user.getUsername());
+            } else {
+                result.put("success", false);
+            }
+        }, () -> result.put("success", false));
 
         return result;
     }

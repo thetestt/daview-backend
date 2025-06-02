@@ -4,7 +4,7 @@ public class SignupRequest {
     private String username;
     private String password;
     private String name;
-    private String nickname;
+    private String email;
     private String role;
     public String getUsername() {
         return username;
@@ -24,11 +24,11 @@ public class SignupRequest {
     public void setName(String name) {
         this.name = name;
     }
-    public String getNickname() {
-        return nickname;
+    public String getEmail() {
+        return email;
     }
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setEmail(String email) {
+        this.email = email;
     }
     public String getRole() {
         return role;
@@ -36,6 +36,6 @@ public class SignupRequest {
     public void setRole(String role) {
         this.role = role;
     }
-
+    
 }
 
