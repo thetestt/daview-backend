@@ -17,8 +17,17 @@ public class SearchFilterOptionController {
         this.service = service;
     }
 
+//    @GetMapping
+//    public List<SearchFilterOptionDTO> getOptions(@RequestParam String category) {
+//        return service.getOptionsByCategory(category);
+//    }
+    
     @GetMapping
-    public List<SearchFilterOptionDTO> getOptions(@RequestParam String category) {
-        return service.getOptionsByCategory(category);
+    public List<SearchFilterOptionDTO> getOptions(
+        @RequestParam String targetType,
+        @RequestParam String category
+    ) {
+        return service.getOptions(targetType, category);
     }
+    
 }

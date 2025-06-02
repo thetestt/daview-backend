@@ -4,17 +4,22 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.daview.mapper.SearchFilterOptionMapper">
+  
+  
+  <select id="getOptionsByTypeAndCategory" resultType="com.daview.dto.SearchFilterOptionDTO">
 
-  <select id="getOptionsByCategory" resultType="com.daview.dto.SearchFilterOptionDTO">
-    SELECT
-      option_id AS optionId,
-      category,
-      value,
-      display_order AS displayOrder
-    FROM search_filter_option
-    WHERE category = #{category}
-      AND trash_can = 0
-    ORDER BY display_order ASC, value ASC
-  </select>
+ SELECT
+    option_id AS optionId,
+    category,
+    value,
+    display_order AS displayOrder
+  FROM search_filter_option
+  WHERE (target_type = #{targetType} OR target_type = '공통')
+    AND category = #{category}
+    AND trash_can = 0
+  ORDER BY display_order ASC, value ASC
+</select>
+
+
 
 </mapper>
