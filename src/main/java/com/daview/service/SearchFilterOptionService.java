@@ -16,7 +16,12 @@ public class SearchFilterOptionService {
         this.searchFilterOptionMapper = searchFilterOptionMapper;
     }
 
-    public List<SearchFilterOptionDTO> getOptionsByCategory(String category) {
-        return searchFilterOptionMapper.getOptionsByCategory(category);
+//    public List<SearchFilterOptionDTO> getOptionsByCategory(String category) {
+//        return searchFilterOptionMapper.getOptionsByCategory(category);
+//    }
+//    
+    
+    public List<SearchFilterOptionDTO> getOptions(String targetType, String category) {
+        return searchFilterOptionMapper.getOptionsByTypeAndCategory(targetType, category);
     }
 }
