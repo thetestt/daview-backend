@@ -163,6 +163,82 @@
 </select>
 
 
+  <select id="searchSilvertownWithFilters" resultType="com.daview.dto.FacilityDTO">
+  SELECT
+    f.facility_id,
+    f.facility_name,
+    f.facility_address_location,
+    f.facility_address_city,
+    f.facility_charge,
+    fp.photo_url
+  FROM facility f
+  LEFT JOIN facility_photo fp ON f.facility_id = fp.facility_id AND fp.is_thumbnail = 1
+  WHERE f.facility_type = '실버타운'
+
+  <if test="location != null and location != ''">
+    AND f.facility_address_location = #{location}
+  </if>
+  <if test="city != null and city != ''">
+    AND f.facility_address_city = #{city}
+  </if>
+  <if test="theme != null and theme != ''">
+    AND f.facility_theme = #{theme}
+  </if>
+
+  <!-- ✅ residence_type → facility_tag의 category = '주거형태' 로 변경 -->
+  <if test="residence != null and residence.size > 0">
+    AND f.facility_id IN (
+      SELECT facility_id
+      FROM facility_tag
+      WHERE category = '주거형태'
+      AND facility_tag IN
+      <foreach item="item" collection="residence" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    )
+  </if>
+
+  <if test="facility != null and facility.size > 0">
+    AND f.facility_id IN (
+      SELECT facility_id
+      FROM facility_tag
+      WHERE category = '시설'
+      AND facility_tag IN
+      <foreach item="item" collection="facility" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    )
+  </if>
+
+  <if test="environment != null and environment.size > 0">
+    AND f.facility_id IN (
+      SELECT facility_id
+      FROM facility_tag
+      WHERE category = '주변환경'
+      AND facility_tag IN
+      <foreach item="item" collection="environment" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    )
+  </if>
+
+  <if test="etc != null and etc.size > 0">
+    AND f.facility_id IN (
+      SELECT facility_id
+      FROM facility_tag
+      WHERE category = '기타'
+      AND facility_tag IN
+      <foreach item="item" collection="etc" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    )
+  </if>
+
+  ORDER BY f.facility_id DESC
+</select>
+
+
+
 </mapper>
 
 

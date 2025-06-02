@@ -1,6 +1,7 @@
 package com.daview.service;
 
 import com.daview.dto.FacilityDTO;
+import com.daview.dto.FacilitySearchFilterRequest;
 import com.daview.mapper.FacilityMapper;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -55,4 +56,12 @@ public class FacilityService {
     public List<FacilityDTO> searchByTypeAndKeyword(String type, String keyword) {
         return facilityMapper.searchByTypeAndKeyword(type, keyword);
     }
+    
+    public List<FacilityDTO> searchSilvertowns(FacilitySearchFilterRequest request) {
+        return facilityMapper.searchSilvertownWithFilters(request);
+    }
 }
+    
+    
+    
+
