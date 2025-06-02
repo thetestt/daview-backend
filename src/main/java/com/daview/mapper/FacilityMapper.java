@@ -1,6 +1,7 @@
 package com.daview.mapper;
 
 import com.daview.dto.FacilityDTO;
+import com.daview.dto.FacilitySearchFilterRequest;
 import com.daview.dto.NoticeDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -29,6 +30,7 @@ public interface FacilityMapper {
             @Param("type") String type,
             @Param("keyword") String keyword
         );
-
+    
+    List<FacilityDTO> searchSilvertownWithFilters(FacilitySearchFilterRequest request);
 
 }

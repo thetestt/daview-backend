@@ -1,6 +1,7 @@
 package com.daview.controller;
 
 import com.daview.dto.FacilityDTO;
+import com.daview.dto.FacilitySearchFilterRequest;
 import com.daview.service.FacilityService;
 
 import org.springframework.http.ResponseEntity;
@@ -19,11 +20,13 @@ public class FacilityController {
         this.facilityService = facilityService;
     }
 
+    //실버타운 리스트
     @GetMapping("/silvertowns")
     public List<FacilityDTO> getSilvertowns() {
         return facilityService.getSilvertowns();
     }
     
+    //실버타운 상세페이지 
     @GetMapping("/silvertown/{id}")
     public ResponseEntity<FacilityDTO> getFacilityDetail(@PathVariable("id") String id) {
     	System.out.println("💡 요청된 ID: " + id);
@@ -34,6 +37,19 @@ public class FacilityController {
         }
         return ResponseEntity.ok(detail);
     }
+    
+    //실버타운 검색박스 검색 
+    @PostMapping("/silvertown/search")
+    public List<FacilityDTO> searchSilvertowns(@RequestBody FacilitySearchFilterRequest request) {
+    	System.out.println("🟢 요청 값: " + request.getLocation() + " / " + request.getCity());
+        return facilityService.searchSilvertowns(request);
+    }
+    
+    
+    
+    
+    
+    
     
     @GetMapping("/nursinghomes")
     public List<FacilityDTO> getNursingHomes() {
