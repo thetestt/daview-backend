@@ -19,7 +19,7 @@ logging:
     
 mybatis:
   mapper-locations: classpath:mapper/*.xml  # MyBatis 매퍼 XML 파일 위치
-  type-aliases-package: com.daview.dto
+  type-aliases-package: com.daview.dto, com.daview.domain.user
   configuration:
     map-underscore-to-camel-case: true  # DB 필드명 snake_case → Java camelCase 자동 변환
     # log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl  # MyBatis 로그 SLF4J 사용   

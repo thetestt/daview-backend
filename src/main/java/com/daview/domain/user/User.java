@@ -1,34 +1,15 @@
 package com.daview.domain.user;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
+import lombok.Data;
 
-@NoArgsConstructor
-@Entity
-@Getter
-@Setter
-@Table(name = "dv_users")
+@Data
 public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id")
-    private Long id;
-
-    @Column(nullable = false, unique = true)
-    private String username; // 아이디
-
-    @Column(nullable = false)
+    private Long memberId;
+    private String username;
     private String password;
-
-    @Column(nullable = false)
     private String name;
-
-    @Column(nullable = false, unique = true)
     private String email;
-
-    @Column(nullable = false)
+    private String gender;
+    private String phone;
     private String role;
 }
