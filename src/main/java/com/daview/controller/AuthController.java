@@ -1,47 +1,28 @@
 package com.daview.controller;
 
-import java.util.Map;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.daview.dto.LoginRequest;
 import com.daview.dto.SignupRequest;
 import com.daview.service.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+
 public class AuthController {
 
-    private final AuthService authService;
+    @Autowired
+    private AuthService authService;
 
-    public AuthController(AuthService authService) {
-        this.authService = authService;
+    @PostMapping("/signup")
+    public boolean signup(@RequestBody SignupRequest request) {
+        return authService.signup(request);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        Map<String, Object> result = authService.login(request);
-
-        if ((boolean) result.get("success")) {
-            return ResponseEntity.ok(result); // token 포함 응답
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 실패");
-        }
+    public Map<String, Object> login(@RequestBody SignupRequest request) {
+        return authService.login(request);
     }
-
-    @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
-        boolean result = authService.signup(request);
-        if (result) {
-            return ResponseEntity.ok("회원가입 성공");
-        } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원가입 실패");
-        }
-    }
-
 }
