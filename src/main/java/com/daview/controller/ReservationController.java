@@ -50,4 +50,21 @@ public class ReservationController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		}
 	}
+
+	@PutMapping("/{rsvId}/delete")
+	public ResponseEntity<?> deleteReservation(@PathVariable String rsvId) {
+		int deleted = reservationService.deleteReservation(rsvId);
+
+		if (deleted == 1) {
+			return ResponseEntity.ok().body("예약 삭제 완료");
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("예약을 찾을 수 없습니다.");
+		}
+	}
+
+	@PutMapping("/deleteAll")
+	public ResponseEntity<?> deleteAllReservation() {
+		int count = reservationService.deleteAllReservation();
+		return ResponseEntity.ok().body(count + "개의 모든 예약이 삭제되었습니다.");
+	}
 }
