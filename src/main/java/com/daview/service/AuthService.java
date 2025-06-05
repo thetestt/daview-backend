@@ -4,15 +4,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.daview.domain.user.User;
+import com.daview.dto.LoginRequest;
 import com.daview.dto.SignupRequest;
 import com.daview.mapper.UserMapper;
 import com.daview.util.JwtUtil;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class AuthService {
@@ -39,7 +39,7 @@ public class AuthService {
         return true;
     }
 
-    public Map<String, Object> login(SignupRequest request) {
+    public Map<String, Object> login(LoginRequest request) {
         Map<String, Object> response = new HashMap<>();
 
         User user = userMapper.findByUsername(request.getUsername());
