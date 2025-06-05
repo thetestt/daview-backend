@@ -24,4 +24,15 @@
 		WHERE member_id = #{memberId}
 		AND rsv_type != 2
 	</select>
+	<update id="deleteReservation">
+		UPDATE reservation
+		SET rsv_type = 2
+		WHERE rsv_id = #{rsv_id}
+	</update>
+	<update id="deleteAllReservation">
+		UPDATE reservation
+		SET rsv_type = 2
+		WHERE rsv_type != 2
+	</update>
+	
 </mapper>
