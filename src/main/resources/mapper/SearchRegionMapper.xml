@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.daview.mapper.SearchRegionMapper">
+
+    <select id="getAllRegions" resultType="com.daview.dto.RegionDTO">
+        SELECT region_id AS id, name
+        FROM search_region
+        ORDER BY display_order
+    </select>
+
+    <select id="getCitiesByRegionId" resultType="com.daview.dto.CityDTO">
+        SELECT city_id AS id, region_id AS regionId, name
+        FROM search_city
+        WHERE region_id = #{regionId}
+        ORDER BY display_order
+    </select>
+
+</mapper>

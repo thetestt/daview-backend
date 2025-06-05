@@ -27,13 +27,16 @@ public class SecurityConfig {
 				.authorizeHttpRequests(
 						auth -> auth
 								.requestMatchers(
-										"/api/auth/**", 
-										"/api/options/**", 
-										"/api/caregiver/**",
-										"/api/caregivers/**",
-										"/api/filter/**", 
-										"/api/nursinghome/**",
-										"/api/facilities/**")
+										"/api/**")
+										
+//										"/api/auth/**", 
+//										"/api/options/**", 
+//										"/api/caregiver/**",
+//										"/api/caregivers/**",
+//										"/api/filter/**", 
+//										"/api/nursinghome/**",
+//										"/api/facilities/**",
+//										"/api/region/**")
 								.permitAll()
 								.anyRequest().authenticated());
 
