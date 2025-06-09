@@ -1,6 +1,6 @@
 package com.daview.mapper;
 
-import com.daview.domain.user.User;
+import com.daview.dto.User;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
