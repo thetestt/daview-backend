@@ -8,7 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.daview.domain.user.User;
+import com.daview.dto.User;
 import com.daview.dto.LoginRequest;
 import com.daview.dto.SignupRequest;
 import com.daview.mapper.UserMapper;

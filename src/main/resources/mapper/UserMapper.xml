@@ -5,7 +5,7 @@
 
 <mapper namespace="com.daview.mapper.UserMapper">
 
-    <select id="findByUsername" resultType="com.daview.domain.user.User">
+    <select id="findByUsername" resultType="com.daview.dto.User">
         SELECT * FROM dv_users WHERE username = #{username}
     </select>
 
