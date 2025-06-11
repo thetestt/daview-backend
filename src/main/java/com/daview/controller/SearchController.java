@@ -5,12 +5,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.daview.dto.CaregiverDTO;
 import com.daview.dto.FacilityDTO;
+import com.daview.dto.FacilitySearchFilterRequest;
 import com.daview.service.CaregiverService;
 import com.daview.service.FacilityService;
 
@@ -39,4 +42,7 @@ public class SearchController {
 
         return result;
     }
+    
+
+    
 }

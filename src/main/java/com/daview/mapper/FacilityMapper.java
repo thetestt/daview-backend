@@ -32,5 +32,8 @@ public interface FacilityMapper {
         );
     
     List<FacilityDTO> searchSilvertownWithFilters(FacilitySearchFilterRequest request);
+ 
+    List<FacilityDTO> searchNursinghomeWithFilters(FacilitySearchFilterRequest request);
+    
 
 }

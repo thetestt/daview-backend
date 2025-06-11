@@ -4,6 +4,8 @@ import com.daview.dto.FacilityDTO;
 import com.daview.dto.FacilitySearchFilterRequest;
 import com.daview.mapper.FacilityMapper;
 import org.springframework.stereotype.Service;
+
+
 import java.util.List;
 
 @Service
@@ -11,6 +13,8 @@ public class FacilityService {
 
     private final FacilityMapper facilityMapper;
 
+    
+    //실버타운
     public FacilityService(FacilityMapper facilityMapper) {
         this.facilityMapper = facilityMapper;
     }
@@ -33,11 +37,13 @@ public class FacilityService {
     }
     
     
+    
+    //요양원  
+    
     public List<FacilityDTO> getNursinghomes() {
         return facilityMapper.getAllNursingHomes();
     }
 
-    
     
     public FacilityDTO getNursingHomeDetail(String facilityId) {
         // ✅ 이름 수정 (XML과 동일하게 getSilvertownDetail)
@@ -53,6 +59,16 @@ public class FacilityService {
     }
     
     
+    public List<FacilityDTO> searchNursinghomes(FacilitySearchFilterRequest request) {
+        return facilityMapper.searchNursinghomeWithFilters(request);
+    }
+    
+    
+    
+    
+    
+    //전체검색
+    
     public List<FacilityDTO> searchByTypeAndKeyword(String type, String keyword) {
         return facilityMapper.searchByTypeAndKeyword(type, keyword);
     }
@@ -60,6 +76,9 @@ public class FacilityService {
     public List<FacilityDTO> searchSilvertowns(FacilitySearchFilterRequest request) {
         return facilityMapper.searchSilvertownWithFilters(request);
     }
+    
+
+    
 }
     
     

@@ -163,81 +163,201 @@
 </select>
 
 
-  <select id="searchSilvertownWithFilters" resultType="com.daview.dto.FacilityDTO">
-  SELECT
+  <select id="searchSilvertownWithFilters"
+        parameterType="com.daview.dto.FacilitySearchFilterRequest"
+        resultType="com.daview.dto.FacilityDTO">
+  SELECT DISTINCT
     f.facility_id,
     f.facility_name,
     f.facility_address_location,
     f.facility_address_city,
     f.facility_charge,
+    f.facility_theme,
+    f.facility_homepage,
+    f.facility_phone,
     fp.photo_url
   FROM facility f
   LEFT JOIN facility_photo fp ON f.facility_id = fp.facility_id AND fp.is_thumbnail = 1
-  WHERE f.facility_type = '실버타운'
 
-  <if test="location != null and location != ''">
-    AND f.facility_address_location = #{location}
-  </if>
-  <if test="city != null and city != ''">
-    AND f.facility_address_city = #{city}
-  </if>
-  <if test="theme != null and theme != ''">
-    AND f.facility_theme = #{theme}
-  </if>
+  <where>
+    f.facility_type = '실버타운'
+    AND f.trash_can = 0
 
-  <!-- ✅ residence_type → facility_tag의 category = '주거형태' 로 변경 -->
-  <if test="residence != null and residence.size > 0">
-    AND f.facility_id IN (
-      SELECT facility_id
-      FROM facility_tag
-      WHERE category = '주거형태'
-      AND facility_tag IN
-      <foreach item="item" collection="residence" open="(" separator="," close=")">
-        #{item}
-      </foreach>
-    )
-  </if>
+    <!-- 1. location -->
+    <if test="location != null and location != ''">
+      AND f.facility_address_location = #{location}
+    </if>
 
-  <if test="facility != null and facility.size > 0">
-    AND f.facility_id IN (
-      SELECT facility_id
-      FROM facility_tag
-      WHERE category = '시설'
-      AND facility_tag IN
-      <foreach item="item" collection="facility" open="(" separator="," close=")">
-        #{item}
-      </foreach>
-    )
-  </if>
+    <!-- 2. city -->
+    <if test="city != null and city != ''">
+      AND f.facility_address_city = #{city}
+    </if>
 
-  <if test="environment != null and environment.size > 0">
-    AND f.facility_id IN (
-      SELECT facility_id
-      FROM facility_tag
-      WHERE category = '주변환경'
-      AND facility_tag IN
-      <foreach item="item" collection="environment" open="(" separator="," close=")">
-        #{item}
-      </foreach>
-    )
-  </if>
+    <!-- 3. theme -->
+    <if test="theme != null and theme != ''">
+      AND f.facility_theme = #{theme}
+    </if>
 
-  <if test="etc != null and etc.size > 0">
-    AND f.facility_id IN (
-      SELECT facility_id
-      FROM facility_tag
-      WHERE category = '기타'
-      AND facility_tag IN
-      <foreach item="item" collection="etc" open="(" separator="," close=")">
-        #{item}
-      </foreach>
-    )
-  </if>
+    <!-- ✅ 4~7: residence, facility, environment, etc 중 하나라도 포함된 경우만 -->
+    <if test="(residence != null and residence.size > 0)
+           or (facility != null and facility.size > 0)
+           or (environment != null and environment.size > 0)
+           or (etc != null and etc.size > 0)">
+      AND (
+        <foreach collection="residence" item="item" separator=" OR ">
+          f.facility_id IN (
+            SELECT facility_id FROM facility_tag
+            WHERE category = '주거형태'
+              AND LOWER(facility_tag) = LOWER(#{item})
+          )
+        </foreach>
+
+        <if test="residence != null and residence.size > 0 and
+                  (facility != null and facility.size > 0 or
+                   environment != null and environment.size > 0 or
+                   etc != null and etc.size > 0)">
+          OR
+        </if>
+
+        <foreach collection="facility" item="item" separator=" OR ">
+          f.facility_id IN (
+            SELECT facility_id FROM facility_tag
+            WHERE category = '시설'
+              AND LOWER(facility_tag) = LOWER(#{item})
+          )
+        </foreach>
+
+        <if test="facility != null and facility.size > 0 and
+                  (environment != null and environment.size > 0 or
+                   etc != null and etc.size > 0)">
+          OR
+        </if>
+
+        <foreach collection="environment" item="item" separator=" OR ">
+          f.facility_id IN (
+            SELECT facility_id FROM facility_tag
+            WHERE category = '주변환경'
+              AND LOWER(facility_tag) = LOWER(#{item})
+          )
+        </foreach>
+
+        <if test="environment != null and environment.size > 0 and
+                   etc != null and etc.size > 0">
+          OR
+        </if>
+
+        <foreach collection="etc" item="item" separator=" OR ">
+          f.facility_id IN (
+            SELECT facility_id FROM facility_tag
+            WHERE category = '기타'
+              AND LOWER(facility_tag) = LOWER(#{item})
+          )
+        </foreach>
+      )
+    </if>
+  </where>
 
   ORDER BY f.facility_id DESC
 </select>
 
 
+<select id="searchNursinghomeWithFilters"
+        parameterType="com.daview.dto.FacilitySearchFilterRequest"
+        resultType="com.daview.dto.FacilityDTO">
+
+  SELECT DISTINCT
+    f.facility_id,
+    f.facility_name,
+    f.facility_address_location,
+    f.facility_address_city,
+    f.facility_charge,
+    f.facility_theme,
+    f.facility_homepage,
+    f.facility_phone,
+    fp.photo_url
+  FROM facility f
+  LEFT JOIN facility_photo fp ON f.facility_id = fp.facility_id AND fp.is_thumbnail = 1
+
+  <where>
+    f.facility_type = '요양원'
+    AND f.trash_can = 0
+
+    <!-- 1. 지역 -->
+    <if test="location != null and location != ''">
+      AND f.facility_address_location = #{location}
+    </if>
+
+    <!-- 2. 시군구 -->
+    <if test="city != null and city != ''">
+      AND f.facility_address_city = #{city}
+    </if>
+
+    <!-- 3. 테마 -->
+    <if test="theme != null and theme != ''">
+      AND f.facility_theme = #{theme}
+    </if>
+
+    <!-- 4. 태그 필터들 OR 조건 -->
+    <if test="(residence != null and residence.size > 0)
+           or (facility != null and facility.size > 0)
+           or (environment != null and environment.size > 0)
+           or (etc != null and etc.size > 0)">
+      AND (
+        <foreach collection="residence" item="item" separator=" OR ">
+          f.facility_id IN (
+            SELECT facility_id FROM facility_tag
+            WHERE category = '프로그램'
+              AND LOWER(facility_tag) = LOWER(#{item})
+          )
+        </foreach>
+
+        <if test="residence != null and residence.size > 0 and
+                  (facility != null and facility.size > 0 or
+                   environment != null and environment.size > 0 or
+                   etc != null and etc.size > 0)">
+          OR
+        </if>
+
+        <foreach collection="facility" item="item" separator=" OR ">
+          f.facility_id IN (
+            SELECT facility_id FROM facility_tag
+            WHERE category = '업종'
+              AND LOWER(facility_tag) = LOWER(#{item})
+          )
+        </foreach>
+
+        <if test="facility != null and facility.size > 0 and
+                  (environment != null and environment.size > 0 or
+                   etc != null and etc.size > 0)">
+          OR
+        </if>
+
+        <foreach collection="environment" item="item" separator=" OR ">
+          f.facility_id IN (
+            SELECT facility_id FROM facility_tag
+            WHERE category = '주변환경'
+              AND LOWER(facility_tag) = LOWER(#{item})
+          )
+        </foreach>
+
+        <if test="environment != null and environment.size > 0 and
+                   etc != null and etc.size > 0">
+          OR
+        </if>
+
+        <foreach collection="etc" item="item" separator=" OR ">
+          f.facility_id IN (
+            SELECT facility_id FROM facility_tag
+            WHERE category = '기타'
+              AND LOWER(facility_tag) = LOWER(#{item})
+          )
+        </foreach>
+      )
+    </if>
+  </where>
+
+  ORDER BY f.facility_id DESC
+</select>
 
 </mapper>
 
