@@ -46,17 +46,13 @@ public class FacilityController {
     }
     
     
-    
-    
-    
-    
-    
+    //요양원 리스트
     @GetMapping("/nursinghomes")
     public List<FacilityDTO> getNursingHomes() {
         return facilityService.getNursinghomes();
     }
     
-    
+    //요양원 상세페이지
     @GetMapping("/nursinghome/{id}")
     public ResponseEntity<FacilityDTO> getNursingHomeDetail(@PathVariable("id") String id) {
     	System.out.println("💡 요청된 ID: " + id);
@@ -68,6 +64,12 @@ public class FacilityController {
         return ResponseEntity.ok(detail);
     }
     
+    //요양원 검색박스 검색
+    @PostMapping("/nursinghome/search")
+    public List<FacilityDTO> searchNursinghomes(@RequestBody FacilitySearchFilterRequest request) {
+        System.out.println("🟢 요양원 검색 요청 값: " + request);
+        return facilityService.searchNursinghomes(request);
+    }
     
     
     
