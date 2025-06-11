@@ -11,13 +11,14 @@ public class JwtUtil {
 
     private static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
-    public static String generateToken(String username, String role) {
+    public static String generateToken(String username, String role, Long memberId) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + 3600000); // 1시간 유효
 
         return Jwts.builder()
                 .setSubject(username)
                 .claim("role", role)
+                .claim("memberId", memberId)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key)
