@@ -43,13 +43,19 @@ public class AuthService {
         Map<String, Object> response = new HashMap<>();
 
         User user = userMapper.findByUsername(request.getUsername());
-
+        
+        //비밀번호 확인용
+        System.out.println("입력된 비밀번호: " + request.getPassword());
+        System.out.println("DB에 저장된 암호화 비밀번호: " + user.getPassword());
+        System.out.println("matches 결과: " + passwordEncoder.matches(request.getPassword(), user.getPassword()));
+        //비밀번호 확인용
+        
         if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             response.put("success", false);
             return response;
         }
 
-        String token = JwtUtil.generateToken(user.getUsername());
+        String token = JwtUtil.generateToken(user.getUsername(), user.getRole());
 
         response.put("success", true);
         response.put("token", token);
