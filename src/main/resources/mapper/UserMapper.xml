@@ -16,5 +16,9 @@
             #{username}, #{password}, #{name}, #{email}, #{phone}, #{role}, 'hidden'
         )
     </insert>
+    
+    <select id="countByUsername" resultType="int">
+    SELECT COUNT(*) FROM dv_users WHERE username = #{username}
+	</select>
 
 </mapper>
