@@ -17,54 +17,56 @@ import com.daview.util.JwtUtil;
 @Service
 public class AuthService {
 
-    @Autowired
-    private UserMapper userMapper;
+	@Autowired
+	private UserMapper userMapper;
 
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+	private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public boolean signup(SignupRequest request) {
-        if (userMapper.findByUsername(request.getUsername()) != null) {
-            return false;
-        }
+	public boolean signup(SignupRequest request) {
+		if (userMapper.findByUsername(request.getUsername()) != null) {
+			return false;
+		}
 
-        User user = new User();
-        user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword())); // 비번 암호화
-        user.setName(request.getName());
-        user.setEmail(request.getEmail());
-        user.setPhone(request.getPhone());
-        user.setRole(request.getRole());
+		User user = new User();
+		user.setUsername(request.getUsername());
+		user.setPassword(passwordEncoder.encode(request.getPassword())); // 비번 암호화
+		user.setName(request.getName());
+		user.setEmail(request.getEmail());
+		user.setPhone(request.getPhone());
+		user.setRole(request.getRole());
 
-        userMapper.insertUser(user);
-        return true;
-    }
+		userMapper.insertUser(user);
+		return true;
+	}
 
-    public Map<String, Object> login(LoginRequest request) {
-        Map<String, Object> response = new HashMap<>();
+	public Map<String, Object> login(LoginRequest request) {
+		Map<String, Object> response = new HashMap<>();
 
-        User user = userMapper.findByUsername(request.getUsername());
-        
-        //비밀번호 확인용
-        System.out.println("입력된 비밀번호: " + request.getPassword());
-        System.out.println("DB에 저장된 암호화 비밀번호: " + user.getPassword());
-        System.out.println("matches 결과: " + passwordEncoder.matches(request.getPassword(), user.getPassword()));
-        //비밀번호 확인용
-        
-        if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            response.put("success", false);
-            return response;
-        }
+		User user = userMapper.findByUsername(request.getUsername());
 
-        String token = JwtUtil.generateToken(user.getUsername(), user.getRole(), user.getMemberId());
+		// 비밀번호 확인용
+		System.out.println("입력된 비밀번호: " + request.getPassword());
+		System.out.println("DB에 저장된 암호화 비밀번호: " + user.getPassword());
+		System.out.println("matches 결과: " + passwordEncoder.matches(request.getPassword(), user.getPassword()));
+		// 비밀번호 확인용
 
-        response.put("success", true);
-        response.put("token", token);
-        response.put("username", user.getUsername());
-        response.put("role", user.getRole());
+		if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+			response.put("success", false);
+			return response;
+		}
 
-        return response;
-    }
+		String token = JwtUtil.generateToken(user.getUsername(), user.getRole(), user.getMemberId());
+
+		response.put("success", true);
+		response.put("token", token);
+		response.put("username", user.getUsername());
+		response.put("role", user.getRole());
+
+		return response;
+	}
+
+	public boolean checkUsernameDuplicate(String username) {
+		return userMapper.countByUsername(username) > 0;
+	}
+
 }
-//그냥 아무거나 씀
-
-
