@@ -6,6 +6,7 @@
 <mapper namespace="com.daview.mapper.CaregiverMapper">
 
   <resultMap id="CaregiverMap" type="com.daview.dto.CaregiverDTO">
+	
     <id property="caregiverId" column="caregiver_id"/>
     <result property="memberId" column="member_id"/>
     <result property="hopeWorkAreaLocation" column="hope_work_area_location"/>
@@ -18,10 +19,17 @@
     <result property="hopeWorkAmount" column="hope_work_amount"/>
     <result property="caregiverCreatedAt" column="caregiver_created_at"/>
     <result property="caregiverUpdateAt" column="caregiver_update_at"/>
-
-    <!-- 추가된 항목 -->
     <result property="username" column="username"/>
     <result property="userGender" column="user_gender"/>
+    
+      <!-- ✅ 자격증과 경력 리스트 매핑 -->
+    <collection property="certificates" ofType="string"
+                column="caregiver_id"
+                select="getCertificatesByCaregiverId"/>
+    <collection property="career" ofType="com.daview.dto.CaregiverCareerDTO"
+                column="caregiver_id"
+                select="getCareerByCaregiverId"/>
+    
   </resultMap>
 
   <select id="getAllCaregivers" resultMap="CaregiverMap">
@@ -72,4 +80,66 @@
 </select>
 
 
+ <select id="searchCaregiversWithFilters" parameterType="map" resultMap="CaregiverMap">
+    SELECT DISTINCT
+      c.*,
+      u.username,
+      u.user_gender
+    FROM caregiver c
+    INNER JOIN dv_users u ON c.member_id = u.member_id
+
+    <where>
+      <if test="location != null and location != ''">
+        AND LOWER(c.hope_work_area_location) = LOWER(#{location})
+      </if>
+      <if test="city != null and city != ''">
+        AND LOWER(c.hope_work_area_city) = LOWER(#{city})
+      </if>
+      <if test="gender != null and gender != ''">
+        AND LOWER(u.user_gender) = LOWER(#{gender})
+      </if>
+
+      <if test="(certificates != null and certificates.size > 0) or (workType != null and workType.size > 0) or (employmentType != null and employmentType.size > 0)">
+        AND (
+          <if test="certificates != null and certificates.size > 0">
+            (
+              <foreach item="item" collection="certificates" separator=" OR ">
+                EXISTS (
+                  SELECT 1 FROM caregiver_certificates cert
+                  WHERE cert.caregiver_id = c.caregiver_id
+                  AND LOWER(cert.certificate_name) = LOWER(#{item})
+                )
+              </foreach>
+            )
+          </if>
+          <if test="certificates != null and certificates.size > 0 and (workType != null and workType.size > 0)">
+            OR
+          </if>
+          <if test="workType != null and workType.size > 0">
+            (
+              <foreach item="item" collection="workType" separator=" OR ">
+                LOWER(c.hope_work_type) = LOWER(#{item})
+              </foreach>
+            )
+          </if>
+          <if test="(certificates != null and certificates.size > 0 or workType != null and workType.size > 0) and (employmentType != null and employmentType.size > 0)">
+            OR
+          </if>
+          <if test="employmentType != null and employmentType.size > 0">
+            (
+              <foreach item="item" collection="employmentType" separator=" OR ">
+                LOWER(c.hope_employment_type) = LOWER(#{item})
+              </foreach>
+            )
+          </if>
+        )
+      </if>
+    </where>
+
+    ORDER BY c.caregiver_created_at DESC
+  </select>
+ 
+  
+  
+  
 </mapper>

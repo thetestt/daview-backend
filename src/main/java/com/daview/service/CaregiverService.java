@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.daview.dto.CaregiverDTO;
+import com.daview.dto.CaregiverFilterDTO;
 import com.daview.mapper.CaregiverMapper;
 
 @Service
@@ -36,5 +37,15 @@ public class CaregiverService {
     public List<CaregiverDTO> searchByKeyword(String keyword) {
         return caregiverMapper.searchByKeyword(keyword);
     }
+    
+    
+    public List<CaregiverDTO> searchCaregiversWithFilters(CaregiverFilterDTO filters) {
+        return caregiverMapper.searchCaregiversWithFilters(filters);
+    }
+    
+    
+    
+    
+    
 }
 
