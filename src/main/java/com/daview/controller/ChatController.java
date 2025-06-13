@@ -1,16 +1,20 @@
 package com.daview.controller;
 
 import com.daview.dto.ChatMessageDTO;
+import com.daview.service.KafkaChatProducer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 
 @Controller
 public class ChatController {
 
-    @MessageMapping("/chat/send") // /pub/chat/send
-    @SendTo("/sub/chat/room")     // 구독자에게 메시지 전송
-    public ChatMessageDTO sendMessage(ChatMessageDTO message) {
-        return message; // 현재는 단순 echo (다음 단계에서 Kafka로 연결 예정)
+    @Autowired
+    private KafkaChatProducer kafkaChatProducer;
+
+    @MessageMapping("/chat/send") // pub/chat/send
+    public void send(ChatMessageDTO message) {
+        kafkaChatProducer.sendMessage(message);
+        // WebSocket으로는 이제 응답 안 보내고 Kafka → Redis → DB → 구독 구조로 전환
     }
 }
