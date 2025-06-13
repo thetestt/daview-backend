@@ -7,6 +7,18 @@ spring:
     username: root
     password: rootpw
     driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy # com.mysql.cj.jdbc.Driver
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: chat-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    properties:
+      'allow.auto.create.topics': true
 
 logging:
   level:
