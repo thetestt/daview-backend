@@ -105,32 +105,40 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-		  </dependency>
-		  
-		  <!-- WebSocket -->
-		<dependency>
-		  <groupId>org.springframework.boot</groupId>
-		  <artifactId>spring-boot-starter-websocket</artifactId>
 		</dependency>
-		
+
+
+		<!-- WebSocket -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+
 		<!-- STOMP 메시징 -->
 		<dependency>
-		  <groupId>org.webjars</groupId>
-		  <artifactId>sockjs-client</artifactId>
-		  <version>1.5.1</version>
+			<groupId>org.webjars</groupId>
+			<artifactId>sockjs-client</artifactId>
+			<version>1.5.1</version>
 		</dependency>
 		<dependency>
-		  <groupId>org.webjars</groupId>
-		  <artifactId>stomp-websocket</artifactId>
-		  <version>2.3.4</version>
+			<groupId>org.webjars</groupId>
+			<artifactId>stomp-websocket</artifactId>
+			<version>2.3.4</version>
 		</dependency>
-		
+
 		<!-- Kafka -->
 		<dependency>
-		  <groupId>org.springframework.kafka</groupId>
-		  <artifactId>spring-kafka</artifactId>
+			<groupId>org.springframework.kafka</groupId>
+			<artifactId>spring-kafka</artifactId>
 		</dependency>
-		  
+
+
+		<!-- 이메일전송 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>
