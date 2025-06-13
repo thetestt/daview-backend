@@ -69,8 +69,8 @@ public class FacilityService {
     
     //전체검색
     
-    public List<FacilityDTO> searchByTypeAndKeyword(String type, String keyword) {
-        return facilityMapper.searchByTypeAndKeyword(type, keyword);
+    public List<FacilityDTO> searchFacilitiesByKeyword(String keyword) {
+        return facilityMapper.searchFacilitiesByKeyword(keyword);
     }
     
     public List<FacilityDTO> searchSilvertowns(FacilitySearchFilterRequest request) {

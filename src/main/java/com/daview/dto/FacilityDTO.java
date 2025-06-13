@@ -19,11 +19,19 @@ public class FacilityDTO {
     private List<String> tags;          // 태그들
     private List<NoticeDTO> notices;    // 공지사항
     
+    private String facilityType;
+    
     // Getters and Setters 생략 (자동 생성 또는 IDE로 생성 가능)
     
     
     
-    public String getFacilityDetailAddress() {
+    public String getFacilityType() {
+		return facilityType;
+	}
+	public void setFacilityType(String facilityType) {
+		this.facilityType = facilityType;
+	}
+	public String getFacilityDetailAddress() {
 		return facilityDetailAddress;
 	}
 	public void setFacilityDetailAddress(String facilityDetailAddress) {
@@ -95,6 +103,7 @@ public class FacilityDTO {
 	public void setPhotoUrl(String photoUrl) {
 		this.photoUrl = photoUrl;
 	}
+
     
     
 }

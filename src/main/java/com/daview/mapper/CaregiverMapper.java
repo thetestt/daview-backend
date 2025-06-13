@@ -11,7 +11,7 @@ public interface CaregiverMapper {
     List<String> getCertificatesByCaregiverId(String caregiverId);
     List<CaregiverCareerDTO> getCareerByCaregiverId(String caregiverId);
     CaregiverDTO getCaregiverById(String caregiverId);
-    List<CaregiverDTO> searchByKeyword(String keyword);
+    List<CaregiverDTO> searchCaregiversByKeyword(String keyword);
     List<CaregiverDTO> searchCaregiversWithFilters(CaregiverFilterDTO filters);
 
 }

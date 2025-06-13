@@ -135,9 +135,9 @@
     AND trash_can = 0
 </select>
 
-
-<select id="searchByTypeAndKeyword" resultType="FacilityDTO">
-  SELECT 
+<!--요양원 실버타운 통합검색-->
+<select id="searchFacilitiesByKeyword" resultType="FacilityDTO">
+  SELECT DISTINCT
     f.facility_id,
     f.facility_name,
     f.facility_charge,
@@ -148,19 +148,24 @@
     f.facility_detail_address,
     f.facility_homepage,
     f.facility_phone,
-    ft.facility_tag,
     fp.photo_url
   FROM facility f
   LEFT JOIN facility_tag ft ON f.facility_id = ft.facility_id
-  LEFT JOIN facility_photo fp ON f.facility_id = fp.facility_id
-  WHERE f.facility_type = #{type}
-    AND (
-      f.facility_name LIKE CONCAT('%', #{keyword}, '%')
-      OR f.facility_address_location LIKE CONCAT('%', #{keyword}, '%')
-      OR f.facility_theme LIKE CONCAT('%', #{keyword}, '%')
-    )
-    AND f.trash_can = 0
+  LEFT JOIN facility_photo fp ON f.facility_id = fp.facility_id AND fp.is_thumbnail = true
+  WHERE (
+    LOWER(f.facility_name) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+    OR LOWER(f.facility_address_location) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+    OR LOWER(f.facility_address_city) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+    OR LOWER(f.facility_theme) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+    OR LOWER(f.facility_detail_address) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+    OR LOWER(IFNULL(f.facility_homepage, '')) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+    OR LOWER(f.facility_phone) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+    OR LOWER(IFNULL(ft.facility_tag, '')) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+  )
+  AND f.trash_can = 0
 </select>
+
+
 
 
   <select id="searchSilvertownWithFilters"
