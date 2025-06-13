@@ -35,14 +35,14 @@ public class CaregiverService {
     }
     
     public List<CaregiverDTO> searchByKeyword(String keyword) {
-        return caregiverMapper.searchByKeyword(keyword);
+        return caregiverMapper.searchCaregiversByKeyword(keyword);
     }
     
     
     public List<CaregiverDTO> searchCaregiversWithFilters(CaregiverFilterDTO filters) {
         return caregiverMapper.searchCaregiversWithFilters(filters);
     }
-    
+ 
     
     
     

@@ -80,6 +80,46 @@
 </select>
 
 
+
+<!--요양사 통합검색-->
+<select id="searchCaregiversByKeyword" resultMap="CaregiverMap">
+  SELECT DISTINCT
+    c.caregiver_id,
+    c.member_id,
+    c.hope_work_area_location,
+    c.hope_work_area_city,
+    c.hope_work_place,
+    c.hope_work_type,
+    c.hope_employment_type,
+    c.education_level,
+    c.introduction,
+    c.hope_work_amount,
+    c.caregiver_created_at,
+    c.caregiver_update_at,
+    u.username,
+    u.user_gender
+  FROM caregiver c
+  LEFT JOIN dv_users u ON c.member_id = u.member_id
+  LEFT JOIN caregiver_certificates cc ON c.caregiver_id = cc.caregiver_id
+  WHERE (
+    LOWER(c.hope_work_area_location) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+    OR LOWER(c.hope_work_area_city) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+    OR LOWER(c.hope_work_place) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+    OR LOWER(c.hope_work_type) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+    OR LOWER(c.hope_employment_type) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+    OR LOWER(c.education_level) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+    OR LOWER(c.introduction) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+    OR CAST(c.hope_work_amount AS CHAR) LIKE CONCAT('%', #{keyword}, '%')
+    OR LOWER(cc.certificate_name) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+  )
+  AND c.trash_can = 0
+</select>
+
+
+
+
+
+
  <select id="searchCaregiversWithFilters" parameterType="map" resultMap="CaregiverMap">
     SELECT DISTINCT
       c.*,
