@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.daview.mapper.ChatRoomMapper">
+
+  <select id="getChatRoomsByMemberId" resultType="com.daview.dto.ChatRoomDTO">
+    SELECT 
+      c.chatroom_id,
+      CASE
+        WHEN c.sender_id = #{memberId} THEN u2.name
+        ELSE u1.name
+      END AS opponent_name,
+      m.content AS last_message,
+      m.sent_at AS last_time,
+      (
+        SELECT COUNT(*) 
+        FROM chatmessage
+        WHERE chatroom_id = c.chatroom_id
+          AND is_read = 0
+          AND sender_id != #{memberId}
+      ) AS unread_count
+    FROM chatroom c
+    JOIN dv_users u1 ON c.sender_id = u1.member_id
+    JOIN dv_users u2 ON c.receiver_id = u2.member_id
+    LEFT JOIN (
+      SELECT * FROM chatmessage
+      WHERE (chatroom_id, sent_at) IN (
+        SELECT chatroom_id, MAX(sent_at)
+        FROM chatmessage
+        GROUP BY chatroom_id
+      )
+    ) m ON c.chatroom_id = m.chatroom_id
+    WHERE c.sender_id = #{memberId} OR c.receiver_id = #{memberId}
+    ORDER BY m.sent_at DESC
+  </select>
+  
+
+
+</mapper>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.daview.mapper.ChatMessageMapper">
+    <insert id="insertChatMessage" parameterType="com.daview.dto.ChatMessageDTO">
+        INSERT INTO chatMessage (chatroom_id, sender_id, content, sent_at, is_read)
+        VALUES (#{chatroomId}, #{senderId}, #{content}, #{sentAt}, 0)
+    </insert>
+    
+  <select id="getMessagesByRoom" resultType="com.daview.dto.ChatMessageDTO" parameterType="string">
+    SELECT chatroom_id AS chatroomId,
+           sender_id    AS senderId,
+           content,
+           sent_at      AS sentAt
+    FROM chatmessage
+    WHERE chatroom_id = #{chatroomId}
+    ORDER BY sent_at ASC
+  </select>
+
+</mapper>
+
