@@ -18,33 +18,33 @@
 	<select id="countByUsername" resultType="int">
 		SELECT COUNT(*) FROM dv_users WHERE username = #{username}
 	</select>
-	
+
 	<select id="findUsernameByPhone" resultType="string">
 		SELECT username
-		FROM users
+		FROM dv_users
 		WHERE name = #{name}
 		AND phone = #{phone}
 	</select>
 
 	<select id="findUsernameByEmail" resultType="string">
 		SELECT username
-		FROM users
+		FROM dv_users
 		WHERE name = #{name}
 		AND email = #{email}
 	</select>
 
 	<select id="findUserForReset" resultType="com.daview.dto.User">
-		SELECT * FROM users
+		SELECT *
+		FROM dv_users
 		WHERE name = #{name}
 		AND username = #{username}
 		AND phone = #{phone}
 	</select>
 
 	<update id="updatePassword">
-		UPDATE users
+		UPDATE dv_users
 		SET password = #{password}
 		WHERE username = #{username}
 	</update>
-
 
 </mapper>
