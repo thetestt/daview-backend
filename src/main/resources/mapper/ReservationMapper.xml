@@ -7,15 +7,12 @@
 	<insert id="insertReservation" parameterType="com.daview.dto.ReservationDTO">
 		INSERT INTO
 		reservation (
-		rsv_id, member_id, prod_id,
-		prod_type, prod_price,
-		prod_nm, prod_detail, prod_date, rsv_type,
-		rsv_date
+		rsv_id, member_id, prod_id, prod_type, prod_price, prod_nm, 
+		prod_detail, prod_date, rsv_type, rsv_date, rsv_cnt
 		)
 		VALUES (
-		#{rsvId}, #{memberId}, #{prodId}, #{prodType},
-		#{prodPrice},
-		#{prodNm}, #{prodDetail} , #{prodDate}, 1, NOW()
+		#{rsvId}, #{memberId}, #{prodId}, #{prodType}, #{prodPrice}, 
+		#{prodNm}, #{prodDetail} , #{prodDate}, 1, NOW(), #{rsvCnt}
 		)
 	</insert>
 	<select id="selectReservationById" resultType="com.daview.dto.ReservationDTO">
