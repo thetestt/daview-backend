@@ -44,6 +44,7 @@ public class SecurityConfig {
 
                 // ✅ 나머지 공개 경로 허용
                 .requestMatchers(
+                	
                 	"/api/account/**",
                     "/api/**",
                     "/api/auth/**",
