@@ -37,6 +37,7 @@
 
 	<resultMap id="FacilityDetailMap" type="com.daview.dto.FacilityDTO">
   <result property="facilityId" column="facility_id"/>
+   <result property="memberId" column="member_id"/> 
   <result property="facilityName" column="facility_name"/>
   <result property="facilityCharge" column="facility_charge"/>
   <result property="facilityAddressLocation" column="facility_address_location"/>

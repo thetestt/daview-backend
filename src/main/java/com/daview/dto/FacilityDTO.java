@@ -4,7 +4,8 @@ import java.util.List;
 
 public class FacilityDTO {
     private String facilityId;
-    private String facilityName;
+    private Long memberId;
+	private String facilityName;
     private Integer facilityCharge;
     private String facilityAddressLocation;
     private String facilityAddressCity;
@@ -21,7 +22,14 @@ public class FacilityDTO {
     
     private String facilityType;
     
-    // Getters and Setters 생략 (자동 생성 또는 IDE로 생성 가능)
+    
+    
+    public Long getMemberId() {
+    	return memberId;
+    }
+    public void setMemberId(Long memberId) {
+    	this.memberId = memberId;
+    }
     
     
     
