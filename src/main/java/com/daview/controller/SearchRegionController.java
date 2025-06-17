@@ -15,7 +15,7 @@ import com.daview.service.SearchRegionService;
 
 @RestController
 @RequestMapping("/api/region")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class SearchRegionController {
 
     @Autowired
