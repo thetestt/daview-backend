@@ -13,7 +13,7 @@ import com.daview.service.CaregiverService;
 
 @RestController
 @RequestMapping("/api/caregivers")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class CaregiverController {
 
     @Autowired

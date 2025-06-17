@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/options")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class SearchFilterOptionController {
 
     private final SearchFilterOptionService service;
