@@ -6,5 +6,7 @@ import java.util.List;
 
 public interface ChatRoomService {
     List<ChatRoomDTO> getChatRooms(int memberId);
+    String findExistingRoom(Long senderId, Long receiverId);
+    String createRoom(Long senderId, Long receiverId);
     
 }

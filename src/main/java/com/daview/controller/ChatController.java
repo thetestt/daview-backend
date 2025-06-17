@@ -2,15 +2,19 @@ package com.daview.controller;
 
 import com.daview.dto.ChatMessageDTO;
 import com.daview.service.ChatMessageService;
+import com.daview.service.ChatRoomService;
 import com.daview.service.KafkaChatProducer;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,6 +26,7 @@ public class ChatController {
 
     @Autowired
     private KafkaChatProducer kafkaChatProducer;
+    
     
 
     @Autowired
@@ -39,4 +44,7 @@ public class ChatController {
     public List<ChatMessageDTO> getMessages(@PathVariable String chatroomId) {
         return chatMessageService.getMessagesByRoom(chatroomId); // ✅ 인스턴스로 호출
     }
+    
+   
+    
 }

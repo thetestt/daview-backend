@@ -30,12 +30,12 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         String formatted = parsedDateTime.format(formatter);
         message.setSentAt(formatted);
 
-        
+        // ✅ DB 저장
+        chatMessageMapper.insertChatMessage(message);
     }
-    
+
     @Override
     public List<ChatMessageDTO> getMessagesByRoom(String chatroomId) {
         return chatMessageMapper.getMessagesByRoom(chatroomId);
     }
-    
 }

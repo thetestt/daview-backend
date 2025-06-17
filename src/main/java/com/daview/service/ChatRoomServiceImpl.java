@@ -6,6 +6,7 @@ import com.daview.mapper.ChatMessageMapper;
 import com.daview.mapper.ChatRoomMapper;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ChatRoomServiceImpl implements ChatRoomService {
@@ -21,6 +22,17 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return chatRoomMapper.getChatRoomsByMemberId(memberId);
     }
     
+    @Override
+    public String findExistingRoom(Long senderId, Long receiverId) {
+        return chatRoomMapper.findChatRoomId(senderId, receiverId);
+    }
+
+    @Override
+    public String createRoom(Long senderId, Long receiverId) {
+        String newRoomId = UUID.randomUUID().toString();
+        chatRoomMapper.insertChatRoom(newRoomId, senderId, receiverId);
+        return newRoomId;
+    }
 
     
 }

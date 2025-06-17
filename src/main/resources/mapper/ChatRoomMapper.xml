@@ -5,7 +5,7 @@
 
 <mapper namespace="com.daview.mapper.ChatRoomMapper">
 
-  <select id="getChatRoomsByMemberId" resultType="com.daview.dto.ChatRoomDTO">
+  <select id="getChatRoomListForUser" resultType="com.daview.dto.ChatRoomDTO">
     SELECT 
       c.chatroom_id,
       CASE
@@ -36,6 +36,33 @@
     ORDER BY m.sent_at DESC
   </select>
   
+  
+    <!-- 1. 채팅방 생성 -->
+	<insert id="insertChatRoom">
+	  INSERT INTO chatroom (chatroom_id, sender_id, receiver_id)
+	  VALUES (#{chatroomId}, #{senderId}, #{receiverId})
+	</insert>
+	
+	<!-- 2. 기존 채팅방 확인 -->
+	<select id="findChatRoomId" resultType="string">
+	  SELECT chatroom_id
+	  FROM chatroom
+	  WHERE sender_id = #{senderId}
+	    AND receiver_id = #{receiverId}
+	  LIMIT 1
+	</select>
+
+    <!-- 3. 유저의 모든 채팅방 목록 조회 -->
+    <select id="getChatRoomsByMemberId" resultType="com.daview.dto.ChatRoomDTO">
+        SELECT chatroom_id AS chatroomId,
+               sender_id AS memberId,
+               facility_id AS facilityId,
+               created_at AS createdAt
+        FROM chatroom
+        WHERE sender_id = #{memberId}
+    </select>
+    
 
 
+   
 </mapper>
