@@ -43,7 +43,7 @@ logging:
     
 mybatis:
   mapper-locations: classpath:mapper/*.xml  # MyBatis 매퍼 XML 파일 위치
-  type-aliases-package: com.daview.dto, com.daview.domain.user
+  type-aliases-package: com.daview.dto
   configuration:
     map-underscore-to-camel-case: true  # DB 필드명 snake_case → Java camelCase 자동 변환
     # log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl  # MyBatis 로그 SLF4J 사용   
@@ -52,5 +52,14 @@ server:
   servlet:
     session:
       timeout: 30m
+     
+      
+naver:
+  sens:
+    access-key: "ncp_iam_BPAMKR4t6gmxw5Yf66MK"
+    secret-key: "ncp_iam_BPKMKR2vBPVaDAQTWHmLU3Q8APViuXhSDj"
+    service-id: "ncp:sms:kr:354802395254:daview"
+    sender-phone: "01087665119" 
+
       
       
