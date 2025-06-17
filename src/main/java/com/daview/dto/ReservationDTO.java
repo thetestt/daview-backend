@@ -13,6 +13,7 @@ public class ReservationDTO {
 	private Date prodDate;
 	private int rsvType;
 	private Date rsvDate;
+	private int rsvCnt;
 
 	public String getRsvId() {
 		return rsvId;
@@ -92,6 +93,14 @@ public class ReservationDTO {
 
 	public void setRsvDate(Date rsvDate) {
 		this.rsvDate = rsvDate;
+	}
+
+	public int getRsvCnt() {
+		return rsvCnt;
+	}
+
+	public void setRsvCnt(int rsvCnt) {
+		this.rsvCnt = rsvCnt;
 	}
 
 }
