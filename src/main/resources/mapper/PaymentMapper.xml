@@ -4,5 +4,15 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.daview.mapper.PaymentMapper">
-
+	<insert id="insertPayment" parameterType="com.daview.dto.PaymentDTO">
+		INSERT INTO payment (
+			pym_id, imp_uid, merchant_uid, rsv_id, prod_id, member_id,
+			cust_nm, cust_tel, cust_em_tel, cust_date, cust_memo,
+			pym_price, pym_status, pym_method, pym_num
+		) VALUES (
+			#{pymId}, #{impUid}, #{merchantUid}, #{rsvId}, #{prodId}, #{memberId},
+			#{custNm}, #{custTel}, #{custEmTel}, #{custDate}, #{custMemo},
+			#{pymPrice}, #{pymStatus}, #{pymMethod}, #{pymNum}
+		)
+	</insert>
 </mapper>
