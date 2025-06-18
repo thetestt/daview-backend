@@ -12,4 +12,6 @@ public interface ReservationService {
 	int deleteReservation(String rsvId);
 
 	int deleteAllReservation();
+	
+	void updateReservationCount(List<ReservationDTO> updates);
 }

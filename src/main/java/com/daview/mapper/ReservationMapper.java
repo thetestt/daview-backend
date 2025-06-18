@@ -15,4 +15,6 @@ public interface ReservationMapper {
 	int deleteReservation(String rsvId);
 
 	int deleteAllReservation();
+	
+	int updateReservationCount(String rsvId, int rsvCnt);
 }
