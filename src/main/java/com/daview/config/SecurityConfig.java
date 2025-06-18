@@ -42,6 +42,10 @@ public class SecurityConfig {
                 .requestMatchers("/api/mypage/**")
                     .authenticated()
 
+                // ✅ 관리자 경로에 대한 접근은 ROLE_ADMIN만 가능
+                .requestMatchers("/admin/**")
+                    .hasRole("ADMIN")  // 관리자만 접근 가능
+
                 // ✅ 나머지 공개 경로 허용
                 .requestMatchers(
                 	
@@ -57,6 +61,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             );
 
+        // JWT 필터 추가 (Spring Security 필터 체인에 추가)
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -89,4 +94,4 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
-} 
+}

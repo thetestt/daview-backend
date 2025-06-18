@@ -1,0 +1,8 @@
+<mapper namespace="com.daview.mapper.admin_mapper.ProductMapper">
+
+    <!-- 상품 타입에 따른 상품 조회 -->
+    <select id="getProductsByType" resultType="com.daview.dto.ProductDTO">
+        SELECT * FROM admin_product WHERE prod_type = #{type}
+    </select>
+
+</mapper>
