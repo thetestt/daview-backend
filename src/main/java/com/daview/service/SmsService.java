@@ -64,6 +64,11 @@ public class SmsService {
 
             int responseCode = con.getResponseCode();
             log.info("네이버 응답 코드: {}", responseCode);
+            
+            String responseMessage = con.getResponseMessage();
+            System.out.println("응답 상태 코드: " + responseCode);
+            System.out.println("응답 메시지: " + responseMessage);
+            
             return responseCode == 202 ? randomCode : null;
 
         } catch (Exception e) {
