@@ -31,5 +31,10 @@
 		SET rsv_type = 2
 		WHERE rsv_type != 2
 	</update>
+	<update id="updateReservationCount">
+		UPDATE reservation
+		SET rsv_cnt = #{rsvCnt}
+		WHERE rsv_id = #{rsvId}
+	</update>
 	
 </mapper>
