@@ -38,14 +38,17 @@ public class SmsService {
 
             String randomCode = createCode();
             log.info("인증번호: {}", randomCode);
+            
+            String sanitizedTo = to.replaceAll("-", "");
+            String sanitizedFrom = senderPhone.replaceAll("-", "");
 
             String json = "{"
                     + "\"type\":\"SMS\","
                     + "\"contentType\":\"COMM\","
                     + "\"countryCode\":\"82\","
-                    + "\"from\":\"" + senderPhone + "\","
+                    + "\"from\":\"" + sanitizedFrom + "\","
                     + "\"content\":\"[인증번호] " + randomCode + "\","
-                    + "\"messages\":[{\"to\":\"" + to + "\"}]"
+                    + "\"messages\":[{\"to\":\"" + sanitizedTo + "\"}]"
                     + "}";
 
             URL url = new URL(apiUrl);
