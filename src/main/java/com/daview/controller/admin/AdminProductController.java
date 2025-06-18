@@ -1,7 +1,7 @@
-package com.daview.controller.admin_controller;
+package com.daview.controller.admin;
 
 import com.daview.dto.ProductDTO;
-import com.daview.service.admin_service.ProductService;
+import com.daview.service.admin.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,4 +1,4 @@
-package com.daview.service.admin_service; // 경로 수정
+package com.daview.service.admin; // 경로 수정
 
 import com.daview.dto.CaregiverDTO; // DTO 임포트
 
