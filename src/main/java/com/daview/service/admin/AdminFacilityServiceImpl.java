@@ -1,10 +1,10 @@
 // ✅ 서비스 구현체
-// 📁 src/main/java/com/daview/service/admin_service/AdminFacilityServiceImpl.java
+// 📁 src/main/java/com/daview/service/admin/AdminFacilityServiceImpl.java
 
-package com.daview.service.admin_service;
+package com.daview.service.admin;
 
 import com.daview.dto.FacilityDTO;
-import com.daview.mapper.admin_mapper.AdminFacilityMapper;
+import com.daview.mapper.admin.AdminFacilityMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

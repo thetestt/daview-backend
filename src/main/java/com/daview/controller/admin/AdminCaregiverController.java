@@ -1,7 +1,7 @@
-package com.daview.controller.admin_controller; // 경로 수정
+package com.daview.controller.admin; // 경로 수정
 
 import com.daview.dto.CaregiverDTO; // DTO 임포트
-import com.daview.service.admin_service.AdminCaregiverService; // 서비스 임포트
+import com.daview.service.admin.AdminCaregiverService; // 서비스 임포트
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
