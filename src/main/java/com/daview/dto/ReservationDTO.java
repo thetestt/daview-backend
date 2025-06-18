@@ -11,6 +11,7 @@ public class ReservationDTO {
 	private String prodNm;
 	private String prodDetail;
 	private Date prodDate;
+	private String prodPhoto;
 	private int rsvType;
 	private Date rsvDate;
 	private int rsvCnt;
@@ -77,6 +78,14 @@ public class ReservationDTO {
 
 	public void setProdDate(Date prodDate) {
 		this.prodDate = prodDate;
+	}
+
+	public String getProdPhoto() {
+		return prodPhoto;
+	}
+
+	public void setProdPhoto(String prodPhoto) {
+		this.prodPhoto = prodPhoto;
 	}
 
 	public int getRsvType() {

@@ -8,6 +8,7 @@ import java.util.List;
 @Mapper
 public interface AdminCaregiverMapper {
 
+
     @Insert("INSERT INTO caregiver (name, license, experience, price_per_hour, available_region) VALUES (#{name}, #{license}, #{experience}, #{pricePerHour}, #{availableRegion})")
     void insertCaregiver(CaregiverDTO caregiverDTO);
 
@@ -23,3 +24,15 @@ public interface AdminCaregiverMapper {
     @Select("SELECT * FROM caregiver WHERE id = #{id}")
     CaregiverDTO getCaregiverById(Long id);
 }
+    void insertCaregiver(CaregiverDTO caregiverDTO);
+
+    List<CaregiverDTO> getAllCaregivers();
+
+    void updateCaregiver(CaregiverDTO caregiverDTO);
+
+    void deleteCaregiver(Long id);
+
+    CaregiverDTO getCaregiverById(Long id);
+}
+
+
