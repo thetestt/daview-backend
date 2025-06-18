@@ -67,4 +67,14 @@ public class ReservationController {
 		int count = reservationService.deleteAllReservation();
 		return ResponseEntity.ok().body(count + "개의 모든 예약이 삭제되었습니다.");
 	}
+	
+	@PutMapping("/update")
+	public ResponseEntity<String> updateReservationCount(@RequestBody List<ReservationDTO> updates){
+		try {
+			reservationService.updateReservationCount(updates);
+			return ResponseEntity.ok("예약 수량이 수정되었습니다.");
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약 수량 수정 중 오류가 발생했습니다.");
+		}
+	}
 }
