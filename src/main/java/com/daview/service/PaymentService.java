@@ -1,5 +1,7 @@
 package com.daview.service;
 
-public class PaymentService {
+import com.daview.dto.PaymentDTO;
 
+public interface PaymentService {
+	int insertPayment(PaymentDTO payment);
 }

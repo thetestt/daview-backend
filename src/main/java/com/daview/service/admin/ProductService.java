@@ -1,4 +1,4 @@
-package com.daview.service.admin_service;
+package com.daview.service.admin;
 
 import com.daview.dto.ProductDTO;
 import java.util.List;

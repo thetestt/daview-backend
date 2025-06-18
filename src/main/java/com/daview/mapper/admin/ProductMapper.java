@@ -1,4 +1,4 @@
-package com.daview.mapper.admin_mapper;
+package com.daview.mapper.admin;
 
 import com.daview.dto.ProductDTO;
 import org.apache.ibatis.annotations.Mapper;

@@ -1,10 +1,10 @@
 // ✅ 관리자 요양원 CRUD - Controller + Service
-// 📁 src/main/java/com/daview/controller/admin_controller/AdminFacilityController.java
+// 📁 src/main/java/com/daview/controller/admin/AdminFacilityController.java
 
-package com.daview.controller.admin_controller;
+package com.daview.controller.admin;
 
 import com.daview.dto.FacilityDTO;
-import com.daview.service.admin_service.AdminFacilityService;
+import com.daview.service.admin.AdminFacilityService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
