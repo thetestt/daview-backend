@@ -26,12 +26,12 @@
 		AND phone = #{phone}
 	</select>
 
-	<select id="findUsernameByEmail" resultType="string">
+	<!-- <select id="findUsernameByEmail" resultType="string">
 		SELECT username
 		FROM dv_users
 		WHERE name = #{name}
 		AND email = #{email}
-	</select>
+	</select> -->
 
 	<select id="findUserForReset" resultType="com.daview.dto.User">
 		SELECT *

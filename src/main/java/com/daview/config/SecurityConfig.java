@@ -18,6 +18,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 import com.daview.security.JwtAuthenticationFilter;
 import com.daview.util.JwtUtil;
 
@@ -33,25 +35,25 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors(cors -> cors.disable())
+        http.cors(withDefaults())
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
 
-                // 🔐 마이페이지는 인증된 사용자만 접근 가능
-                .requestMatchers("/api/mypage/**")
-                    .authenticated()
-
-                // ✅ 나머지 공개 경로 허용
+                // 나머지 공개 경로 허용
                 .requestMatchers(
                 	"/api/account/**",
-                    "/api/**",
                     "/api/auth/**",
                     "/uploads/**",
-                    "/ws-chat",
-                    "/ws-chat/**",
+                    "/ws-chat", "/ws-chat/**",
                     "/api/wishlist/check"
                 ).permitAll()
+                
+             // 마이페이지는 인증된 사용자만 접근 가능
+                .requestMatchers("/api/mypage/**").authenticated()
+                
+                .requestMatchers("/api/**").permitAll()
+
 
                 .anyRequest().authenticated()
             );
@@ -88,4 +90,6 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
+   
+
 } 

@@ -42,7 +42,7 @@ logging:
     jdbc.connection: off
     
 mybatis:
-  mapper-locations: classpath:mapper/*.xml  # MyBatis 매퍼 XML 파일 위치
+  mapper-locations: classpath*:mapper/**/*.xml  # MyBatis 매퍼 XML 파일 위치
   type-aliases-package: com.daview.dto
   configuration:
     map-underscore-to-camel-case: true  # DB 필드명 snake_case → Java camelCase 자동 변환

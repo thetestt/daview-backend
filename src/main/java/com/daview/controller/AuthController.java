@@ -55,33 +55,7 @@ public class AuthController {
 		}
 
 	}
-	
-	@PostMapping("/find-username/email")
-	public ResponseEntity<?> findUsernameByEmail(@RequestBody Map<String, String> payload) {
-	    String name = payload.get("name");
-	    String email = payload.get("email");
-	    String username = authService.findUsernameByEmail(name, email);
 
-	    if (username != null) {
-	        return ResponseEntity.ok().body(username);
-	    } else {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("일치하는 회원이 없습니다.");
-	    }
-	}
-	
-	@PostMapping("/find-password")
-	public ResponseEntity<?> findPassword(@RequestBody Map<String, String> payload) {
-	    String name = payload.get("name");
-	    String username = payload.get("username");
-	    String phone = payload.get("phone");
-
-	    boolean success = authService.resetPasswordAndSendEmail(name, username, phone);
-	    if (success) {
-	        return ResponseEntity.ok("임시 비밀번호가 이메일로 발송되었습니다.");
-	    } else {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("일치하는 회원이 없습니다.");
-	    }
-	}
 
 
 

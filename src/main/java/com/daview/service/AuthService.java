@@ -74,25 +74,6 @@ public class AuthService {
 	public String findUsernameByPhone(String name, String phone) {
 	    return userMapper.findUsernameByPhone(name, phone);
 	}
-	
-	public String findUsernameByEmail(String name, String email) {
-	    return userMapper.findUsernameByEmail(name, email);
-	}
-	
-	@Autowired
-	private MailService mailService;
-
-	public boolean resetPasswordAndSendEmail(String name, String username, String phone) {
-	    User user = userMapper.findUserForReset(name, username, phone);
-	    if (user == null) return false;
-
-	    String tempPwd = generateTempPassword();
-	    String hashedPwd = passwordEncoder.encode(tempPwd);
-
-	    userMapper.updatePassword(user.getUsername(), hashedPwd);
-	    mailService.sendTempPassword(user.getEmail(), tempPwd);
-	    return true;
-	}
 
 	private String generateTempPassword() {
 	    int length = 10;
