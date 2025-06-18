@@ -1,7 +1,7 @@
 // ✅ 서비스 인터페이스
 // 📁 src/main/java/com/daview/service/admin_service/AdminFacilityService.java
 
-package com.daview.service.admin_service;
+package com.daview.service.admin;
 
 import com.daview.dto.FacilityDTO;
 import java.util.List;
