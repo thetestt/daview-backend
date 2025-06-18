@@ -1,4 +1,8 @@
-<mapper namespace="com.daview.mapper.admin_mapper.ProductMapper">
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.daview.mapper.admin.ProductMapper">
 
     <!-- 상품 타입에 따른 상품 조회 -->
     <select id="getProductsByType" resultType="com.daview.dto.ProductDTO">
