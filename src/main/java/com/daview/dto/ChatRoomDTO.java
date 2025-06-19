@@ -7,8 +7,15 @@ public class ChatRoomDTO {
     private String lastMessage;
     private String lastTime;
     private int unreadCount;
+    private Long opponentId;
     
     
+	public Long getOpponentId() {
+		return opponentId;
+	}
+	public void setOpponentId(Long opponentId) {
+		this.opponentId = opponentId;
+	}
 	public String getChatroomId() {
 		return chatroomId;
 	}
