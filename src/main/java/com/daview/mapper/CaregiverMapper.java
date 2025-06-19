@@ -2,9 +2,11 @@ package com.daview.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
+import com.daview.dto.CaregiverCareerDTO;
 import com.daview.dto.CaregiverDTO;
 import com.daview.dto.CaregiverFilterDTO;
-import com.daview.dto.CaregiverCareerDTO;
 
 public interface CaregiverMapper {
     List<CaregiverDTO> getAllCaregivers();
@@ -13,5 +15,6 @@ public interface CaregiverMapper {
     CaregiverDTO getCaregiverById(String caregiverId);
     List<CaregiverDTO> searchCaregiversByKeyword(String keyword);
     List<CaregiverDTO> searchCaregiversWithFilters(CaregiverFilterDTO filters);
+    String findDefaultMessageByCaregiverId(@Param("caregiverId") String caregiverId);
 
 }

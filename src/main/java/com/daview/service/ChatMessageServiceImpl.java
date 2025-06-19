@@ -2,7 +2,6 @@ package com.daview.service;
 
 import com.daview.dto.ChatMessageDTO;
 import com.daview.mapper.ChatMessageMapper;
-import com.daview.service.ChatMessageService;
 import lombok.RequiredArgsConstructor;
 
 import java.time.Instant;

@@ -365,6 +365,12 @@
   ORDER BY f.facility_id DESC
 </select>
 
+<select id="findDefaultMessageByFacilityId" parameterType="java.lang.String" resultType="java.lang.String">
+    SELECT default_message FROM facility WHERE facility_id = #{facilityId}
+</select>
+
+
+
 </mapper>
 
 

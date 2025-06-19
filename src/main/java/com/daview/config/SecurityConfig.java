@@ -48,6 +48,7 @@ public class SecurityConfig {
                     "/ws-chat",
                     "/ws-chat/**",
                     "/api/wishlist/check",
+                    "/api/chat/**",
                     "/api/**"
                 ).permitAll()
                 .anyRequest().authenticated()
