@@ -82,5 +82,5 @@ coverage/
 # ---------------------------------
 .gitignore
 
-".classpath" 
-".factorypath" 
+.classpath
+.factorypath
