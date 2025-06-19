@@ -22,9 +22,21 @@ public class FacilityDTO {
     
     private String facilityType;
     
+    private String defaultMessage;
     
     
-    public Long getMemberId() {
+    
+    
+    
+    public String getDefaultMessage() {
+		return defaultMessage;
+	}
+	public void setDefaultMessage(String defaultMessage) {
+		this.defaultMessage = defaultMessage;
+	}
+	
+	
+	public Long getMemberId() {
     	return memberId;
     }
     public void setMemberId(Long memberId) {
