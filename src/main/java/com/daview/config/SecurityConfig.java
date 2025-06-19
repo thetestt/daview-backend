@@ -39,8 +39,6 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
 
-                .requestMatchers("/api/mypage/**").authenticated()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers(
                     "/api/account/**",
                     "/api/auth/**",
@@ -48,8 +46,15 @@ public class SecurityConfig {
                     "/ws-chat",
                     "/ws-chat/**",
                     "/api/wishlist/check",
+                    "/api/chat/**",
                     "/api/**"
                 ).permitAll()
+                
+                
+                .requestMatchers("/api/mypage/**").authenticated()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
+                
+                
                 .anyRequest().authenticated()
             );
 

@@ -5,7 +5,15 @@ public class ChatMessageDTO {
     private Long senderId;
     private String content;
     private String sentAt;
+    private Long receiverId; 
     
+    
+	public Long getReceiverId() {
+		return receiverId;
+	}
+	public void setReceiverId(Long receiverId) {
+		this.receiverId = receiverId;
+	}
 	public String getChatroomId() {
 		return chatroomId;
 	}

@@ -17,4 +17,9 @@ public class PaymentServiceImpl implements PaymentService {
 	public int insertPayment(PaymentDTO payment) {
 		return paymentMapper.insertPayment(payment);
 	}
+	
+	@Override
+	public PaymentDTO selectPaymentById(String pymId) {
+		return paymentMapper.selectPaymentById(pymId);
+	}
 }

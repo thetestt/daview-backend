@@ -28,10 +28,12 @@ public class ChatRoomController {
     
     @PostMapping("/rooms/check-or-create")
     public Map<String, String> checkOrCreateRoom(@RequestBody Map<String, String> req) {
-        System.out.println("💬 POST BODY: " + req); // 요청 확인 로그
+        System.out.println("💬 POST BODY: " + req);
 
         String memberIdStr = req.get("memberId");
         String receiverIdStr = req.get("receiverId");
+        String facilityId = req.get("facilityId");
+        System.out.println("✅ Controller에서 facilityId: " + facilityId + " / type: " + facilityId.getClass().getName());
 
         if (memberIdStr == null || receiverIdStr == null) {
             throw new IllegalArgumentException("memberId 또는 receiverId가 null입니다.");
@@ -46,12 +48,16 @@ public class ChatRoomController {
             throw new IllegalArgumentException("memberId 또는 receiverId가 숫자 형식이 아닙니다.");
         }
 
-        String existingRoomId = chatRoomService.findExistingRoom(senderId, receiverId);
+        
+        String existingRoomId = chatRoomService.findExistingRoom(senderId, receiverId, facilityId);
+
         if (existingRoomId != null) {
             return Map.of("chatroomId", existingRoomId);
         }
 
-        String newRoomId = chatRoomService.createRoom(senderId, receiverId);
+        System.out.println("✅ ChatRoomController에서 createRoom 호출 예정");
+
+        String newRoomId = chatRoomService.createRoom(senderId, receiverId, facilityId);
         return Map.of("chatroomId", newRoomId);
     }
     
