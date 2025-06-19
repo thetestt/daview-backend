@@ -8,9 +8,5 @@ import java.util.List;
 @Mapper
 public interface ProductMapper {
 
-
-    @Select("SELECT * FROM admin_product WHERE prod_type = #{type}")
-
-
     List<ProductDTO> getProductsByType(String type);
 }
