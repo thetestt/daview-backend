@@ -48,7 +48,7 @@ public class ChatRoomController {
             throw new IllegalArgumentException("memberId 또는 receiverId가 숫자 형식이 아닙니다.");
         }
 
-        // ❗ 여기를 수정
+        
         String existingRoomId = chatRoomService.findExistingRoom(senderId, receiverId, facilityId);
 
         if (existingRoomId != null) {
