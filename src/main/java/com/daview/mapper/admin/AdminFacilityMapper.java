@@ -11,8 +11,12 @@ import java.util.List;
 
 @Mapper
 public interface AdminFacilityMapper {
+	
     List<FacilityDTO> selectAll();
+    
     void insert(FacilityDTO dto);
+    
     void update(FacilityDTO dto);
+    
     void delete(@Param("id") Long id);
 }
