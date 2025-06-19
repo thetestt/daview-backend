@@ -7,4 +7,6 @@ import com.daview.dto.PaymentDTO;
 @Mapper
 public interface PaymentMapper {
 	int insertPayment(PaymentDTO payment);
+	
+	PaymentDTO selectPaymentById(String pymId);
 }
