@@ -15,6 +15,6 @@ public interface CaregiverMapper {
     CaregiverDTO getCaregiverById(String caregiverId);
     List<CaregiverDTO> searchCaregiversByKeyword(String keyword);
     List<CaregiverDTO> searchCaregiversWithFilters(CaregiverFilterDTO filters);
-    String findDefaultMessageByCaregiverId(@Param("caregiverId") String caregiverId);
+    String findDefaultMessageByCaregiverId(@Param("facilityId") String caregiverId);
 
 }
