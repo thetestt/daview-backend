@@ -21,18 +21,18 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final ChatRoomMapper chatRoomMapper;
         private final ChatMessageMapper chatMessageMapper;
         private final FacilityMapper facilityMapper;
-        //private final CaregiverMapper caregiverMapper;
         private final KafkaChatProducer kafkaChatProducer;
+        private final CaregiverMapper caregiverMapper;
 
         public ChatRoomServiceImpl(ChatRoomMapper chatRoomMapper,
                                    ChatMessageMapper chatMessageMapper,
                                    FacilityMapper facilityMapper,
-                                   //CaregiverMapper caregiverMapper,
+                                   CaregiverMapper caregiverMapper,
                                    KafkaChatProducer kafkaChatProducer) {
             this.chatRoomMapper = chatRoomMapper;
             this.chatMessageMapper = chatMessageMapper;
             this.facilityMapper = facilityMapper;
-            //this.caregiverMapper = caregiverMapper;
+            this.caregiverMapper = caregiverMapper;
             this.kafkaChatProducer = kafkaChatProducer;
     }
     
@@ -53,7 +53,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         // ✅ 1. facilityId가 있는 경우만 안내 메시지 조회
         if (facilityId != null && !facilityId.isBlank()) {
-            String defaultMessage = facilityMapper.findDefaultMessageByFacilityId(facilityId);
+        	String defaultMessage = facilityMapper.findDefaultMessageByFacilityId(facilityId);
+        	if (defaultMessage == null) {
+        	    defaultMessage = caregiverMapper.findDefaultMessageByCaregiverId(facilityId);
+        	}
+            
             System.out.println("🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡 facilityId: " + facilityId);
             System.out.println("🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡 defaultMessage: " + defaultMessage);;
 
@@ -69,7 +73,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 welcome.setSentAt(now);
 
                 chatMessageMapper.insertChatMessage(welcome);         // DB 저장
-                kafkaChatProducer.sendMessage(welcome);               // ✅ 인스턴스 호출로 수정
+                //kafkaChatProducer.sendMessage(welcome);               // ✅ 인스턴스 호출로 수정
             }
         }
 
