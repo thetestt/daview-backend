@@ -8,5 +8,5 @@ public interface ChatRoomService {
     String findExistingRoom(Long senderId, Long receiverId, String facilityId);
     String createRoom(Long senderId, Long receiverId, String facilityId);
     List<ChatRoomDTO> getChatRoomListForUser(Long memberId);
-    
+    boolean isUserInChatRoom(String chatroomId, Long memberId);
 }

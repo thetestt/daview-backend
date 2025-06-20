@@ -85,6 +85,14 @@
         WHERE sender_id = #{memberId}
     </select>
     
+    <!-- 채팅방 접근권한 맴버 아이디 -->
+<select id="isUserInChatRoom" resultType="int">
+  SELECT COUNT(*)
+  FROM chatroom
+  WHERE chatroom_id = #{chatroomId}
+    AND (sender_id = #{memberId,jdbcType=BIGINT} OR receiver_id = #{memberId,jdbcType=BIGINT})
+</select>
+    
 
 
    

@@ -19,35 +19,40 @@ import com.daview.mapper.FacilityMapper;
 public class ChatRoomServiceImpl implements ChatRoomService {
 
     private final ChatRoomMapper chatRoomMapper;
-        private final ChatMessageMapper chatMessageMapper;
-        private final FacilityMapper facilityMapper;
-        private final KafkaChatProducer kafkaChatProducer;
-        private final CaregiverMapper caregiverMapper;
+    private final ChatMessageMapper chatMessageMapper;
+    private final FacilityMapper facilityMapper;
+    private final KafkaChatProducer kafkaChatProducer;
+    private final CaregiverMapper caregiverMapper;
 
-        public ChatRoomServiceImpl(ChatRoomMapper chatRoomMapper,
-                                   ChatMessageMapper chatMessageMapper,
-                                   FacilityMapper facilityMapper,
-                                   CaregiverMapper caregiverMapper,
-                                   KafkaChatProducer kafkaChatProducer) {
-            this.chatRoomMapper = chatRoomMapper;
-            this.chatMessageMapper = chatMessageMapper;
-            this.facilityMapper = facilityMapper;
-            this.caregiverMapper = caregiverMapper;
-            this.kafkaChatProducer = kafkaChatProducer;
+    public ChatRoomServiceImpl(ChatRoomMapper chatRoomMapper,
+                               ChatMessageMapper chatMessageMapper,
+                               FacilityMapper facilityMapper,
+                               CaregiverMapper caregiverMapper,
+                               KafkaChatProducer kafkaChatProducer) {
+        this.chatRoomMapper = chatRoomMapper;
+        this.chatMessageMapper = chatMessageMapper;
+        this.facilityMapper = facilityMapper;
+        this.caregiverMapper = caregiverMapper;
+        this.kafkaChatProducer = kafkaChatProducer;
     }
-    
-        //채팅방 리스트 for user
-        @Override
-        public List<ChatRoomDTO> getChatRoomListForUser(Long memberId) {
-            return chatRoomMapper.getChatRoomListForUser(memberId);
-        }   
-        
-        
+
+    // ✅ 유저가 속한 채팅방 리스트 가져오기
+    @Override
+    public List<ChatRoomDTO> getChatRoomListForUser(Long memberId) {
+        return chatRoomMapper.getChatRoomListForUser(memberId);
+    }
+
+    // ✅ 채팅방 참여 여부 확인
+    @Override
+    public boolean isUserInChatRoom(String chatroomId, Long memberId) {
+        return chatRoomMapper.isUserInChatRoom(chatroomId, memberId) > 0;
+    }
+
     @Override
     public List<ChatRoomDTO> getChatRooms(Long memberId) {
         return chatRoomMapper.getChatRoomsByMemberId(memberId);
     }
-    
+
     @Override
     public String findExistingRoom(Long senderId, Long receiverId, String facilityId) {
         return chatRoomMapper.findChatRoomId(senderId, receiverId, facilityId);
@@ -58,35 +63,26 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         String newRoomId = UUID.randomUUID().toString();
         chatRoomMapper.insertChatRoom(newRoomId, senderId, receiverId, facilityId);
 
-        // ✅ 1. facilityId가 있는 경우만 안내 메시지 조회
+        // ✅ 시설 or 요양사 기본 메시지 전송
         if (facilityId != null && !facilityId.isBlank()) {
-        	String defaultMessage = facilityMapper.findDefaultMessageByFacilityId(facilityId);
-        	if (defaultMessage == null) {
-        	    defaultMessage = caregiverMapper.findDefaultMessageByCaregiverId(facilityId);
-        	}
-            
-            System.out.println("🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡 facilityId: " + facilityId);
-            System.out.println("🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡🟡 defaultMessage: " + defaultMessage);;
+            String defaultMessage = facilityMapper.findDefaultMessageByFacilityId(facilityId);
+            if (defaultMessage == null) {
+                defaultMessage = caregiverMapper.findDefaultMessageByCaregiverId(facilityId);
+            }
 
-            // ✅ 2. 메시지가 존재할 경우에만 저장 및 전송
             if (defaultMessage != null && !defaultMessage.isBlank()) {
                 ChatMessageDTO welcome = new ChatMessageDTO();
                 welcome.setChatroomId(newRoomId);
                 welcome.setSenderId(receiverId);  // 관리자/시설
                 welcome.setReceiverId(senderId);  // 유저
                 welcome.setContent(defaultMessage);
+                welcome.setSentAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
-                String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                welcome.setSentAt(now);
-
-                chatMessageMapper.insertChatMessage(welcome);         // DB 저장
-                //kafkaChatProducer.sendMessage(welcome);               // ✅ 인스턴스 호출로 수정
+                chatMessageMapper.insertChatMessage(welcome);
+                // kafkaChatProducer.sendMessage(welcome); // 사용 시 주석 해제
             }
         }
 
         return newRoomId;
     }
-
-
-    
 }

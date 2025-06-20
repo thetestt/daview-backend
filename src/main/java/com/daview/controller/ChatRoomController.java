@@ -1,12 +1,20 @@
 package com.daview.controller;
 
-import com.daview.dto.ChatRoomDTO;
-
-import com.daview.service.ChatRoomService;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.daview.dto.ChatRoomDTO;
+import com.daview.service.ChatRoomService;
 
 @RestController
 @RequestMapping("/api/chat")
@@ -24,6 +32,20 @@ public class ChatRoomController {
         return chatRoomService.getChatRoomListForUser(memberId);
     }
     
+    //쳇방 들어가서 아이디 검증하기
+    @GetMapping("/rooms/{chatroomId}/validate")
+    public ResponseEntity<?> validateUserInChatRoom(
+            @PathVariable String chatroomId,
+            @RequestParam Long memberId) {
+
+        boolean isMember = chatRoomService.isUserInChatRoom(chatroomId, memberId);
+
+        if (isMember) {
+            return ResponseEntity.ok().body(Map.of("success", true, "message", "접근 허용"));
+        } else {
+            return ResponseEntity.status(403).body(Map.of("success", false, "message", "채팅방 접근 권한이 없습니다."));
+        }
+    }
 
     
     @PostMapping("/rooms/check-or-create")
