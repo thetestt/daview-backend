@@ -36,6 +36,8 @@ public interface FacilityMapper {
     List<FacilityDTO> searchNursinghomeWithFilters(FacilitySearchFilterRequest request);
 
 	List<FacilityDTO> searchFacilitiesByKeyword(String keyword);
-    
-
+	
+    String findDefaultMessageByFacilityId(@Param("facilityId") String facilityId);
+    //String findDefaultMessageByMemberId(@Param("memberId") Long memberId);
+	
 }

@@ -1,0 +1,155 @@
+[1mdiff --git a/.classpath b/.classpath[m
+[1mindex a803afb..6fe96f9 100644[m
+[1m--- a/.classpath[m
+[1m+++ b/.classpath[m
+[36m@@ -36,18 +36,15 @@[m
+ 			<attribute name="maven.pomderived" value="true"/>[m
+ 		</attributes>[m
+ 	</classpathentry>[m
+[31m-	<classpathentry kind="src" output="target/test-classes" path="target/generated-test-sources/test-annotations">[m
+[32m+[m	[32m<classpathentry kind="src" path="target/generated-sources/annotations">[m
+ 		<attributes>[m
+ 			<attribute name="optional" value="true"/>[m
+[31m-			<attribute name="maven.pomderived" value="true"/>[m
+[31m-			<attribute name="ignore_optional_problems" value="true"/>[m
+[31m-			<attribute name="m2e-apt" value="true"/>[m
+[31m-			<attribute name="test" value="true"/>[m
+ 		</attributes>[m
+ 	</classpathentry>[m
+[31m-	<classpathentry kind="src" path="target/generated-sources/annotations">[m
+[32m+[m	[32m<classpathentry kind="src" output="target/test-classes" path="target/generated-test-sources/test-annotations">[m
+ 		<attributes>[m
+ 			<attribute name="optional" value="true"/>[m
+[32m+[m			[32m<attribute name="test" value="true"/>[m
+ 		</attributes>[m
+ 	</classpathentry>[m
+ 	<classpathentry kind="output" path="target/classes"/>[m
+[1mdiff --git a/src/main/java/com/daview/controller/admin_controller/AdminSilvertownController.java b/src/main/java/com/daview/controller/admin_controller/AdminSilvertownController.java[m
+[1mdeleted file mode 100644[m
+[1mindex e69de29..0000000[m
+[1mdiff --git a/src/main/java/com/daview/mapper/admin_mapper/AdminCaregiverMapper.java b/src/main/java/com/daview/mapper/admin_mapper/AdminCaregiverMapper.java[m
+[1mindex 6ffbcf4..281403c 100644[m
+[1m--- a/src/main/java/com/daview/mapper/admin_mapper/AdminCaregiverMapper.java[m
+[1m+++ b/src/main/java/com/daview/mapper/admin_mapper/AdminCaregiverMapper.java[m
+[36m@@ -8,18 +8,14 @@[m [mimport java.util.List;[m
+ @Mapper[m
+ public interface AdminCaregiverMapper {[m
+ [m
+[31m-    @Insert("INSERT INTO caregiver (name, license, experience, price_per_hour, available_region) VALUES (#{name}, #{license}, #{experience}, #{pricePerHour}, #{availableRegion})")[m
+     void insertCaregiver(CaregiverDTO caregiverDTO);[m
+ [m
+[31m-    @Select("SELECT * FROM caregiver")[m
+     List<CaregiverDTO> getAllCaregivers();[m
+ [m
+[31m-    @Update("UPDATE caregiver SET name = #{name}, license = #{license}, experience = #{experience}, price_per_hour = #{pricePerHour}, available_region = #{availableRegion} WHERE id = #{id}")[m
+     void updateCaregiver(CaregiverDTO caregiverDTO);[m
+ [m
+[31m-    @Delete("DELETE FROM caregiver WHERE id = #{id}")[m
+     void deleteCaregiver(Long id);[m
+ [m
+[31m-    @Select("SELECT * FROM caregiver WHERE id = #{id}")[m
+     CaregiverDTO getCaregiverById(Long id);[m
+ }[m
+[41m+[m
+[1mdiff --git a/src/main/java/com/daview/mapper/admin_mapper/AdminSilvertownMapper.java b/src/main/java/com/daview/mapper/admin_mapper/AdminSilvertownMapper.java[m
+[1mdeleted file mode 100644[m
+[1mindex e69de29..0000000[m
+[1mdiff --git a/src/main/java/com/daview/mapper/admin_mapper/ProductMapper.java b/src/main/java/com/daview/mapper/admin_mapper/ProductMapper.java[m
+[1mindex ac38f42..d15514b 100644[m
+[1m--- a/src/main/java/com/daview/mapper/admin_mapper/ProductMapper.java[m
+[1m+++ b/src/main/java/com/daview/mapper/admin_mapper/ProductMapper.java[m
+[36m@@ -8,6 +8,5 @@[m [mimport java.util.List;[m
+ @Mapper[m
+ public interface ProductMapper {[m
+ [m
+[31m-    @Select("SELECT * FROM admin_product WHERE prod_type = #{type}")[m
+     List<ProductDTO> getProductsByType(String type);[m
+ }[m
+[1mdiff --git a/src/main/java/com/daview/service/admin_service/AdminSilvertownService.java b/src/main/java/com/daview/service/admin_service/AdminSilvertownService.java[m
+[1mdeleted file mode 100644[m
+[1mindex e69de29..0000000[m
+[1mdiff --git a/src/main/java/com/daview/service/admin_service/AdminSilvertownServiceImpl.java b/src/main/java/com/daview/service/admin_service/AdminSilvertownServiceImpl.java[m
+[1mdeleted file mode 100644[m
+[1mindex e69de29..0000000[m
+[1mdiff --git a/src/main/resources/mapper/admin/AdminCaregiverMapper.xml b/src/main/resources/mapper/admin/AdminCaregiverMapper.xml[m
+[1mindex e574577..868fb2c 100644[m
+[1m--- a/src/main/resources/mapper/admin/AdminCaregiverMapper.xml[m
+[1m+++ b/src/main/resources/mapper/admin/AdminCaregiverMapper.xml[m
+[36m@@ -1,4 +1,9 @@[m
+[31m-<mapper namespace="com.daview.mapper.admin_mapper.AdminCaregiverMapper">[m
+[32m+[m[32m<?xml version="1.0" encoding="UTF-8" ?>[m
+[32m+[m[32m<!DOCTYPE mapper[m
+[32m+[m[32m  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"[m
+[32m+[m[32m  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">[m
+[32m+[m[41m  [m
+[32m+[m[32m<mapper namespace="com.daview.mapper.admin.AdminCaregiverMapper">[m
+ [m
+     <!-- 요양사 등록 -->[m
+     <insert id="insertCaregiver" parameterType="com.daview.dto.CaregiverDTO">[m
+[1mdiff --git a/src/main/resources/mapper/admin/AdminFacilityMapper.xml b/src/main/resources/mapper/admin/AdminFacilityMapper.xml[m
+[1mindex 76f2759..4d6548e 100644[m
+[1m--- a/src/main/resources/mapper/admin/AdminFacilityMapper.xml[m
+[1m+++ b/src/main/resources/mapper/admin/AdminFacilityMapper.xml[m
+[36m@@ -2,7 +2,7 @@[m
+ <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"[m
+         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">[m
+ [m
+[31m-<mapper namespace="com.daview.mapper.admin_mapper.AdminFacilityMapper">[m
+[32m+[m[32m<mapper namespace="com.daview.mapper.admin.AdminFacilityMapper">[m
+ [m
+     <!-- 전체 조회 -->[m
+     <select id="selectAll" resultType="com.daview.dto.FacilityDTO">[m
+[1mdiff --git a/src/main/resources/mapper/admin/AdminSilvertownMapper.xml b/src/main/resources/mapper/admin/AdminSilvertownMapper.xml[m
+[1mdeleted file mode 100644[m
+[1mindex a5f5b22..0000000[m
+[1m--- a/src/main/resources/mapper/admin/AdminSilvertownMapper.xml[m
+[1m+++ /dev/null[m
+[36m@@ -1,34 +0,0 @@[m
+[31m-<mapper namespace="com.daview.mapper.admin_mapper.AdminSilvertownMapper">[m
+[31m-[m
+[31m-    <!-- 실버타운 등록 -->[m
+[31m-    <insert id="insertSilvertown" parameterType="com.daview.dto.SilvertownDTO">[m
+[31m-        INSERT INTO silvertown (name, location, price, description)[m
+[31m-        VALUES (#{name}, #{location}, #{price}, #{description})[m
+[31m-    </insert>[m
+[31m-[m
+[31m-    <!-- 실버타운 목록 조회 -->[m
+[31m-    <select id="getAllSilvertowns" resultType="com.daview.dto.SilvertownDTO">[m
+[31m-        SELECT * FROM silvertown[m
+[31m-    </select>[m
+[31m-[m
+[31m-    <!-- 실버타운 수정 -->[m
+[31m-    <update id="updateSilvertown" parameterType="com.daview.dto.SilvertownDTO">[m
+[31m-        UPDATE silvertown[m
+[31m-        SET name = #{name},[m
+[31m-            location = #{location},[m
+[31m-            price = #{price},[m
+[31m-            description = #{description}[m
+[31m-        WHERE id = #{id}[m
+[31m-    </update>[m
+[31m-[m
+[31m-    <!-- 실버타운 삭제 -->[m
+[31m-    <delete id="deleteSilvertown" parameterType="java.lang.Long">[m
+[31m-        DELETE FROM silvertown WHERE id = #{id}[m
+[31m-    </delete>[m
+[31m-[m
+[31m-    <!-- 실버타운 상세 조회 -->[m
+[31m-    <select id="getSilvertownById" parameterType="java.lang.Long" resultType="com.daview.dto.SilvertownDTO">[m
+[31m-        SELECT * FROM silvertown WHERE id = #{id}[m
+[31m-    </select>[m
+[31m-[m
+[31m-</mapper>[m
+[1mdiff --git a/src/main/resources/mapper/admin/ProductMapper.xml b/src/main/resources/mapper/admin/ProductMapper.xml[m
+[1mindex e5729c6..541a81c 100644[m
+[1m--- a/src/main/resources/mapper/admin/ProductMapper.xml[m
+[1m+++ b/src/main/resources/mapper/admin/ProductMapper.xml[m
+[36m@@ -1,4 +1,8 @@[m
+[31m-<mapper namespace="com.daview.mapper.admin_mapper.ProductMapper">[m
+[32m+[m[32m<?xml version="1.0" encoding="UTF-8" ?>[m
+[32m+[m[32m<!DOCTYPE mapper[m
+[32m+[m[32m  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"[m
+[32m+[m[32m  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">[m
+[32m+[m[32m<mapper namespace="com.daview.mapper.admin.ProductMapper">[m
+ [m
+     <!-- 상품 타입에 따른 상품 조회 -->[m
+     <select id="getProductsByType" resultType="com.daview.dto.ProductDTO">[m

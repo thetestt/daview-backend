@@ -1,6 +1,5 @@
 package com.daview.dto;
 
-import lombok.Data;
 
 
 public class WishlistDTO {

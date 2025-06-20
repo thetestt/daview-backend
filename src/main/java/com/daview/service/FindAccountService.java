@@ -40,7 +40,14 @@ public class FindAccountService {
     }
 	
 	public String findUsernameByPhone(String name, String phone) {
-	    return userMapper.findUsernameByPhone(name, phone);
+		
+		System.out.println("찾으려는 이름: " + name);
+	    System.out.println("찾으려는 전화번호: " + phone);
+
+	    String username = userMapper.findUsernameByPhone(name, phone);
+	    System.out.println("조회 결과 아이디: " + username);
+
+	    return username;
 	}
 
 

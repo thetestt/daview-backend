@@ -2,6 +2,8 @@ package com.daview.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,5 +29,16 @@ public class PaymentController {
 		}else {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("결제 정보 등록 실패");
 		}
+	}
+	
+	@GetMapping("/{pymId}")
+	public ResponseEntity<PaymentDTO> getPaymentById(@PathVariable String pymId){
+		PaymentDTO payment = paymentService.selectPaymentById(pymId);
+		if(payment != null) {
+			return ResponseEntity.ok(payment);
+		}else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		}
+		
 	}
 }

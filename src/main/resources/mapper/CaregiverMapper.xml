@@ -180,6 +180,11 @@
   </select>
  
   
-  
+<select id="findDefaultMessageByCaregiverId" resultType="string">
+    SELECT default_message
+    FROM caregiver
+    WHERE caregiver_id = #{facilityId}
+</select>
+
   
 </mapper>

@@ -15,4 +15,9 @@
 			#{pymPrice}, #{pymStatus}, #{pymMethod}, #{pymNum}
 		)
 	</insert>
+	<select id="selectPaymentById" resultType="com.daview.dto.PaymentDTO">
+		SELECT *
+		FROM payment
+		WHERE pym_id = #{pymId}
+	</select>	
 </mapper>
