@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.daview.dto.ChangePasswordRequest;
 import com.daview.dto.VerificationRequest;
 import com.daview.service.AuthService;
 import com.daview.service.FindAccountService;
@@ -56,5 +57,16 @@ public class FindAccountController {
 			return ResponseEntity.status(404).body("일치하는 회원 정보가 없습니다.");
 		}
 	}
+	
+	@PostMapping("/change-password")
+	public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request) {
+	    boolean result = findAccountService.updatePassword(request.getUsername(), request.getNewPassword());
+	    if (result) {
+	        return ResponseEntity.ok().body("비밀번호 변경 완료");
+	    } else {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호 변경 실패");
+	    }
+	}
+
 
 }

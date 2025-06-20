@@ -1,6 +1,7 @@
 package com.daview.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.daview.mapper.UserMapper;
@@ -46,6 +47,15 @@ public class FindAccountService {
 
 		return username;
 	}
-	//그냥 아무거나 수정
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+	public boolean updatePassword(String username, String rawPassword) {
+	    String encodedPassword = passwordEncoder.encode(rawPassword);
+	    int updated = userMapper.updatePassword(username, encodedPassword);
+	    return updated > 0;
+	}
+
 
 }

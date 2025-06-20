@@ -4,34 +4,35 @@
 <mapper namespace="com.daview.mapper.UserMapper">
 
 	<select id="findByUsername" resultType="com.daview.dto.User">
-		SELECT * FROM dv_users WHERE username = #{username}
+		SELECT * FROM dv_users
+		WHERE username = #{username}
 	</select>
 
 	<insert id="insertUser">
 		INSERT INTO dv_users (
-		username, password, name, email, phone, role, user_gender
+		username, password, name,
+		email, phone, role, user_gender
 		) VALUES (
-		#{username}, #{password}, #{name}, #{email}, #{phone}, #{role}, 'hidden'
+		#{username}, #{password},
+		#{name}, #{email}, #{phone}, #{role}, 'hidden'
 		)
 	</insert>
 
 	<select id="countByUsername" resultType="int">
-		SELECT COUNT(*) FROM dv_users WHERE username = #{username}
+		SELECT COUNT(*) FROM
+		dv_users WHERE username = #{username}
 	</select>
 
 	<select id="findUsernameByPhone" resultType="string">
 		SELECT username
-		FROM dv_users
+		FROM
+		dv_users
 		WHERE name = #{name}
 		AND phone = #{phone}
 	</select>
 
-	<!-- <select id="findUsernameByEmail" resultType="string">
-		SELECT username
-		FROM dv_users
-		WHERE name = #{name}
-		AND email = #{email}
-	</select> -->
+	<!-- <select id="findUsernameByEmail" resultType="string"> SELECT username 
+		FROM dv_users WHERE name = #{name} AND email = #{email} </select> -->
 
 	<select id="findUserForReset" resultType="com.daview.dto.User">
 		SELECT *
@@ -44,7 +45,15 @@
 	<update id="updatePassword">
 		UPDATE dv_users
 		SET password = #{password}
+		WHERE
+		username = #{username}
+	</update>
+
+	<update id="updatePassword">
+		UPDATE dv_users
+		SET password = #{password}
 		WHERE username = #{username}
 	</update>
+
 
 </mapper>
