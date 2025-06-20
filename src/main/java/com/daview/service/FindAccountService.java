@@ -13,7 +13,7 @@ public class FindAccountService {
 
 	@Autowired
 	private VerificationStorage verificationStorage;
-	
+
 	@Autowired
 	private UserMapper userMapper;
 
@@ -27,28 +27,24 @@ public class FindAccountService {
 		}
 	}
 
-	
 	// 인증번호 검증 로직
-	public String verifyCode(String phone, String inputCode) {
-        boolean success = verificationStorage.verify(phone, inputCode);
-        if (success) {
-            verificationStorage.removeCode(phone);
-            return "인증 성공";
-        } else {
-            return "인증 실패";
-        }
-    }
-	
-	public String findUsernameByPhone(String name, String phone) {
-		
-		System.out.println("찾으려는 이름: " + name);
-	    System.out.println("찾으려는 전화번호: " + phone);
-
-	    String username = userMapper.findUsernameByPhone(name, phone);
-	    System.out.println("조회 결과 아이디: " + username);
-
-	    return username;
+	public boolean verifyCode(String phone, String inputCode) {
+		boolean success = verificationStorage.verify(phone, inputCode);
+		if (success) {
+			verificationStorage.removeCode(phone);
+		}
+		return success;
 	}
 
+	public String findUsernameByPhone(String name, String phone) {
+
+		System.out.println("찾으려는 이름: " + name);
+		System.out.println("찾으려는 전화번호: " + phone);
+
+		String username = userMapper.findUsernameByPhone(name, phone);
+		System.out.println("조회 결과 아이디: " + username);
+
+		return username;
+	}
 
 }

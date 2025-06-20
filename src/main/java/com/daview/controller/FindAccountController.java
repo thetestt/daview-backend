@@ -3,6 +3,7 @@ package com.daview.controller;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,12 +13,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.daview.dto.VerificationRequest;
+import com.daview.service.AuthService;
 import com.daview.service.FindAccountService;
 
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/account")
 public class FindAccountController {
+	
+	@Autowired
+    private AuthService authService;
 
 	@Autowired
 	private FindAccountService findAccountService;
@@ -30,10 +35,17 @@ public class FindAccountController {
 	    return findAccountService.sendSmsCode(name, phone);
 	}
 	// 인증번호 인증하기
-	@PostMapping("/verify-code")
-	public String verifyCode(@RequestBody VerificationRequest request) {
-	    return findAccountService.verifyCode(request.getPhone(), request.getCode());
-	}
+	 @PostMapping("/verify-code")
+	    public ResponseEntity<?> verifyCode(@RequestBody VerificationRequest request) {
+	        boolean verified = findAccountService.verifyCode(request.getPhone(), request.getCode());
+
+	        if (verified) {
+	            String username = authService.findUsernameByPhone(request.getName(), request.getPhone());
+	            return ResponseEntity.ok(Map.of("username", username));
+	        } else {
+	            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증 실패");
+	        }
+	    }
 
 	@PostMapping("/find-id/phone")
 	public ResponseEntity<String> findUsernameByPhone(@RequestParam String name, @RequestParam String phone) {
