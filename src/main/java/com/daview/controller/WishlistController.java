@@ -18,6 +18,7 @@ import com.daview.service.WishlistService;
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class WishlistController {
 
+	//수정
     @Autowired
     private WishlistService wishlistService;
 
