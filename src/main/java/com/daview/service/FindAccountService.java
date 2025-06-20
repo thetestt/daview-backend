@@ -47,6 +47,7 @@ public class FindAccountService {
 
 		return username;
 	}
+
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
@@ -55,5 +56,6 @@ public class FindAccountService {
 	    int updated = userMapper.updatePassword(username, encodedPassword);
 	    return updated > 0;
 	}
+
 
 }
