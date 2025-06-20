@@ -48,4 +48,9 @@ public class ReservationServiceImpl implements ReservationService {
 		}
 		
 	}
+	
+	@Override
+	public int updateReservationStatus(String rsvId, int rsvType) {
+		return reservationMapper.updateReservationStatus(rsvId, rsvType);
+	}
 }

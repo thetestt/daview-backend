@@ -77,4 +77,16 @@ public class ReservationController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약 수량 수정 중 오류가 발생했습니다.");
 		}
 	}
+	
+	@PutMapping("/{rsvId}/status")
+	public ResponseEntity<String> updateReservationStatus(@PathVariable String rsvId){
+		int rsvType = 3; //결제완료
+		
+		try {
+			reservationService.updateReservationStatus(rsvId, rsvType);
+			return ResponseEntity.ok("예약 상태가 결제 완료로 변경되었습니다.");
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약 상태 변경이 실패했습니다.");
+		}
+	}
 }
