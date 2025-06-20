@@ -43,7 +43,7 @@ public class ChatRoomController {
         if (isMember) {
             return ResponseEntity.ok().body(Map.of("success", true, "message", "접근 허용"));
         } else {
-            return ResponseEntity.status(403).body(Map.of("success", false, "message", "채팅방 접근 권한이 없습니다."));
+            return ResponseEntity.status(220).body(Map.of("success", false, "message", "채팅방 접근 권한이 없습니다."));
         }
     }
 
