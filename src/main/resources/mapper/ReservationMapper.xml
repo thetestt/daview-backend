@@ -36,5 +36,9 @@
 		SET rsv_cnt = #{rsvCnt}
 		WHERE rsv_id = #{rsvId}
 	</update>
-	
+	<update id="updateReservationStatus" parameterType="map">
+		UPDATE reservation
+		SET rsv_type = #{rsvType}
+		WHERE rsv_id = #{rsvId}
+	</update>
 </mapper>
