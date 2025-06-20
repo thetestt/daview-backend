@@ -6,4 +6,5 @@ import lombok.Data;
 public class VerificationRequest {
 	private String phone;
     private String code;
+    private String name; 
 }

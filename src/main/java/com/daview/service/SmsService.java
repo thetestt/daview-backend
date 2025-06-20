@@ -47,7 +47,7 @@ public class SmsService {
                     + "\"contentType\":\"COMM\","
                     + "\"countryCode\":\"82\","
                     + "\"from\":\"" + sanitizedFrom + "\","
-                    + "\"content\":\"[인증번호] " + randomCode + "\","
+                    + "\"content\":\"[다뷰] 인증번호 [" + randomCode + "]를 입력해주세요.\","
                     + "\"messages\":[{\"to\":\"" + sanitizedTo + "\"}]"
                     + "}";
 
