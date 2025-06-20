@@ -94,4 +94,5 @@ public class SmsService {
         byte[] rawHmac = mac.doFinal(message.getBytes("UTF-8"));
         return Base64.getEncoder().encodeToString(rawHmac);
     }
+    //테스트
 }
