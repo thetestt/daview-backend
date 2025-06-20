@@ -36,8 +36,15 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             this.kafkaChatProducer = kafkaChatProducer;
     }
     
+        //채팅방 리스트 for user
+        @Override
+        public List<ChatRoomDTO> getChatRoomListForUser(Long memberId) {
+            return chatRoomMapper.getChatRoomListForUser(memberId);
+        }   
+        
+        
     @Override
-    public List<ChatRoomDTO> getChatRooms(int memberId) {
+    public List<ChatRoomDTO> getChatRooms(Long memberId) {
         return chatRoomMapper.getChatRoomsByMemberId(memberId);
     }
     

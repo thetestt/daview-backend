@@ -20,8 +20,8 @@ public class ChatRoomController {
     }
 
     @GetMapping("/rooms")
-    public List<ChatRoomDTO> getChatRooms(@RequestParam int memberId) {
-        return chatRoomService.getChatRooms(memberId);
+    public List<ChatRoomDTO> getChatRooms(@RequestParam Long memberId) {
+        return chatRoomService.getChatRoomListForUser(memberId);
     }
     
 

@@ -5,37 +5,59 @@
 
 <mapper namespace="com.daview.mapper.ChatRoomMapper">
 
-  <select id="getChatRoomListForUser" resultType="com.daview.dto.ChatRoomDTO">
-    SELECT 
-      c.chatroom_id,
-      CASE
-        WHEN c.sender_id = #{memberId} THEN u2.name
-        ELSE u1.name
-      END AS opponent_name,
-      m.content AS last_message,
-      m.sent_at AS last_time,
-      (
-        SELECT COUNT(*) 
-        FROM chatmessage
-        WHERE chatroom_id = c.chatroom_id
-          AND is_read = 0
-          AND sender_id != #{memberId}
-      ) AS unread_count
-    FROM chatroom c
-    JOIN dv_users u1 ON c.sender_id = u1.member_id
-    JOIN dv_users u2 ON c.receiver_id = u2.member_id
-    LEFT JOIN (
-      SELECT * FROM chatmessage
-      WHERE (chatroom_id, sent_at) IN (
-        SELECT chatroom_id, MAX(sent_at)
-        FROM chatmessage
-        GROUP BY chatroom_id
-      )
-    ) m ON c.chatroom_id = m.chatroom_id
-    WHERE c.sender_id = #{memberId} OR c.receiver_id = #{memberId}
-    ORDER BY m.sent_at DESC
-  </select>
-  
+<select id="getChatRoomListForUser" resultType="com.daview.dto.ChatRoomDTO">
+  SELECT
+    cr.chatroom_id AS chatroomId,
+    CASE
+      WHEN cr.sender_id = #{memberId} THEN cr.receiver_id
+      ELSE cr.sender_id
+    END AS opponentId,
+    (
+      SELECT du.name
+      FROM dv_users du
+      WHERE du.member_id = CASE
+        WHEN cr.sender_id = #{memberId} THEN cr.receiver_id
+        ELSE cr.sender_id
+      END
+    ) AS opponentName,
+    cm.content AS lastMessage,
+    cm.sent_at AS lastTime,
+    (
+      SELECT COUNT(*)
+      FROM chatmessage cm2
+      WHERE cm2.chatroom_id = cr.chatroom_id
+        AND cm2.is_read = 0
+        AND cm2.sender_id != #{memberId}
+    ) AS unreadCount
+  FROM chatroom cr
+  LEFT JOIN (
+    SELECT
+      a1.chatroom_id,
+      a1.content,
+      a1.sent_at
+    FROM chatmessage a1
+    INNER JOIN (
+      SELECT chatroom_id, MAX(sent_at) AS max_sent
+      FROM chatmessage
+      GROUP BY chatroom_id
+    ) a2 ON a1.chatroom_id = a2.chatroom_id
+         AND a1.sent_at = a2.max_sent
+  ) cm ON cr.chatroom_id = cm.chatroom_id
+  WHERE
+    cr.sender_id = #{memberId}
+    OR cr.receiver_id = #{memberId}
+    OR cr.sender_id IN (
+      SELECT facility_id FROM facility WHERE member_id = #{memberId}
+      UNION
+      SELECT caregiver_id FROM caregiver WHERE member_id = #{memberId}
+    )
+    OR cr.receiver_id IN (
+      SELECT facility_id FROM facility WHERE member_id = #{memberId}
+      UNION
+      SELECT caregiver_id FROM caregiver WHERE member_id = #{memberId}
+    )
+  ORDER BY cm.sent_at IS NULL, cm.sent_at DESC
+</select>
   
     <!-- 1. 채팅방 생성 -->
 <insert id="insertChatRoom">
