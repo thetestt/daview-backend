@@ -19,4 +19,6 @@ public interface ChatRoomMapper {
                         @Param("senderId") Long senderId,
                         @Param("receiverId") Long receiverId,
                         @Param("facilityId") String facilityId); 
+    
+    int isUserInChatRoom(@Param("chatroomId") String chatroomId, @Param("memberId") Long memberId);
 }
