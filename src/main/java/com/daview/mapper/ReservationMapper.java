@@ -19,4 +19,6 @@ public interface ReservationMapper {
 	int updateReservationCount(String rsvId, int rsvCnt);
 	
 	int updateReservationStatus(String rsvId, int rsvType);
+	
+	List<ReservationDTO> selectReservationByPaymentId(String pymId);
 }
