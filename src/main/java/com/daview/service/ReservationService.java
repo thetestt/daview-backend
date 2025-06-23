@@ -14,4 +14,8 @@ public interface ReservationService {
 	int deleteAllReservation();
 	
 	void updateReservationCount(List<ReservationDTO> updates);
+	
+	int updateReservationStatus(String rsvId, int rsvType);
+	
+	List<ReservationDTO> selectReservationByPaymentId(String pymId);
 }

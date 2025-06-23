@@ -67,14 +67,37 @@ public class ReservationController {
 		int count = reservationService.deleteAllReservation();
 		return ResponseEntity.ok().body(count + "개의 모든 예약이 삭제되었습니다.");
 	}
-	
+
 	@PutMapping("/update")
-	public ResponseEntity<String> updateReservationCount(@RequestBody List<ReservationDTO> updates){
+	public ResponseEntity<String> updateReservationCount(@RequestBody List<ReservationDTO> updates) {
 		try {
 			reservationService.updateReservationCount(updates);
 			return ResponseEntity.ok("예약 수량이 수정되었습니다.");
-		}catch(Exception e) {
+		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약 수량 수정 중 오류가 발생했습니다.");
+		}
+	}
+
+	@PutMapping("/{rsvId}/status")
+	public ResponseEntity<String> updateReservationStatus(@PathVariable String rsvId) {
+		int rsvType = 3; // 결제완료
+
+		try {
+			reservationService.updateReservationStatus(rsvId, rsvType);
+			return ResponseEntity.ok("예약 상태가 결제 완료로 변경되었습니다.");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약 상태 변경이 실패했습니다.");
+		}
+	}
+
+	@GetMapping("/payment/{pymId}")
+	public ResponseEntity<?> getReservationByPaymentId(@PathVariable String pymId) {
+		List<ReservationDTO> reservations = reservationService.selectReservationByPaymentId(pymId);
+
+		if (reservations != null && !reservations.isEmpty()) {
+			return ResponseEntity.ok(reservations);
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 결제에 대한 예약이 없습니다.");
 		}
 	}
 }

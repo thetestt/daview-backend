@@ -19,7 +19,7 @@
 		SELECT * 
 		FROM reservation 
 		WHERE member_id = #{memberId}
-		AND rsv_type != 2
+		AND rsv_type = 1
 	</select>
 	<update id="deleteReservation">
 		UPDATE reservation
@@ -36,5 +36,24 @@
 		SET rsv_cnt = #{rsvCnt}
 		WHERE rsv_id = #{rsvId}
 	</update>
-	
+	<update id="updateReservationStatus" parameterType="map">
+		UPDATE reservation
+		SET rsv_type = #{rsvType}
+		WHERE rsv_id = #{rsvId}
+	</update>
+	<select id="selectReservationByPaymentId" resultType="com.daview.dto.ReservationDTO">
+		SELECT
+			r.rsv_id,
+			prm.pym_id,
+			r.prod_id,
+			r.rsv_cnt,
+			r.prod_price,
+			r.prod_type
+		FROM 
+			reservation r
+		JOIN
+			payment_reservation_map prm on r.rsv_id = prm.rsv_id
+		WHERE
+			prm.pym_id = #{pymId}
+	</select>
 </mapper>

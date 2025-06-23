@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.daview.mapper.PaymentReservationMapper">
+  	<insert id="insertMap" parameterType="com.daview.dto.PaymentReservationMapDTO">
+  		INSERT INTO payment_reservation_map (pym_id, rsv_id)
+  		VALUES (#{pymId}, #{rsvId})
+  	</insert>
+  </mapper>

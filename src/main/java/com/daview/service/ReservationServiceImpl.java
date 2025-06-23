@@ -35,17 +35,26 @@ public class ReservationServiceImpl implements ReservationService {
 	public int deleteAllReservation() {
 		return reservationMapper.deleteAllReservation();
 	}
-	
+
 	@Override
 	@Transactional
-	public void  updateReservationCount(List<ReservationDTO> updates) {
-		for(ReservationDTO update : updates) {
+	public void updateReservationCount(List<ReservationDTO> updates) {
+		for (ReservationDTO update : updates) {
 			int rows = reservationMapper.updateReservationCount(update.getRsvId(), update.getRsvCnt());
-			
-			if(rows == 0) {
+
+			if (rows == 0) {
 				throw new RuntimeException("예약 ID " + update.getRsvId() + "에 해당하는 데이터가 없습니다.");
 			}
 		}
-		
+	}
+
+	@Override
+	public int updateReservationStatus(String rsvId, int rsvType) {
+		return reservationMapper.updateReservationStatus(rsvId, rsvType);
+	}
+
+	@Override
+	public List<ReservationDTO> selectReservationByPaymentId(String pymId) {
+		return reservationMapper.selectReservationByPaymentId(pymId);
 	}
 }
