@@ -49,4 +49,11 @@
 		username = #{username}
 	</update>
 
+	<select id="findUsernameByEmail" resultType="string">
+		SELECT username
+		FROM dv_users
+		WHERE name = #{name} AND email = #{email}
+	</select>
+
+
 </mapper>
