@@ -12,16 +12,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.daview.dto.ChangePasswordRequest;
 import com.daview.dto.LoginRequest;
 import com.daview.dto.SignupRequest;
 import com.daview.service.AuthService;
+import com.daview.dto.User;
+import com.daview.mapper.UserMapper;
 
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 
 public class AuthController {
+	
+	@Autowired
+	private UserMapper userMapper;
+
+	private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 	@Autowired
 	private AuthService authService;
@@ -55,6 +65,26 @@ public class AuthController {
 		}
 
 	}
+	
+	@PostMapping("/account/change-password")
+	public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request) {
+	    String username = request.getUsername();
+	    String newPassword = request.getNewPassword();
+
+	    User user = userMapper.findByUsername(username);
+	    
+	    if (passwordEncoder.matches(newPassword, user.getPassword())) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+	            .body("기존 비밀번호와 동일합니다. 다른 비밀번호를 입력하세요.");
+	    }
+
+	    // 비밀번호 업데이트
+	    String encoded = passwordEncoder.encode(newPassword);
+	    userMapper.updatePassword(username, encoded);
+
+	    return ResponseEntity.ok("비밀번호 변경 완료");
+	}
+
 
 
 
