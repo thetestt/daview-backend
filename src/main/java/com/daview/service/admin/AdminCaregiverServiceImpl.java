@@ -26,7 +26,7 @@ public class AdminCaregiverServiceImpl implements AdminCaregiverService {
 
     @Override
     public void updateCaregiver(Long id, CaregiverDTO caregiverDTO) {
-        caregiverDTO.setMemberId(id);
+        caregiverDTO.setCaregiverId(String.valueOf(id));
         caregiverMapper.updateCaregiver(caregiverDTO);
     }
 
