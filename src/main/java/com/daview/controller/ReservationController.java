@@ -24,7 +24,7 @@ public class ReservationController {
 	private final ReservationService reservationService;
 
 	@GetMapping("/member/{memberId}")
-	public ResponseEntity<?> selectReservationById(@PathVariable int memberId) {
+	public ResponseEntity<?> selectReservationById(@PathVariable Long memberId) {
 		List<ReservationDTO> reservation = reservationService.selectReservationById(memberId);
 
 		if (!reservation.isEmpty()) {

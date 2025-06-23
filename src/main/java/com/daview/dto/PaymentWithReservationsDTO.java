@@ -1,11 +1,14 @@
 package com.daview.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-public class PaymentDTO {
-	private String pymId; // 내부 결제 ID
-	private String impUid; // 플랫폼 결제건 ID
-	private String merchantUid; // 결제 요청 시 주문 ID
+public class PaymentWithReservationsDTO {
+	private String pymId;
+	private String impUid;
+	private String merchantUid;
+	private String prodid;
 	private Long memberId;
 	private String custNm;
 	private String custTel;
@@ -15,8 +18,9 @@ public class PaymentDTO {
 	private int pymPrice;
 	private int pymStatus;
 	private String pymMethod;
-	private String pymNum; // pg사 발행한 결제 거래번호
+	private String pymNum;
 	private Date pymDate;
+	private List<ReservationDTO> reservations = new ArrayList<>();
 
 	public String getPymId() {
 		return pymId;
@@ -40,6 +44,14 @@ public class PaymentDTO {
 
 	public void setMerchantUid(String merchantUid) {
 		this.merchantUid = merchantUid;
+	}
+
+	public String getProdid() {
+		return prodid;
+	}
+
+	public void setProdid(String prodid) {
+		this.prodid = prodid;
 	}
 
 	public Long getMemberId() {
@@ -128,6 +140,14 @@ public class PaymentDTO {
 
 	public void setPymDate(Date pymDate) {
 		this.pymDate = pymDate;
+	}
+
+	public List<ReservationDTO> getReservations() {
+		return reservations;
+	}
+
+	public void setReservations(List<ReservationDTO> reservations) {
+		this.reservations = reservations;
 	}
 
 }
