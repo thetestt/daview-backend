@@ -57,6 +57,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public String findExistingRoom(Long senderId, Long receiverId, String facilityId) {
         return chatRoomMapper.findChatRoomId(senderId, receiverId, facilityId);
     }
+    
+    @Override
+    public ChatRoomDTO getChatRoomInfo(String chatroomId, Long memberId) {
+        return chatRoomMapper.getChatRoomInfo(chatroomId, memberId);
+    }
 
     @Override
     public String createRoom(Long senderId, Long receiverId, String facilityId) {
