@@ -62,6 +62,12 @@ public class AdminProductController {
                 product.put("education", caregiver.getEducationLevel() != null ? caregiver.getEducationLevel() : "미설정");
                 product.put("createdAt", caregiver.getCaregiverCreatedAt() != null ? caregiver.getCaregiverCreatedAt().toString() : "미설정");
                 
+                // 자격증과 경력 정보 추가
+                product.put("certificatesString", caregiver.getCertificatesString() != null ? caregiver.getCertificatesString() : "정보 없음");
+                product.put("careerString", caregiver.getCareerString() != null ? caregiver.getCareerString() : "정보 없음");
+                product.put("startDateString", caregiver.getStartDateString() != null ? caregiver.getStartDateString() : "");
+                product.put("endDateString", caregiver.getEndDateString() != null ? caregiver.getEndDateString() : "");
+                
                 products.add(product);
             }
             
