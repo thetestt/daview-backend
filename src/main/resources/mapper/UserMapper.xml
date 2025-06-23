@@ -49,11 +49,4 @@
 		username = #{username}
 	</update>
 
-	<update id="updatePassword">
-		UPDATE dv_users
-		SET password = #{password}
-		WHERE username = #{username}
-	</update>
-
-
 </mapper>

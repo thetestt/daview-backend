@@ -22,7 +22,7 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 
 	@Override
-	public List<ReservationDTO> selectReservationById(int memberId) {
+	public List<ReservationDTO> selectReservationById(Long memberId) {
 		return reservationMapper.selectReservationById(memberId);
 	}
 
