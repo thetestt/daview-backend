@@ -30,21 +30,42 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
+        String requestPath = request.getRequestURI();
+        System.out.println("JWT Filter processing: " + requestPath);
+        
+        // 특정 경로는 JWT 검증 완전히 제외
+        if (requestPath.startsWith("/api/admin/products") || 
+            requestPath.startsWith("/api/auth") || 
+            requestPath.startsWith("/api/account") ||
+            requestPath.startsWith("/uploads") ||
+            requestPath.startsWith("/ws-chat")) {
+            System.out.println("JWT Filter skipped for: " + requestPath);
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String authHeader = request.getHeader("Authorization");
+        System.out.println("Authorization header: " + authHeader);
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String token = authHeader.substring(7);
-            String username = jwtUtil.extractUsername(token);
+            try {
+                String token = authHeader.substring(7);
+                String username = jwtUtil.extractUsername(token);
 
-            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                if (jwtUtil.validateToken(token, userDetails)) {
-                    UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                    if (jwtUtil.validateToken(token, userDetails)) {
+                        UsernamePasswordAuthenticationToken authToken =
+                                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                        System.out.println("JWT authentication successful for: " + username);
+                    }
                 }
+            } catch (Exception e) {
+                System.out.println("JWT parsing error for " + requestPath + ": " + e.getMessage());
+                // 에러가 발생해도 계속 진행
             }
         }
 

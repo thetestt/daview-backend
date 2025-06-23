@@ -3,6 +3,7 @@ package com.daview.controller;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,10 +44,22 @@ public class ChatRoomController {
         if (isMember) {
             return ResponseEntity.ok().body(Map.of("success", true, "message", "접근 허용"));
         } else {
-            return ResponseEntity.status(220).body(Map.of("success", false, "message", "채팅방 접근 권한이 없습니다."));
+            return ResponseEntity
+                .status(HttpStatus.FORBIDDEN) // 403
+                .body(Map.of("success", false, "message", "채팅방 접근 권한이 없습니다."));
         }
     }
 
+    
+    @GetMapping("/rooms/{chatroomId}/info")
+    public ChatRoomDTO getSingleChatRoomInfo(
+        @PathVariable String chatroomId,
+        @RequestParam Long memberId
+    ) {
+        return chatRoomService.getChatRoomInfo(chatroomId, memberId);
+    }
+    
+    
     
     @PostMapping("/rooms/check-or-create")
     public Map<String, String> checkOrCreateRoom(@RequestBody Map<String, String> req) {

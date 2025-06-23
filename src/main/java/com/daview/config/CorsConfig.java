@@ -30,8 +30,8 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                    .allowedOrigins("http://localhost:3000") // 프론트 주소
-                    .allowedMethods("*")
+                    .allowedOriginPatterns("*")
+                    .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                     .allowedHeaders("*")
                     .allowCredentials(true);
             }
