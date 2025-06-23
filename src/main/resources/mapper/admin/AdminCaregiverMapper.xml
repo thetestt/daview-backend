@@ -7,34 +7,85 @@
 
     <!-- 요양사 등록 -->
     <insert id="insertCaregiver" parameterType="com.daview.dto.CaregiverDTO">
-        INSERT INTO caregiver (name, license, experience, price_per_hour, available_region)
-        VALUES (#{name}, #{license}, #{experience}, #{pricePerHour}, #{availableRegion})
+        INSERT INTO caregiver (
+            member_id, 
+            hope_work_area_location, 
+            hope_work_area_city, 
+            hope_work_place, 
+            hope_work_type,
+            hope_employment_type,
+            education_level,
+            introduction,
+            hope_work_amount
+        )
+        VALUES (
+            #{memberId}, 
+            #{hopeWorkAreaLocation}, 
+            #{hopeWorkAreaCity}, 
+            #{hopeWorkPlace}, 
+            #{hopeWorkType},
+            #{hopeEmploymentType},
+            #{educationLevel},
+            #{introduction},
+            #{hopeWorkAmount}
+        )
     </insert>
 
     <!-- 요양사 목록 조회 -->
     <select id="getAllCaregivers" resultType="com.daview.dto.CaregiverDTO">
-        SELECT * FROM caregiver
+        SELECT 
+            caregiver_id as caregiverId,
+            member_id as memberId,
+            hope_work_area_location as hopeWorkAreaLocation,
+            hope_work_area_city as hopeWorkAreaCity,
+            hope_work_place as hopeWorkPlace,
+            hope_work_type as hopeWorkType,
+            hope_employment_type as hopeEmploymentType,
+            education_level as educationLevel,
+            introduction,
+            hope_work_amount as hopeWorkAmount,
+            caregiver_created_at as caregiverCreatedAt,
+            caregiver_update_at as caregiverUpdateAt
+        FROM caregiver
     </select>
 
     <!-- 요양사 수정 -->
     <update id="updateCaregiver" parameterType="com.daview.dto.CaregiverDTO">
         UPDATE caregiver
-        SET name = #{name},
-            license = #{license},
-            experience = #{experience},
-            price_per_hour = #{pricePerHour},
-            available_region = #{availableRegion}
-        WHERE id = #{id}
+        SET hope_work_area_location = #{hopeWorkAreaLocation},
+            hope_work_area_city = #{hopeWorkAreaCity},
+            hope_work_place = #{hopeWorkPlace},
+            hope_work_type = #{hopeWorkType},
+            hope_employment_type = #{hopeEmploymentType},
+            education_level = #{educationLevel},
+            introduction = #{introduction},
+            hope_work_amount = #{hopeWorkAmount},
+            caregiver_update_at = NOW()
+        WHERE caregiver_id = #{caregiverId}
     </update>
 
     <!-- 요양사 삭제 -->
     <delete id="deleteCaregiver" parameterType="java.lang.Long">
-        DELETE FROM caregiver WHERE id = #{id}
+        DELETE FROM caregiver WHERE caregiver_id = #{id}
     </delete>
 
     <!-- 요양사 상세 조회 -->
     <select id="getCaregiverById" parameterType="java.lang.Long" resultType="com.daview.dto.CaregiverDTO">
-        SELECT * FROM caregiver WHERE id = #{id}
+        SELECT 
+            caregiver_id as caregiverId,
+            member_id as memberId,
+            hope_work_area_location as hopeWorkAreaLocation,
+            hope_work_area_city as hopeWorkAreaCity,
+            hope_work_place as hopeWorkPlace,
+            hope_work_type as hopeWorkType,
+            hope_employment_type as hopeEmploymentType,
+            education_level as educationLevel,
+            introduction,
+            hope_work_amount as hopeWorkAmount,
+            caregiver_created_at as caregiverCreatedAt,
+            caregiver_update_at as caregiverUpdateAt
+        FROM caregiver 
+        WHERE caregiver_id = #{id}
     </select>
 
 </mapper>
