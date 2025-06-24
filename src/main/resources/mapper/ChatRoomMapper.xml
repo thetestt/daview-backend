@@ -147,10 +147,13 @@
 <select id="getChatRoomInfo" resultType="com.daview.dto.ChatRoomDTO">
   SELECT
     cr.chatroom_id AS chatroomId,
+    
     CASE
       WHEN cr.sender_id = #{memberId} THEN cr.receiver_id
       ELSE cr.sender_id
     END AS opponentId,
+    
+    -- 기본 이름 (dv_users.name)
     (
       SELECT du.name
       FROM dv_users du
@@ -159,15 +162,89 @@
         ELSE cr.sender_id
       END
     ) AS opponentName,
+    
+    -- 마지막 메시지 및 시간
     cm.content AS lastMessage,
     cm.sent_at AS lastTime,
+    
+    -- 읽지 않은 메시지 수
     (
       SELECT COUNT(*)
       FROM chatmessage cm2
       WHERE cm2.chatroom_id = cr.chatroom_id
         AND cm2.is_read = 0
         AND cm2.sender_id != #{memberId}
-    ) AS unreadCount
+    ) AS unreadCount,
+    
+    -- 시설 정보 (facility_id 추가)
+    cr.facility_id AS facilityId, 
+
+    -- 1. 시설 정보 가져오기
+    (
+      SELECT f.facility_type
+      FROM facility f
+      WHERE f.facility_id = cr.facility_id
+      LIMIT 1
+    ) AS facilityType,
+
+    (
+      SELECT f.facility_name
+      FROM facility f
+      WHERE f.facility_id = cr.facility_id
+      LIMIT 1
+    ) AS facilityName,
+
+    (
+      SELECT f.facility_address_location
+      FROM facility f
+      WHERE f.facility_id = cr.facility_id
+      LIMIT 1
+    ) AS facilityAddressLocation,
+
+    (
+      SELECT f.facility_address_city
+      FROM facility f
+      WHERE f.facility_id = cr.facility_id
+      LIMIT 1
+    ) AS facilityAddressCity,
+
+    (
+      SELECT f.facility_phone
+      FROM facility f
+      WHERE f.facility_id = cr.facility_id
+      LIMIT 1
+    ) AS facilityPhone,
+
+    -- 2. 요양사 정보 (caregiver_id로 조회)
+    (
+      SELECT c.hope_work_area_location
+      FROM caregiver c
+      WHERE c.caregiver_id = cr.facility_id
+    ) AS hopeWorkAreaLocation,
+
+    (
+      SELECT c.hope_work_area_city
+      FROM caregiver c
+      WHERE c.caregiver_id = cr.facility_id
+    ) AS hopeWorkAreaCity,
+    
+    (
+      SELECT du.name
+      FROM dv_users du
+      WHERE du.member_id = (
+        SELECT c.member_id
+        FROM caregiver c
+        WHERE c.caregiver_id = cr.facility_id
+      )
+    ) AS caregiverName,
+    
+    -- 3. 일반 유저 정보 (caregiver_id가 없으면 일반 유저)
+    (
+      SELECT du.name
+      FROM dv_users du
+      WHERE du.member_id = cr.receiver_id
+    ) AS userName
+
   FROM chatroom cr
   LEFT JOIN (
     SELECT
@@ -184,6 +261,8 @@
   ) cm ON cr.chatroom_id = cm.chatroom_id
   WHERE cr.chatroom_id = #{chatroomId}
 </select>
+
+
 
    
 </mapper>

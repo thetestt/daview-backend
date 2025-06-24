@@ -39,5 +39,7 @@ public interface FacilityMapper {
 	
     String findDefaultMessageByFacilityId(@Param("facilityId") String facilityId);
     //String findDefaultMessageByMemberId(@Param("memberId") Long memberId);
+    
+    FacilityDTO findFacilityInfoById(@Param("facilityId") String facilityId);
 	
 }

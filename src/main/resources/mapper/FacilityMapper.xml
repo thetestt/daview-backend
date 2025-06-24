@@ -370,6 +370,13 @@
 </select>
 
 
+<select id="findFacilityInfoById" resultType="com.daview.dto.FacilityDTO">
+  SELECT *
+  FROM facility
+  WHERE facility_id = #{facilityId}
+</select>
+
+
 
 </mapper>
 

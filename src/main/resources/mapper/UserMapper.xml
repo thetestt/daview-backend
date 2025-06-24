@@ -74,4 +74,19 @@
 	</select>
 
 
+<!-- 1. memberId로 유저 정보 조회 수안추가 채팅상단 정보-->
+<select id="findUserById" resultType="com.daview.dto.User">
+    SELECT member_id AS memberId,
+           username,
+           name,
+           phone,
+           email,
+           role,
+           user_gender AS gender  <!-- 'gender' 컬럼을 'user_gender'로 변경 -->
+    FROM dv_users
+    WHERE member_id = #{memberId}
+</select>
+
+
+
 </mapper>

@@ -21,5 +21,7 @@ public interface CaregiverMapper {
     int insertCaregiver(CaregiverDTO caregiverDTO);
     int insertCaregiverCareer(@Param("caregiverId") String caregiverId, @Param("career") CaregiverCareerDTO career);
     int insertCaregiverCertificate(@Param("caregiverId") String caregiverId, @Param("certificateName") String certificateName);
-
+    
+    CaregiverDTO findCaregiverInfoByMemberId(@Param("memberId") Long memberId);
+    CaregiverDTO findCaregiverByCaregiverId(@Param("facilityId") String caregiverId);
 }
