@@ -63,12 +63,9 @@ public class AdminCaregiverController {
     @PutMapping("/{id}")
     public ResponseEntity<String> updateCaregiver(@PathVariable("id") String id, @RequestBody CaregiverDTO caregiverDTO) {
         try {
-            Long caregiverId = Long.parseLong(id);
-            caregiverService.updateCaregiver(caregiverId, caregiverDTO);
+            // UUID 문자열을 그대로 사용
+            caregiverService.updateCaregiver(id, caregiverDTO);
             return ResponseEntity.ok("간병인 정보가 성공적으로 수정되었습니다.");
-        } catch (NumberFormatException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("잘못된 ID 형식입니다.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("간병인 정보 수정에 실패했습니다: " + e.getMessage());
