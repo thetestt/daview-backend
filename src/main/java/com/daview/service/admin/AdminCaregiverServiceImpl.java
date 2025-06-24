@@ -39,7 +39,7 @@ public class AdminCaregiverServiceImpl implements AdminCaregiverService {
     }
 
     @Override
-    public void deleteCaregiver(Long id) {
+    public void deleteCaregiver(String id) {
         caregiverMapper.deleteCaregiver(id);
     }
 
