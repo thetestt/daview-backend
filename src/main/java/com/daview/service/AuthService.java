@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +16,9 @@ import com.daview.util.JwtUtil;
 
 @Service
 public class AuthService {
+
+	@Autowired
+	private CouponService couponService;
 
 	@Autowired
 	private UserMapper userMapper;
@@ -38,6 +40,9 @@ public class AuthService {
 		user.setRole(request.getRole());
 
 		userMapper.insertUser(user);
+
+		couponService.issueWelcomeCoupon(user.getMemberId());
+
 		return true;
 	}
 
@@ -70,23 +75,20 @@ public class AuthService {
 	public boolean checkUsernameDuplicate(String username) {
 		return userMapper.countByUsername(username) > 0;
 	}
-	
+
 	public String findUsernameByPhone(String name, String phone) {
-	    return userMapper.findUsernameByPhone(name, phone);
+		return userMapper.findUsernameByPhone(name, phone);
 	}
 
 	private String generateTempPassword() {
-	    int length = 10;
-	    String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	    SecureRandom rnd = new SecureRandom();
-	    StringBuilder sb = new StringBuilder(length);
-	    for (int i = 0; i < length; i++) {
-	        sb.append(chars.charAt(rnd.nextInt(chars.length())));
-	    }
-	    return sb.toString();
+		int length = 10;
+		String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+		SecureRandom rnd = new SecureRandom();
+		StringBuilder sb = new StringBuilder(length);
+		for (int i = 0; i < length; i++) {
+			sb.append(chars.charAt(rnd.nextInt(chars.length())));
+		}
+		return sb.toString();
 	}
-
-
-
 
 }
