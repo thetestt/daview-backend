@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -96,6 +97,16 @@ public class ChatRoomController {
         return Map.of("chatroomId", newRoomId);
     }
     
+    
+    @PutMapping("/rooms/{chatroomId}/exit")
+    public ResponseEntity<?> exitChatRoom(
+            @PathVariable String chatroomId,
+            @RequestBody Map<String, Object> payload
+    ) {
+        Long memberId = Long.parseLong(payload.get("memberId").toString());
+        chatRoomService.exitChatRoom(chatroomId, memberId);
+        return ResponseEntity.ok(Map.of("success", true));
+    }
     
 
     

@@ -45,4 +45,7 @@ public interface ChatRoomMapper {
     
     ChatRoomDTO getChatRoomInfo(@Param("chatroomId") String chatroomId,
             @Param("memberId") Long memberId);
+    
+    void updateTrashCan(@Param("chatroomId") String chatroomId, @Param("memberId") Long memberId);
+    
 }
