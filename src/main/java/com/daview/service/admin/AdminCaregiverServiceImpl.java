@@ -29,13 +29,27 @@ public class AdminCaregiverServiceImpl implements AdminCaregiverService {
 
     @Override
     public List<CaregiverDTO> getAllCaregivers() {
-        return caregiverMapperMain.getAllCaregivers();
+        // AdminCaregiverMapper의 최적화된 JOIN 쿼리 사용 (N+1 문제 해결)
+        List<CaregiverDTO> caregivers = caregiverMapper.getAllCaregivers();
+        
+        System.out.println("DB에서 조회된 간병인 수: " + caregivers.size());
+        System.out.println("=== 응답 데이터 ===");
+        System.out.println("총 간병인 수: " + caregivers.size());
+        if (!caregivers.isEmpty()) {
+            System.out.println("첫 번째 간병인: " + caregivers.get(0).getUsername());
+        }
+        System.out.println("=== 응답 반환 성공 ===");
+        
+        return caregivers;
     }
 
     @Override
-    public void updateCaregiver(Long id, CaregiverDTO caregiverDTO) {
-        caregiverDTO.setCaregiverId(String.valueOf(id));
+    public void updateCaregiver(String id, CaregiverDTO caregiverDTO) {
+        // String 타입 ID를 그대로 사용하여 AdminCaregiverMapper의 최적화된 쿼리 사용
+        caregiverDTO.setCaregiverId(id);
         caregiverMapper.updateCaregiver(caregiverDTO);
+        System.out.println("===== 요양사 상품 수정 완료 =====");
+        System.out.println("Caregiver ID: " + caregiverDTO.getCaregiverId());
     }
 
     @Override
@@ -45,7 +59,8 @@ public class AdminCaregiverServiceImpl implements AdminCaregiverService {
 
     @Override
     public CaregiverDTO getCaregiverById(Long id) {
-        return caregiverMapper.getCaregiverById(id);
+        // String 타입 ID로 변환하여 AdminCaregiverMapper의 최적화된 JOIN 쿼리 사용
+        return caregiverMapper.getCaregiverById(String.valueOf(id));
     }
     
     @Override

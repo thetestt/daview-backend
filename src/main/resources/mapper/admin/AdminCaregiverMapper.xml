@@ -42,6 +42,8 @@
         SELECT 
             c.caregiver_id as caregiverId,
             c.member_id as memberId,
+            u.username as username,
+            u.user_gender as userGender,
             c.hope_work_area_location as hopeWorkAreaLocation,
             c.hope_work_area_city as hopeWorkAreaCity,
             c.hope_work_place as hopeWorkPlace,
@@ -57,10 +59,11 @@
             COALESCE(GROUP_CONCAT(DISTINCT DATE_FORMAT(cr.start_date, '%Y-%m-%d') SEPARATOR ', '), '') as startDateString,
             COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN cr.end_date IS NULL THEN '현재' ELSE DATE_FORMAT(cr.end_date, '%Y-%m-%d') END SEPARATOR ', '), '') as endDateString
         FROM caregiver c
+        LEFT JOIN dv_users u ON c.member_id = u.member_id
         LEFT JOIN caregiver_certificates cc ON c.caregiver_id = cc.caregiver_id
         LEFT JOIN caregiver_career cr ON c.caregiver_id = cr.caregiver_id
         WHERE c.trash_can = 0
-        GROUP BY c.caregiver_id, c.member_id, c.hope_work_area_location, c.hope_work_area_city, 
+        GROUP BY c.caregiver_id, c.member_id, u.username, u.user_gender, c.hope_work_area_location, c.hope_work_area_city, 
                  c.hope_work_place, c.hope_work_type, c.hope_employment_type, c.education_level, 
                  c.introduction, c.hope_work_amount, c.caregiver_created_at, c.caregiver_update_at
     </select>
@@ -88,23 +91,35 @@
         WHERE caregiver_id = #{id}
     </update>
 
-    <!-- 요양사 상세 조회 (활성 상태만) -->
-    <select id="getCaregiverById" parameterType="java.lang.Long" resultType="com.daview.dto.CaregiverDTO">
+    <!-- 요양사 상세 조회 (활성 상태만) - 최적화된 JOIN 쿼리 -->
+    <select id="getCaregiverById" parameterType="java.lang.String" resultType="com.daview.dto.CaregiverDTO">
         SELECT 
-            caregiver_id as caregiverId,
-            member_id as memberId,
-            hope_work_area_location as hopeWorkAreaLocation,
-            hope_work_area_city as hopeWorkAreaCity,
-            hope_work_place as hopeWorkPlace,
-            hope_work_type as hopeWorkType,
-            hope_employment_type as hopeEmploymentType,
-            education_level as educationLevel,
-            introduction,
-            hope_work_amount as hopeWorkAmount,
-            caregiver_created_at as caregiverCreatedAt,
-            caregiver_update_at as caregiverUpdateAt
-        FROM caregiver 
-        WHERE caregiver_id = #{id} AND trash_can = 0
+            c.caregiver_id as caregiverId,
+            c.member_id as memberId,
+            u.username as username,
+            u.user_gender as userGender,
+            c.hope_work_area_location as hopeWorkAreaLocation,
+            c.hope_work_area_city as hopeWorkAreaCity,
+            c.hope_work_place as hopeWorkPlace,
+            c.hope_work_type as hopeWorkType,
+            c.hope_employment_type as hopeEmploymentType,
+            c.education_level as educationLevel,
+            c.introduction,
+            c.hope_work_amount as hopeWorkAmount,
+            c.caregiver_created_at as caregiverCreatedAt,
+            c.caregiver_update_at as caregiverUpdateAt,
+            COALESCE(GROUP_CONCAT(DISTINCT cc.certificate_name SEPARATOR ', '), '자격증 정보 없음') as certificatesString,
+            COALESCE(GROUP_CONCAT(DISTINCT cr.company_name SEPARATOR ', '), '경력 정보 없음') as careerString,
+            COALESCE(GROUP_CONCAT(DISTINCT DATE_FORMAT(cr.start_date, '%Y-%m-%d') SEPARATOR ', '), '') as startDateString,
+            COALESCE(GROUP_CONCAT(DISTINCT CASE WHEN cr.end_date IS NULL THEN '현재' ELSE DATE_FORMAT(cr.end_date, '%Y-%m-%d') END SEPARATOR ', '), '') as endDateString
+        FROM caregiver c
+        LEFT JOIN dv_users u ON c.member_id = u.member_id
+        LEFT JOIN caregiver_certificates cc ON c.caregiver_id = cc.caregiver_id
+        LEFT JOIN caregiver_career cr ON c.caregiver_id = cr.caregiver_id
+        WHERE c.caregiver_id = #{id} AND c.trash_can = 0
+        GROUP BY c.caregiver_id, c.member_id, u.username, u.user_gender, c.hope_work_area_location, c.hope_work_area_city, 
+                 c.hope_work_place, c.hope_work_type, c.hope_employment_type, c.education_level, 
+                 c.introduction, c.hope_work_amount, c.caregiver_created_at, c.caregiver_update_at
     </select>
 
 </mapper>
