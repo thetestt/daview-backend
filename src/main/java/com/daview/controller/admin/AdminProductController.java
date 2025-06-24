@@ -29,51 +29,62 @@ public class AdminProductController {
     public ResponseEntity<Map<String, Object>> getProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "") String search) {
+            @RequestParam(defaultValue = "") String search,
+            @RequestParam(defaultValue = "") String type) {
         
         try {
             System.out.println("=== AdminProductController.getProducts 호출됨 ===");
-            System.out.println("검색어: " + search + ", 페이지: " + page + ", 사이즈: " + size);
+            System.out.println("검색어: " + search + ", 페이지: " + page + ", 사이즈: " + size + ", 타입: " + type);
             
-            // 실제 DB에서 간병인 데이터 조회
-            List<CaregiverDTO> caregivers = caregiverService.getAllCaregivers();
-            System.out.println("DB에서 조회된 간병인 수: " + caregivers.size());
-            
-            // 프론트엔드 형식에 맞게 데이터 변환
+            // ⭐ 수정: type 파라미터에 따라 데이터 필터링
             List<Map<String, Object>> products = new ArrayList<>();
             
-            for (CaregiverDTO caregiver : caregivers) {
-                Map<String, Object> product = new HashMap<>();
-                
-                // 프론트엔드가 기대하는 필드명으로 매핑
-                product.put("prodId", caregiver.getCaregiverId() != null ? caregiver.getCaregiverId() : "미설정");
-                product.put("prodName", "간병사 ID: " + caregiver.getCaregiverId()); // 실제 이름이 없으므로 ID로 표시
-                product.put("prodTypeName", "간병사"); // 고정값
-                product.put("prodType", "caregiver"); // 고정값
-                Integer hopeWorkAmount = caregiver.getHopeWorkAmount();
-                product.put("prodPrice", hopeWorkAmount != null ? hopeWorkAmount.intValue() : 0);
-                product.put("price", hopeWorkAmount != null ? hopeWorkAmount.intValue() : 0);
-                product.put("prodDetail", caregiver.getIntroduction() != null ? caregiver.getIntroduction() : "소개글이 없습니다.");
-                product.put("description", caregiver.getIntroduction() != null ? caregiver.getIntroduction() : "소개글이 없습니다.");
-                
-                // 추가 정보
-                product.put("location", 
-                    (caregiver.getHopeWorkAreaLocation() != null ? caregiver.getHopeWorkAreaLocation() : "") + 
-                    " " + 
-                    (caregiver.getHopeWorkAreaCity() != null ? caregiver.getHopeWorkAreaCity() : ""));
-                product.put("workType", caregiver.getHopeWorkType() != null ? caregiver.getHopeWorkType() : "미설정");
-                product.put("workPlace", caregiver.getHopeWorkPlace() != null ? caregiver.getHopeWorkPlace() : "미설정");
-                product.put("employmentType", caregiver.getHopeEmploymentType() != null ? caregiver.getHopeEmploymentType() : "미설정");
-                product.put("education", caregiver.getEducationLevel() != null ? caregiver.getEducationLevel() : "미설정");
-                product.put("createdAt", caregiver.getCaregiverCreatedAt() != null ? caregiver.getCaregiverCreatedAt().toString() : "미설정");
-                
-                // 자격증과 경력 정보 추가
-                product.put("certificatesString", caregiver.getCertificatesString() != null ? caregiver.getCertificatesString() : "정보 없음");
-                product.put("careerString", caregiver.getCareerString() != null ? caregiver.getCareerString() : "정보 없음");
-                product.put("startDateString", caregiver.getStartDateString() != null ? caregiver.getStartDateString() : "");
-                product.put("endDateString", caregiver.getEndDateString() != null ? caregiver.getEndDateString() : "");
-                
-                products.add(product);
+            // 요양원/실버타운 요청 시 빈 결과 반환 (현재 DB에 해당 데이터 없음)
+            if ("요양원/실버타운".equals(type)) {
+                System.out.println("요양원/실버타운 필터링 - 빈 결과 반환");
+                // 빈 리스트 반환
+            } else {
+                // 기본값 또는 요양사 타입인 경우 간병인 데이터 조회
+                List<CaregiverDTO> caregivers = caregiverService.getAllCaregivers();
+                System.out.println("DB에서 조회된 간병인 수: " + caregivers.size());
+            
+                for (CaregiverDTO caregiver : caregivers) {
+                    Map<String, Object> product = new HashMap<>();
+                    
+                    // 프론트엔드가 기대하는 필드명으로 매핑
+                    product.put("prodId", caregiver.getCaregiverId() != null ? caregiver.getCaregiverId() : "미설정");
+                    product.put("prodName", caregiver.getUsername() != null ? caregiver.getUsername() : ("간병사 ID: " + caregiver.getCaregiverId())); // 실제 사용자명 사용
+                    product.put("prodTypeName", "요양사"); // 고정값 (간병사 -> 요양사로 수정)
+                    product.put("prodType", "caregiver"); // 고정값
+                    Integer hopeWorkAmount = caregiver.getHopeWorkAmount();
+                    product.put("prodPrice", hopeWorkAmount != null ? hopeWorkAmount.intValue() : 0);
+                    product.put("price", hopeWorkAmount != null ? hopeWorkAmount.intValue() : 0);
+                    product.put("prodDetail", caregiver.getIntroduction() != null ? caregiver.getIntroduction() : "소개글이 없습니다.");
+                    product.put("description", caregiver.getIntroduction() != null ? caregiver.getIntroduction() : "소개글이 없습니다.");
+                    
+                    // 추가 정보
+                    product.put("location", 
+                        (caregiver.getHopeWorkAreaLocation() != null ? caregiver.getHopeWorkAreaLocation() : "") + 
+                        " " + 
+                        (caregiver.getHopeWorkAreaCity() != null ? caregiver.getHopeWorkAreaCity() : ""));
+                    product.put("workType", caregiver.getHopeWorkType() != null ? caregiver.getHopeWorkType() : "미설정");
+                    product.put("workPlace", caregiver.getHopeWorkPlace() != null ? caregiver.getHopeWorkPlace() : "미설정");
+                    product.put("employmentType", caregiver.getHopeEmploymentType() != null ? caregiver.getHopeEmploymentType() : "미설정");
+                    product.put("education", caregiver.getEducationLevel() != null ? caregiver.getEducationLevel() : "미설정");
+                    product.put("createdAt", caregiver.getCaregiverCreatedAt() != null ? caregiver.getCaregiverCreatedAt().toString() : "미설정");
+                    
+                    // 자격증과 경력 정보 추가
+                    product.put("certificatesString", caregiver.getCertificatesString() != null ? caregiver.getCertificatesString() : "정보 없음");
+                    product.put("careerString", caregiver.getCareerString() != null ? caregiver.getCareerString() : "정보 없음");
+                    product.put("startDateString", caregiver.getStartDateString() != null ? caregiver.getStartDateString() : "");
+                    product.put("endDateString", caregiver.getEndDateString() != null ? caregiver.getEndDateString() : "");
+                    
+                    // 사용자 정보 추가
+                    product.put("username", caregiver.getUsername() != null ? caregiver.getUsername() : "미설정");
+                    product.put("userGender", caregiver.getUserGender() != null ? caregiver.getUserGender() : "미설정");
+                    
+                    products.add(product);
+                }
             }
             
             // 검색어가 있으면 필터링

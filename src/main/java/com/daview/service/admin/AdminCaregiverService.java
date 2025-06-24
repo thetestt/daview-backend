@@ -11,7 +11,7 @@ public interface AdminCaregiverService {
 
     List<CaregiverDTO> getAllCaregivers();
 
-    void updateCaregiver(Long id, CaregiverDTO caregiverDTO);
+    void updateCaregiver(String id, CaregiverDTO caregiverDTO);
 
     void deleteCaregiver(String id);
 
