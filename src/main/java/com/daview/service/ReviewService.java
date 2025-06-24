@@ -1,5 +1,11 @@
 package com.daview.service;
 
-public class ReviewService {
+import java.util.List;
 
+import com.daview.dto.ReviewDTO;
+
+public interface ReviewService {
+	void insertReview(ReviewDTO review);
+	
+	List<ReviewDTO> getAllReviews();
 }

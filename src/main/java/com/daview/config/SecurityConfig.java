@@ -48,6 +48,7 @@ public class SecurityConfig {
                     "/api/wishlist/check",
                     "/api/chat/**",
                     "/api/admin/products/**",
+                    "/admin/caregivers/**",  // 요양사 관리 전체 경로 제외
                     "/api/**"
                 ).permitAll()
                 

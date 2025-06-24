@@ -13,7 +13,7 @@ public interface AdminCaregiverService {
 
     void updateCaregiver(Long id, CaregiverDTO caregiverDTO);
 
-    void deleteCaregiver(Long id);
+    void deleteCaregiver(String id);
 
     CaregiverDTO getCaregiverById(Long id);
     
