@@ -151,4 +151,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
         return newRoomId;
     }
+    
+    @Override
+    public void exitChatRoom(String chatroomId, Long memberId) {
+        // 본인이 속한 채팅방인지 확인하고 trash_can 처리
+        chatRoomMapper.updateTrashCan(chatroomId, memberId);
+    }
 }
