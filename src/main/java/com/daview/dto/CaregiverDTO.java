@@ -20,6 +20,12 @@ public class CaregiverDTO {
 
     private List<String> certificates;
     private List<CaregiverCareerDTO> career;
+    
+    // GROUP_CONCAT으로 받을 String 필드들
+    private String certificatesString;
+    private String careerString;
+    private String startDateString;
+    private String endDateString;
 
     private String username;
     private String userGender;
@@ -134,5 +140,33 @@ public class CaregiverDTO {
     }
     public void setCareer(List<CaregiverCareerDTO> career) {
         this.career = career;
+    }
+    
+    public String getCertificatesString() {
+        return certificatesString;
+    }
+    public void setCertificatesString(String certificatesString) {
+        this.certificatesString = certificatesString;
+    }
+    
+    public String getCareerString() {
+        return careerString;
+    }
+    public void setCareerString(String careerString) {
+        this.careerString = careerString;
+    }
+    
+    public String getStartDateString() {
+        return startDateString;
+    }
+    public void setStartDateString(String startDateString) {
+        this.startDateString = startDateString;
+    }
+    
+    public String getEndDateString() {
+        return endDateString;
+    }
+    public void setEndDateString(String endDateString) {
+        this.endDateString = endDateString;
     }
 }

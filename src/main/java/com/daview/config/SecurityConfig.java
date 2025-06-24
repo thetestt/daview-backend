@@ -36,7 +36,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors(withDefaults()).csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
             .authorizeHttpRequests(auth -> auth
 
                 .requestMatchers(
@@ -48,6 +48,7 @@ public class SecurityConfig {
                     "/api/wishlist/check",
                     "/api/chat/**",
                     "/api/admin/products/**",
+                    "/admin/caregivers/**",  // 요양사 관리 전체 경로 제외
                     "/api/**"
                 ).permitAll()
                 

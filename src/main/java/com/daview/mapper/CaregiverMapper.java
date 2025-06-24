@@ -16,5 +16,10 @@ public interface CaregiverMapper {
     List<CaregiverDTO> searchCaregiversByKeyword(String keyword);
     List<CaregiverDTO> searchCaregiversWithFilters(CaregiverFilterDTO filters);
     String findDefaultMessageByCaregiverId(@Param("facilityId") String caregiverId);
+    
+    // 새로운 상품(요양사) 등록 관련 메서드들
+    int insertCaregiver(CaregiverDTO caregiverDTO);
+    int insertCaregiverCareer(@Param("caregiverId") String caregiverId, @Param("career") CaregiverCareerDTO career);
+    int insertCaregiverCertificate(@Param("caregiverId") String caregiverId, @Param("certificateName") String certificateName);
 
 }

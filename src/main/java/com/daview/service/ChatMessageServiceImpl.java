@@ -42,6 +42,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
         // ✅ 3. 채팅방 안 (ChatWindow) 실시간 전송
         messagingTemplate.convertAndSend("/sub/chat/room/" + message.getChatroomId(), message);
+        System.out.println("🔹 메시지 WebSocket 전송 (ChatWindow): " + message.getContent());
 
         // ✅ 4. 채팅방 리스트(ChatList) 실시간 업데이트
         // 1) 보낸 사람 기준 ChatRoomDTO (단일)

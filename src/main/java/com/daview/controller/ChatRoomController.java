@@ -33,7 +33,7 @@ public class ChatRoomController {
         return chatRoomService.getChatRoomListForUser(memberId);
     }
     
-    //쳇방 들어가서 아이디 검증하기
+    //쳇방 들어가서 아이디 검증하기 수정테스트250623 06:49
     @GetMapping("/rooms/{chatroomId}/validate")
     public ResponseEntity<?> validateUserInChatRoom(
             @PathVariable String chatroomId,

@@ -186,5 +186,61 @@
     WHERE caregiver_id = #{facilityId}
 </select>
 
-  
+  <!-- 새로운 상품(요양사) 등록 관련 쿼리들 -->
+  <insert id="insertCaregiver" parameterType="com.daview.dto.CaregiverDTO">
+    INSERT INTO caregiver (
+      caregiver_id,
+      member_id,
+      hope_work_area_location,
+      hope_work_area_city,
+      hope_work_place,
+      hope_work_type,
+      hope_employment_type,
+      education_level,
+      introduction,
+      hope_work_amount,
+      caregiver_created_at,
+      caregiver_update_at,
+      trash_can
+    ) VALUES (
+      #{caregiverId},
+      #{memberId},
+      #{hopeWorkAreaLocation},
+      #{hopeWorkAreaCity},
+      #{hopeWorkPlace},
+      #{hopeWorkType},
+      #{hopeEmploymentType},
+      #{educationLevel},
+      #{introduction},
+      #{hopeWorkAmount},
+      NOW(),
+      NOW(),
+      0
+    )
+  </insert>
+
+  <insert id="insertCaregiverCareer">
+    INSERT INTO caregiver_career (
+      caregiver_id,
+      company_name,
+      start_date,
+      end_date
+    ) VALUES (
+      #{caregiverId},
+      #{career.companyName},
+      #{career.startDate},
+      #{career.endDate}
+    )
+  </insert>
+
+  <insert id="insertCaregiverCertificate">
+    INSERT INTO caregiver_certificates (
+      caregiver_id,
+      certificate_name
+    ) VALUES (
+      #{caregiverId},
+      #{certificateName}
+    )
+  </insert>
+
 </mapper>
