@@ -34,5 +34,4 @@ public interface UserMapper {
 	// 실제 DB에서 CAREGIVER 역할 사용자 조회
 	List<User> findUsersByRole(@Param("role") String role);
 
-
 }
