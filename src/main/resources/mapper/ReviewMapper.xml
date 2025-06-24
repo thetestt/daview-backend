@@ -4,5 +4,15 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.daview.mapper.ReviewMapper">
-
+	<insert id="insertReview" parameterType="com.daview.dto.ReviewDTO">
+		INSERT INTO review_board
+		(member_id, prod_nm, rev_ttl, rev_cont, rev_stars, rev_views, rev_reg_date)
+		VALUES
+		(#{memberId}, #{prodNm}, #{revTtl}, #{revCont}, #{revStars}, 0, NOW())
+	</insert>
+	<select id="getAllReviews" resultType="com.daview.dto.ReviewDTO">
+		SELECT *
+		FROM review_board
+		ORDER BY rev_reg_date DESC
+	</select>
 </mapper>
