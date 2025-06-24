@@ -101,4 +101,29 @@
 
 
 
+	<select id="findUsernameByEmail" resultType="string">
+		SELECT username
+		FROM dv_users
+		WHERE name = #{name} AND email = #{email}
+	</select>
+
+	<!-- 실제 DB에서 CAREGIVER 역할 사용자 조회 -->
+	<select id="findUsersByRole" resultType="com.daview.dto.User">
+		SELECT 
+			member_id,
+			username,
+			name,
+			email,
+			phone,
+			role,
+			user_gender,
+			create_at,
+			withdrawn
+		FROM dv_users
+		WHERE role = #{role}
+		AND withdrawn = 0
+		ORDER BY member_id
+	</select>
+
+
 </mapper>

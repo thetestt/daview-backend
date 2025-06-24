@@ -93,7 +93,97 @@
     AND (sender_id = #{memberId,jdbcType=BIGINT} OR receiver_id = #{memberId,jdbcType=BIGINT})
 </select>
     
+    
 
+<select id="getChatRoomInfoForList" resultType="com.daview.dto.ChatRoomDTO">
+  SELECT
+    cr.chatroom_id AS chatroomId,
+    CASE
+      WHEN cr.sender_id = #{memberId} THEN cr.receiver_id
+      ELSE cr.sender_id
+    END AS opponentId,
+    (
+      SELECT du.name
+      FROM dv_users du
+      WHERE du.member_id = CASE
+        WHEN cr.sender_id = #{memberId} THEN cr.receiver_id
+        ELSE cr.sender_id
+      END
+    ) AS opponentName,
+    cm.content AS lastMessage,
+    cm.sent_at AS lastTime,
+    (
+      SELECT COUNT(*)
+      FROM chatmessage cm2
+      WHERE cm2.chatroom_id = cr.chatroom_id
+        AND cm2.is_read = 0
+        AND cm2.sender_id != #{memberId}
+    ) AS unreadCount
+  FROM chatroom cr
+  LEFT JOIN (
+    SELECT
+      content,
+      sent_at,
+      chatroom_id
+    FROM chatmessage
+    WHERE (chatroom_id, sent_at) IN (
+      SELECT chatroom_id, MAX(sent_at)
+      FROM chatmessage
+      GROUP BY chatroom_id
+    )
+  ) cm ON cr.chatroom_id = cm.chatroom_id
+  WHERE cr.chatroom_id = #{chatroomId}
+</select>
+
+<select id="getOpponentId" resultType="long">
+  SELECT CASE
+           WHEN sender_id = #{memberId} THEN receiver_id
+           ELSE sender_id
+         END AS opponentId
+  FROM chatroom
+  WHERE chatroom_id = #{chatroomId}
+</select>
+
+<select id="getChatRoomInfo" resultType="com.daview.dto.ChatRoomDTO">
+  SELECT
+    cr.chatroom_id AS chatroomId,
+    CASE
+      WHEN cr.sender_id = #{memberId} THEN cr.receiver_id
+      ELSE cr.sender_id
+    END AS opponentId,
+    (
+      SELECT du.name
+      FROM dv_users du
+      WHERE du.member_id = CASE
+        WHEN cr.sender_id = #{memberId} THEN cr.receiver_id
+        ELSE cr.sender_id
+      END
+    ) AS opponentName,
+    cm.content AS lastMessage,
+    cm.sent_at AS lastTime,
+    (
+      SELECT COUNT(*)
+      FROM chatmessage cm2
+      WHERE cm2.chatroom_id = cr.chatroom_id
+        AND cm2.is_read = 0
+        AND cm2.sender_id != #{memberId}
+    ) AS unreadCount
+  FROM chatroom cr
+  LEFT JOIN (
+    SELECT
+      a1.chatroom_id,
+      a1.content,
+      a1.sent_at
+    FROM chatmessage a1
+    INNER JOIN (
+      SELECT chatroom_id, MAX(sent_at) AS max_sent
+      FROM chatmessage
+      GROUP BY chatroom_id
+    ) a2 ON a1.chatroom_id = a2.chatroom_id
+         AND a1.sent_at = a2.max_sent
+  ) cm ON cr.chatroom_id = cm.chatroom_id
+  WHERE cr.chatroom_id = #{chatroomId}
+</select>
 
    
 </mapper>

@@ -17,7 +17,7 @@ public interface AdminCaregiverMapper {
 
     void updateCaregiver(CaregiverDTO caregiverDTO);
 
-    void deleteCaregiver(Long id);
+    void deleteCaregiver(String id);
 
     CaregiverDTO getCaregiverById(Long id);
 }

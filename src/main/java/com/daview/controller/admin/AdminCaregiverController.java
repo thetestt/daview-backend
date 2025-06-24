@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin/caregivers")
-@CrossOrigin(origins = "*") // 프론트엔드 연동을 위한 CORS 설정
+@CrossOrigin(originPatterns = "*", allowCredentials = "true") // 이 컨트롤러만 CORS 허용
 public class AdminCaregiverController {
 
     @Autowired
@@ -79,12 +79,9 @@ public class AdminCaregiverController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteCaregiver(@PathVariable("id") String id) {
         try {
-            Long caregiverId = Long.parseLong(id);
-            caregiverService.deleteCaregiver(caregiverId);
+            // UUID 문자열을 그대로 사용
+            caregiverService.deleteCaregiver(id);
             return ResponseEntity.ok("간병인이 성공적으로 삭제되었습니다.");
-        } catch (NumberFormatException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("잘못된 ID 형식입니다.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("간병인 삭제에 실패했습니다: " + e.getMessage());

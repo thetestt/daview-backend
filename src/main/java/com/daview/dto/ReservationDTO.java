@@ -4,13 +4,12 @@ import java.util.Date;
 
 public class ReservationDTO {
 	private String rsvId;
-	private int memberId;
+	private Long memberId;
 	private String prodId;
 	private int prodType;
 	private int prodPrice;
 	private String prodNm;
 	private String prodDetail;
-	private Date prodDate;
 	private String prodPhoto;
 	private int rsvType;
 	private Date rsvDate;
@@ -24,11 +23,11 @@ public class ReservationDTO {
 		this.rsvId = rsvId;
 	}
 
-	public int getMemberId() {
+	public Long getMemberId() {
 		return memberId;
 	}
 
-	public void setMemberId(int memberId) {
+	public void setMemberId(Long memberId) {
 		this.memberId = memberId;
 	}
 
@@ -70,14 +69,6 @@ public class ReservationDTO {
 
 	public void setProdDetail(String prodDetail) {
 		this.prodDetail = prodDetail;
-	}
-
-	public Date getProdDate() {
-		return prodDate;
-	}
-
-	public void setProdDate(Date prodDate) {
-		this.prodDate = prodDate;
 	}
 
 	public String getProdPhoto() {

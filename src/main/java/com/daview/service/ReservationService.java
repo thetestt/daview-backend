@@ -7,7 +7,7 @@ import com.daview.dto.ReservationDTO;
 public interface ReservationService {
 	int insertReservation(ReservationDTO reservation);
 
-	List<ReservationDTO> selectReservationById(int memberId);
+	List<ReservationDTO> selectReservationById(Long memberId);
 
 	int deleteReservation(String rsvId);
 

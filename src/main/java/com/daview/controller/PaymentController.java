@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.daview.dto.PaymentDTO;
 import com.daview.dto.PaymentReservationMapDTO;
+import com.daview.dto.PaymentWithReservationsDTO;
 import com.daview.service.PaymentReservationService;
 import com.daview.service.PaymentService;
 
@@ -58,4 +59,12 @@ public class PaymentController {
 		return ResponseEntity.ok(successCount + "건 매핑 완료");
 	}
 
+	@GetMapping("/payments/member/{memberId}")
+	public ResponseEntity<List<PaymentWithReservationsDTO>> getPaymentsByMemberId(@PathVariable Long memberId){
+		List<PaymentWithReservationsDTO> payments = paymentService.selectPaymentWithReservationsByMemberId(memberId);
+		if(payments == null || payments.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+		}
+		return ResponseEntity.ok(payments);
+	}
 }

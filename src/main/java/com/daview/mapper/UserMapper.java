@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.daview.dto.CouponDTO;
 import com.daview.dto.User;
+import java.util.List;
 
 import com.daview.dto.UserCoupon;
 
@@ -18,9 +19,9 @@ public interface UserMapper {
 	void insertUser(User user);
 	int countByUsername(String username);
 	String findUsernameByPhone(@Param("name") String name, @Param("phone") String phone);
-	//String findUsernameByEmail(@Param("name") String name, @Param("email") String email);
 	User findUserForReset(@Param("name") String name, @Param("username") String username, @Param("phone") String phone);
 	int updatePassword(@Param("username") String username, @Param("password") String password);
+
 
 	String findUsernameByEmail(@Param("name") String name, @Param("email") String email);
 	CouponDTO findCouponByCode(String code); // WELCOME 쿠폰 찾기
@@ -29,6 +30,12 @@ public interface UserMapper {
 	List<UserCoupon> getCouponsByMemberId(Long memberId); // 마이페이지 쿠폰 목록
 
 
+	
+	// 실제 DB에서 CAREGIVER 역할 사용자 조회
+	List<User> findUsersByRole(@Param("role") String role);
+
+
+	String findUsernameByEmail(@Param("name") String name, @Param("email") String email);
 	
 	// 실제 DB에서 CAREGIVER 역할 사용자 조회
 	List<User> findUsersByRole(@Param("role") String role);

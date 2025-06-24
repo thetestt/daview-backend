@@ -35,6 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         
         // 특정 경로는 JWT 검증 완전히 제외
         if (requestPath.startsWith("/api/admin/products") || 
+            requestPath.startsWith("/admin/caregivers") ||  // 요양사 관리 전체 경로 제외
             requestPath.startsWith("/api/auth") || 
             requestPath.startsWith("/api/account") ||
             requestPath.startsWith("/uploads") ||
