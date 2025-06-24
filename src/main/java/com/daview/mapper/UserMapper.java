@@ -35,11 +35,4 @@ public interface UserMapper {
 	List<User> findUsersByRole(@Param("role") String role);
 
 
-	String findUsernameByEmail(@Param("name") String name, @Param("email") String email);
-	
-	// 실제 DB에서 CAREGIVER 역할 사용자 조회
-	List<User> findUsersByRole(@Param("role") String role);
-
-
-
 }

@@ -10,29 +10,30 @@
 
 	<insert id="insertUser">
 		INSERT INTO dv_users (
-		username, password, name,
-		email, phone, role, user_gender
+			username, password, name,
+			email, phone, role, user_gender
 		) VALUES (
-		#{username}, #{password},
-		#{name}, #{email}, #{phone}, #{role}, 'hidden'
+			#{username}, #{password},
+			#{name}, #{email}, #{phone}, #{role}, 'hidden'
 		)
 	</insert>
 
 	<select id="countByUsername" resultType="int">
-		SELECT COUNT(*) FROM
-		dv_users WHERE username = #{username}
+		SELECT COUNT(*) FROM dv_users WHERE username = #{username}
 	</select>
 
 	<select id="findUsernameByPhone" resultType="string">
 		SELECT username
-		FROM
-		dv_users
+		FROM dv_users
 		WHERE name = #{name}
 		AND phone = #{phone}
 	</select>
 
-	<!-- <select id="findUsernameByEmail" resultType="string"> SELECT username 
-		FROM dv_users WHERE name = #{name} AND email = #{email} </select> -->
+	<select id="findUsernameByEmail" resultType="string">
+		SELECT username
+		FROM dv_users
+		WHERE name = #{name} AND email = #{email}
+	</select>
 
 	<select id="findUserForReset" resultType="com.daview.dto.User">
 		SELECT *
@@ -45,71 +46,12 @@
 	<update id="updatePassword">
 		UPDATE dv_users
 		SET password = #{password}
-		WHERE
-		username = #{username}
+		WHERE username = #{username}
 	</update>
-	
-	<select id="findUsernameByEmail" resultType="string">
-		SELECT username
-		FROM
-		dv_users
-		WHERE name = #{name} AND email = #{email}
-	</select>
 
 	<!-- 실제 DB에서 CAREGIVER 역할 사용자 조회 -->
 	<select id="findUsersByRole" resultType="com.daview.dto.User">
 		SELECT
-		member_id,
-		username,
-		name,
-		email,
-		phone,
-		role,
-		user_gender,
-		create_at,
-		withdrawn
-		FROM
-		dv_users
-		WHERE role = #{role}
-		AND withdrawn = 0
-		ORDER BY member_id
-	</select>
-
-	<select id="findCouponByCode"
-		resultType="com.daview.dto.CouponDTO">
-		SELECT * FROM coupons WHERE code = #{code}
-	</select>
-
-	<select id="hasUserReceivedCoupon" resultType="int">
-		SELECT COUNT(*) FROM user_coupons
-		WHERE member_id = #{member_id} AND coupon_id = #{coupon_id}
-	</select>
-
-	<insert id="insertUserCoupon">
-		INSERT INTO user_coupons (member_id, coupon_id, received_at, expired_at)
-		VALUES (#{member_id}, #{coupon_id}, #{received_at}, #{expired_at})
-	</insert>
-
-	<select id="getCouponsByMemberId"
-		resultType="com.daview.dto.CouponDTO">
-		SELECT uc.*, c.description, c.discount
-		FROM user_coupons uc
-		JOIN coupons c ON uc.coupon_id = c.coupon_id
-		WHERE uc.member_id = #{memberId}
-	</select>
-
-
-
-
-	<select id="findUsernameByEmail" resultType="string">
-		SELECT username
-		FROM dv_users
-		WHERE name = #{name} AND email = #{email}
-	</select>
-
-	<!-- 실제 DB에서 CAREGIVER 역할 사용자 조회 -->
-	<select id="findUsersByRole" resultType="com.daview.dto.User">
-		SELECT 
 			member_id,
 			username,
 			name,
@@ -125,5 +67,25 @@
 		ORDER BY member_id
 	</select>
 
+	<select id="findCouponByCode" resultType="com.daview.dto.CouponDTO">
+		SELECT * FROM coupons WHERE code = #{code}
+	</select>
+
+	<select id="hasUserReceivedCoupon" resultType="int">
+		SELECT COUNT(*) FROM user_coupons
+		WHERE member_id = #{member_id} AND coupon_id = #{coupon_id}
+	</select>
+
+	<insert id="insertUserCoupon">
+		INSERT INTO user_coupons (member_id, coupon_id, received_at, expired_at)
+		VALUES (#{member_id}, #{coupon_id}, #{received_at}, #{expired_at})
+	</insert>
+
+	<select id="getCouponsByMemberId" resultType="com.daview.dto.CouponDTO">
+		SELECT uc.*, c.description, c.discount
+		FROM user_coupons uc
+		JOIN coupons c ON uc.coupon_id = c.coupon_id
+		WHERE uc.member_id = #{memberId}
+	</select>
 
 </mapper>
