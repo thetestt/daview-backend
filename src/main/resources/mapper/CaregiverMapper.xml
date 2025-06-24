@@ -242,5 +242,18 @@
       #{certificateName}
     )
   </insert>
+  
+  
+  <select id="findCaregiverInfoByMemberId" resultType="com.daview.dto.CaregiverDTO">
+  SELECT *
+  FROM caregiver
+  WHERE member_id = #{memberId}
+</select>
+
+<select id="findCaregiverByCaregiverId" resultType="com.daview.dto.CaregiverDTO">
+    SELECT *
+    FROM caregiver
+    WHERE caregiver_id = #{facilityId}
+</select>
 
 </mapper>

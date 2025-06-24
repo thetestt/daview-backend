@@ -28,6 +28,7 @@ public class FacilityDTO {
     
     
     
+    
     public String getDefaultMessage() {
 		return defaultMessage;
 	}
@@ -51,6 +52,8 @@ public class FacilityDTO {
 	public void setFacilityType(String facilityType) {
 		this.facilityType = facilityType;
 	}
+	
+	
 	public String getFacilityDetailAddress() {
 		return facilityDetailAddress;
 	}

@@ -33,5 +33,8 @@ public interface UserMapper {
 	
 	// 실제 DB에서 CAREGIVER 역할 사용자 조회
 	List<User> findUsersByRole(@Param("role") String role);
+	
+	//수안추가 - 채팅상단 정보불러오기용
+	User findUserById(@Param("memberId") Long memberId);
 
 }
