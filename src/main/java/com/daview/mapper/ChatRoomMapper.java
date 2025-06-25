@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ChatRoomMapper {
@@ -47,5 +48,8 @@ public interface ChatRoomMapper {
             @Param("memberId") Long memberId);
     
     void updateTrashCan(@Param("chatroomId") String chatroomId, @Param("memberId") Long memberId);
+    
+    //웹소켓 검증용
+    boolean existsByChatroomIdAndMemberId(Map<String, Object> param);
     
 }

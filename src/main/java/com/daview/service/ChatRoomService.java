@@ -11,4 +11,5 @@ public interface ChatRoomService {
     boolean isUserInChatRoom(String chatroomId, Long memberId);
     ChatRoomDTO getChatRoomInfo(String chatroomId, Long memberId);
     void exitChatRoom(String chatroomId, Long memberId);
+    boolean isUserInChatroom(String chatroomId, Long memberId);
 }
