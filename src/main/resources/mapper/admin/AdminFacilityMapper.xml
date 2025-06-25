@@ -37,19 +37,22 @@
             f.facility_homepage,
             f.facility_phone,
             f.default_message,
-            fn.notice_title,
-            fn.notice_content,
-            fp.photo_url,
-            fp.is_thumbnail,
-            ft.category,
-            ft.facility_tag,
+            (SELECT notice_title FROM facility_notice fn2 
+             WHERE fn2.facility_id = f.facility_id AND fn2.notice_deleted_at IS NULL 
+             ORDER BY fn2.notice_created_at DESC LIMIT 1) as notice_title,
+            (SELECT notice_content FROM facility_notice fn3 
+             WHERE fn3.facility_id = f.facility_id AND fn3.notice_deleted_at IS NULL 
+             ORDER BY fn3.notice_created_at DESC LIMIT 1) as notice_content,
+            (SELECT photo_url FROM facility_photo fp2 
+             WHERE fp2.facility_id = f.facility_id AND fp2.is_thumbnail = 1 
+             LIMIT 1) as photo_url,
+            1 as is_thumbnail,
+            '' as category,
+            '' as facility_tag,
             f.facility_created_at,
             f.facility_update_at,
             f.facility_deleted_at
         FROM facility f
-        LEFT JOIN facility_notice fn ON f.facility_id = fn.facility_id AND fn.notice_deleted_at IS NULL
-        LEFT JOIN facility_photo fp ON f.facility_id = fp.facility_id
-        LEFT JOIN facility_tag ft ON f.facility_id = ft.facility_id
         WHERE f.trash_can = 0
         <if test="search != null and search != ''">
             AND (f.facility_name LIKE CONCAT('%', #{search}, '%')
@@ -66,11 +69,8 @@
 
     <!-- 총 개수 조회 -->
     <select id="countFacilities" parameterType="map" resultType="int">
-        SELECT COUNT(DISTINCT f.facility_id)
+        SELECT COUNT(f.facility_id)
         FROM facility f
-        LEFT JOIN facility_notice fn ON f.facility_id = fn.facility_id AND fn.notice_deleted_at IS NULL
-        LEFT JOIN facility_photo fp ON f.facility_id = fp.facility_id
-        LEFT JOIN facility_tag ft ON f.facility_id = ft.facility_id
         WHERE f.trash_can = 0
         <if test="search != null and search != ''">
             AND (f.facility_name LIKE CONCAT('%', #{search}, '%')
@@ -98,16 +98,19 @@
             f.facility_homepage,
             f.facility_phone,
             f.default_message,
-            fn.notice_title,
-            fn.notice_content,
-            fp.photo_url,
-            fp.is_thumbnail,
-            ft.category,
-            ft.facility_tag
+            (SELECT notice_title FROM facility_notice fn2 
+             WHERE fn2.facility_id = f.facility_id AND fn2.notice_deleted_at IS NULL 
+             ORDER BY fn2.notice_created_at DESC LIMIT 1) as notice_title,
+            (SELECT notice_content FROM facility_notice fn3 
+             WHERE fn3.facility_id = f.facility_id AND fn3.notice_deleted_at IS NULL 
+             ORDER BY fn3.notice_created_at DESC LIMIT 1) as notice_content,
+            (SELECT photo_url FROM facility_photo fp2 
+             WHERE fp2.facility_id = f.facility_id AND fp2.is_thumbnail = 1 
+             LIMIT 1) as photo_url,
+            1 as is_thumbnail,
+            '' as category,
+            '' as facility_tag
         FROM facility f
-        LEFT JOIN facility_notice fn ON f.facility_id = fn.facility_id AND fn.notice_deleted_at IS NULL
-        LEFT JOIN facility_photo fp ON f.facility_id = fp.facility_id
-        LEFT JOIN facility_tag ft ON f.facility_id = ft.facility_id
         WHERE f.trash_can = 0
         ORDER BY f.facility_created_at DESC
     </select>
@@ -222,16 +225,20 @@
             f.facility_phone as facilityPhone,
             f.facility_created_at as facilityCreatedAt,
             f.facility_update_at as facilityUpdateAt,
-            fn.notice_title as noticeTitle,
-            fn.notice_content as noticeContent,
-            fp.photo_url as photoUrl,
-            CASE WHEN fp.is_thumbnail = true THEN '썸네일' ELSE '일반' END as isThumbnail,
-            ft.category as category,
-            ft.facility_tag as facilityTag
+            (SELECT notice_title FROM facility_notice fn2 
+             WHERE fn2.facility_id = f.facility_id AND fn2.notice_deleted_at IS NULL 
+             ORDER BY fn2.notice_created_at DESC LIMIT 1) as noticeTitle,
+            (SELECT notice_content FROM facility_notice fn3 
+             WHERE fn3.facility_id = f.facility_id AND fn3.notice_deleted_at IS NULL 
+             ORDER BY fn3.notice_created_at DESC LIMIT 1) as noticeContent,
+            (SELECT photo_url FROM facility_photo fp2 
+             WHERE fp2.facility_id = f.facility_id AND fp2.is_thumbnail = 1 
+             LIMIT 1) as photoUrl,
+            '썸네일' as isThumbnail,
+            '' as category,
+            '' as facilityTag
         FROM facility f
-        LEFT JOIN facility_notice fn ON f.facility_id = fn.facility_id AND fn.notice_deleted_at IS NULL
-        LEFT JOIN facility_photo fp ON f.facility_id = fp.facility_id
-        LEFT JOIN facility_tag ft ON f.facility_id = ft.facility_id
+        WHERE f.trash_can = 0
         ORDER BY f.facility_created_at DESC
     </select>
 
