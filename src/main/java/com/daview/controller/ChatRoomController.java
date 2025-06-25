@@ -83,18 +83,41 @@ public class ChatRoomController {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("memberId 또는 receiverId가 숫자 형식이 아닙니다.");
         }
-
         
+        // ✅ 1. 기존 방 있는지 확인
         String existingRoomId = chatRoomService.findExistingRoom(senderId, receiverId, facilityId);
 
         if (existingRoomId != null) {
-            return Map.of("chatroomId", existingRoomId);
+            // ✅ 2. 해당 방의 trashCan 정보 조회
+            ChatRoomDTO room = chatRoomService.getChatRoomDetailById(existingRoomId);
+
+            boolean isSender = senderId.equals(room.getSenderId());
+            boolean isReceiver = senderId.equals(room.getReceiverId());
+
+            boolean iLeftRoom = (isSender && Boolean.TRUE.equals(room.getSenderTrashCan())) ||
+                                (isReceiver && Boolean.TRUE.equals(room.getReceiverTrashCan()));
+
+            // ✅ 3. 내가 나가지 않았다면 기존 방 재사용
+            if (!iLeftRoom) {
+                return Map.of("chatroomId", existingRoomId);
+            }
         }
 
-        System.out.println("✅ ChatRoomController에서 createRoom 호출 예정");
-
+        // ✅ 4. 방이 없거나, 내가 나간 방이면 새 방 생성
         String newRoomId = chatRoomService.createRoom(senderId, receiverId, facilityId);
         return Map.of("chatroomId", newRoomId);
+
+        
+//        String existingRoomId = chatRoomService.findExistingRoom(senderId, receiverId, facilityId);
+//
+//        if (existingRoomId != null) {
+//            return Map.of("chatroomId", existingRoomId);
+//        }
+//
+//        System.out.println("✅ ChatRoomController에서 createRoom 호출 예정");
+//
+//        String newRoomId = chatRoomService.createRoom(senderId, receiverId, facilityId);
+//        return Map.of("chatroomId", newRoomId);
     }
     
     

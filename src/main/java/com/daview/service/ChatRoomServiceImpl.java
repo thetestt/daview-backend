@@ -163,6 +163,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         chatRoomMapper.updateTrashCan(chatroomId, memberId);
     }
     
+    //채팅방 있는지 없는지 체크
+    @Override
+    public ChatRoomDTO getChatRoomDetailById(String chatroomId) {
+        return chatRoomMapper.getChatRoomDetailById(chatroomId);
+    }
+    
+    
     //웹소켓 검증용서비스
     @Override
     public boolean isUserInChatroom(String chatroomId, Long memberId) {

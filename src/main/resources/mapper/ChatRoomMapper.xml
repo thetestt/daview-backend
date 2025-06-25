@@ -314,5 +314,15 @@ ORDER BY cm.sent_at IS NULL, cm.sent_at DESC
 </select>
 
 
+<!-- 채틷방 아이디로 나간방인지 아닌지 검색 -->
+<select id="getChatRoomDetailById" resultType="com.daview.dto.ChatRoomDTO">
+  SELECT chatroom_id AS chatroomId,
+         sender_id AS senderId,
+         receiver_id AS receiverId,
+         sender_trash_can AS senderTrashCan,
+         receiver_trash_can AS receiverTrashCan
+  FROM chatroom
+  WHERE chatroom_id = #{chatroomId}
+</select>
    
 </mapper>

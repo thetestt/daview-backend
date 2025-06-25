@@ -33,14 +33,27 @@ public class ChatRoomDTO {
     private Boolean senderTrashCan;
     private Boolean receiverTrashCan;
     
+    //나간 채팅방인지 검증할떄쓰는 DTO
+    private Long senderId; 
+    private Long receiverId; 
     
     
     
     
     
-    
-    
-    public Boolean getSenderTrashCan() {
+    public Long getSenderId() {
+		return senderId;
+	}
+	public void setSenderId(Long senderId) {
+		this.senderId = senderId;
+	}
+	public Long getReceiverId() {
+		return receiverId;
+	}
+	public void setReceiverId(Long receiverId) {
+		this.receiverId = receiverId;
+	}
+	public Boolean getSenderTrashCan() {
 		return senderTrashCan;
 	}
 	public void setSenderTrashCan(Boolean senderTrashCan) {
