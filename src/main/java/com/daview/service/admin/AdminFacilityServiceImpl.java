@@ -49,6 +49,22 @@ public class AdminFacilityServiceImpl implements AdminFacilityService {
     @Override
     public void deleteFacility(String id) {
         facilityMapper.deleteFacility(id);
+        System.out.println("===== 요양원 소프트 삭제 완료 =====");
+        System.out.println("Facility ID: " + id + " (trash_can = 1)");
+    }
+
+    @Override
+    public void restoreFacility(String id) {
+        facilityMapper.restoreFacility(id);
+        System.out.println("===== 요양원 복구 완료 =====");
+        System.out.println("Facility ID: " + id + " (trash_can = 0)");
+    }
+
+    @Override
+    public void permanentDeleteFacility(String id) {
+        facilityMapper.permanentDeleteFacility(id);
+        System.out.println("===== 요양원 영구 삭제 완료 =====");
+        System.out.println("Facility ID: " + id + " (완전히 삭제됨)");
     }
 
     @Override
