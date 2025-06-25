@@ -5,42 +5,93 @@ package com.daview.controller.admin;
 
 import com.daview.dto.FacilityDTO;
 import com.daview.service.admin.AdminFacilityService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/facility")
+@RequestMapping("/admin/facilities")
+@CrossOrigin(originPatterns = "*", allowCredentials = "true")
 public class AdminFacilityController {
 
-    private final AdminFacilityService facilityService;
+    @Autowired
+    private AdminFacilityService facilityService;
 
-    public AdminFacilityController(AdminFacilityService facilityService) {
-        this.facilityService = facilityService;
-    }
-
-    // 전체 조회
-    @GetMapping
-    public List<FacilityDTO> getAllFacilities() {
-        return facilityService.getAllFacilities();
-    }
-
-    // 등록
+    // 요양원 등록
     @PostMapping
-    public void createFacility(@RequestBody FacilityDTO dto) {
-        facilityService.createFacility(dto);
+    public ResponseEntity<String> addFacility(@RequestBody FacilityDTO facilityDTO) {
+        try {
+            facilityService.addFacility(facilityDTO);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("요양원이 성공적으로 등록되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("요양원 등록에 실패했습니다: " + e.getMessage());
+        }
     }
 
-    // 수정
+    // 전체 요양원 목록 조회
+    @GetMapping
+    public ResponseEntity<List<FacilityDTO>> getAllFacilities() {
+        try {
+            List<FacilityDTO> facilities = facilityService.getAllFacilities();
+            return ResponseEntity.ok(facilities);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // 특정 요양원 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<FacilityDTO> getFacilityById(@PathVariable("id") String id) {
+        try {
+            FacilityDTO facility = facilityService.getFacilityById(id);
+            if (facility != null) {
+                return ResponseEntity.ok(facility);
+            }
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // 요양원 정보 수정
     @PutMapping("/{id}")
-    public void updateFacility(@PathVariable String id, @RequestBody FacilityDTO dto) {
-    dto.setFacilityId(id);  // ✅ 문자열 UUID 그대로 설정
-    facilityService.updateFacility(dto);
+    public ResponseEntity<String> updateFacility(@PathVariable("id") String id, @RequestBody FacilityDTO facilityDTO) {
+        try {
+            facilityService.updateFacility(id, facilityDTO);
+            return ResponseEntity.ok("요양원 정보가 성공적으로 수정되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("요양원 정보 수정에 실패했습니다: " + e.getMessage());
+        }
     }
 
-    // 삭제
+    // 요양원 삭제
     @DeleteMapping("/{id}")
-    public void deleteFacility(@PathVariable Long id) {
-        facilityService.deleteFacility(id);
+    public ResponseEntity<String> deleteFacility(@PathVariable("id") String id) {
+        try {
+            facilityService.deleteFacility(id);
+            return ResponseEntity.ok("요양원이 성공적으로 삭제되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("요양원 삭제에 실패했습니다: " + e.getMessage());
+        }
+    }
+
+    // 지역별 요양원 검색
+    @GetMapping("/search")
+    public ResponseEntity<List<FacilityDTO>> searchFacilitiesByLocation(
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String facilityType) {
+        try {
+            List<FacilityDTO> facilities = facilityService.getAllFacilities();
+            return ResponseEntity.ok(facilities);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

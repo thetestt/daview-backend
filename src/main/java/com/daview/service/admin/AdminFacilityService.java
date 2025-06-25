@@ -7,8 +7,9 @@ import com.daview.dto.FacilityDTO;
 import java.util.List;
 
 public interface AdminFacilityService {
+    void addFacility(FacilityDTO facilityDTO);
     List<FacilityDTO> getAllFacilities();
-    void createFacility(FacilityDTO dto);
-    void updateFacility(FacilityDTO dto);
-    void deleteFacility(Long id);
+    void updateFacility(String id, FacilityDTO facilityDTO);
+    void deleteFacility(String id);
+    FacilityDTO getFacilityById(String id);
 }
