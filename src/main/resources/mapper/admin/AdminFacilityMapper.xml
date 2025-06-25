@@ -5,20 +5,125 @@
 
 <mapper namespace="com.daview.mapper.admin.AdminFacilityMapper">
 
-    <!-- 전체 조회 -->
-    <select id="selectAll" resultType="com.daview.dto.FacilityDTO">
-        SELECT *
-        FROM facility
-        WHERE is_deleted = 0
-        ORDER BY facility_id DESC
+    <!-- 기본 ResultMap -->
+    <resultMap id="FacilityResultMap" type="com.daview.dto.FacilityDTO">
+        <id property="facilityId" column="facility_id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="facilityName" column="facility_name"/>
+        <result property="facilityCharge" column="facility_charge"/>
+        <result property="facilityType" column="facility_type"/>
+        <result property="facilityAddressLocation" column="facility_address_location"/>
+        <result property="facilityAddressCity" column="facility_address_city"/>
+        <result property="facilityTheme" column="facility_theme"/>
+        <result property="facilityDetailAddress" column="facility_detail_address"/>
+        <result property="facilityHomepage" column="facility_homepage"/>
+        <result property="facilityPhone" column="facility_phone"/>
+        <result property="defaultMessage" column="default_message"/>
+        <result property="photoUrl" column="photo_url"/>
+    </resultMap>
+
+    <!-- 페이징 및 검색이 포함된 조회 -->
+    <select id="selectWithPaging" parameterType="map" resultMap="FacilityResultMap">
+        SELECT DISTINCT
+            f.facility_id,
+            f.member_id,
+            f.facility_name,
+            f.facility_charge,
+            f.facility_type,
+            f.facility_address_location,
+            f.facility_address_city,
+            f.facility_theme,
+            f.facility_detail_address,
+            f.facility_homepage,
+            f.facility_phone,
+            f.default_message,
+            fn.notice_title,
+            fn.notice_content,
+            fp.photo_url,
+            fp.is_thumbnail,
+            ft.category,
+            ft.facility_tag,
+            f.facility_created_at,
+            f.facility_update_at,
+            f.facility_deleted_at
+        FROM facility f
+        LEFT JOIN facility_notice fn ON f.facility_id = fn.facility_id AND fn.notice_deleted_at IS NULL
+        LEFT JOIN facility_photo fp ON f.facility_id = fp.facility_id
+        LEFT JOIN facility_tag ft ON f.facility_id = ft.facility_id
+        WHERE f.trash_can = 0
+        <if test="search != null and search != ''">
+            AND (f.facility_name LIKE CONCAT('%', #{search}, '%')
+                OR f.facility_address_location LIKE CONCAT('%', #{search}, '%')
+                OR f.facility_address_city LIKE CONCAT('%', #{search}, '%')
+                OR f.facility_type LIKE CONCAT('%', #{search}, '%'))
+        </if>
+        <if test="type != null and type != ''">
+            AND f.facility_type = #{type}
+        </if>
+        ORDER BY f.facility_created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 총 개수 조회 -->
+    <select id="countFacilities" parameterType="map" resultType="int">
+        SELECT COUNT(DISTINCT f.facility_id)
+        FROM facility f
+        LEFT JOIN facility_notice fn ON f.facility_id = fn.facility_id AND fn.notice_deleted_at IS NULL
+        LEFT JOIN facility_photo fp ON f.facility_id = fp.facility_id
+        LEFT JOIN facility_tag ft ON f.facility_id = ft.facility_id
+        WHERE f.trash_can = 0
+        <if test="search != null and search != ''">
+            AND (f.facility_name LIKE CONCAT('%', #{search}, '%')
+                OR f.facility_address_location LIKE CONCAT('%', #{search}, '%')
+                OR f.facility_address_city LIKE CONCAT('%', #{search}, '%')
+                OR f.facility_type LIKE CONCAT('%', #{search}, '%'))
+        </if>
+        <if test="type != null and type != ''">
+            AND f.facility_type = #{type}
+        </if>
+    </select>
+
+    <!-- 전체 조회 (기존) -->
+    <select id="selectAll" resultMap="FacilityResultMap">
+        SELECT DISTINCT
+            f.facility_id,
+            f.member_id,
+            f.facility_name,
+            f.facility_charge,
+            f.facility_type,
+            f.facility_address_location,
+            f.facility_address_city,
+            f.facility_theme,
+            f.facility_detail_address,
+            f.facility_homepage,
+            f.facility_phone,
+            f.default_message,
+            fn.notice_title,
+            fn.notice_content,
+            fp.photo_url,
+            fp.is_thumbnail,
+            ft.category,
+            ft.facility_tag
+        FROM facility f
+        LEFT JOIN facility_notice fn ON f.facility_id = fn.facility_id AND fn.notice_deleted_at IS NULL
+        LEFT JOIN facility_photo fp ON f.facility_id = fp.facility_id
+        LEFT JOIN facility_tag ft ON f.facility_id = ft.facility_id
+        WHERE f.trash_can = 0
+        ORDER BY f.facility_created_at DESC
     </select>
 
     <!-- 등록 -->
     <insert id="insert" parameterType="com.daview.dto.FacilityDTO">
         INSERT INTO facility (
-            facility_name, address, phone, email, capacity, prod_detail
+            facility_id, member_id, facility_name, facility_charge, facility_type,
+            facility_address_location, facility_address_city, facility_theme,
+            facility_detail_address, facility_homepage, facility_phone,
+            default_message, facility_created_at
         ) VALUES (
-            #{facilityName}, #{address}, #{phone}, #{email}, #{capacity}, #{prodDetail}
+            #{facilityId}, #{memberId}, #{facilityName}, #{facilityCharge}, #{facilityType},
+            #{facilityAddressLocation}, #{facilityAddressCity}, #{facilityTheme},
+            #{facilityDetailAddress}, #{facilityHomepage}, #{facilityPhone},
+            #{defaultMessage}, NOW()
         )
     </insert>
 
@@ -27,21 +132,159 @@
         UPDATE facility
         SET
             facility_name = #{facilityName},
-            address = #{address},
-            phone = #{phone},
-            email = #{email},
-            capacity = #{capacity},
-            prod_detail = #{prodDetail},
-            updated_at = NOW()
+            facility_charge = #{facilityCharge},
+            facility_type = #{facilityType},
+            facility_address_location = #{facilityAddressLocation},
+            facility_address_city = #{facilityAddressCity},
+            facility_theme = #{facilityTheme},
+            facility_detail_address = #{facilityDetailAddress},
+            facility_homepage = #{facilityHomepage},
+            facility_phone = #{facilityPhone},
+            default_message = #{defaultMessage},
+            facility_update_at = NOW()
         WHERE facility_id = #{facilityId}
     </update>
 
-    <!-- 삭제 (is_deleted 처리) -->
+    <!-- 삭제 (trash_can 처리) -->
     <update id="delete">
         UPDATE facility
-        SET is_deleted = 1,
-            updated_at = NOW()
+        SET trash_can = 1,
+            facility_deleted_at = NOW()
         WHERE facility_id = #{id}
     </update>
+
+    <!-- 요양원 등록 -->
+    <insert id="insertFacility" parameterType="com.daview.dto.FacilityDTO">
+        INSERT INTO facility (
+            facility_name, 
+            facility_charge, 
+            facility_type, 
+            facility_address_location, 
+            facility_address_city, 
+            facility_theme, 
+            facility_detail_address, 
+            facility_homepage,
+            facility_phone,
+            facility_created_at,
+            facility_update_at,
+            trash_can
+        )
+        VALUES (
+            #{facilityName}, 
+            #{monthlyFee}, 
+            #{facilityType}, 
+            #{location}, 
+            #{city},
+            #{theme},
+            #{detailedAddress},
+            #{homepageUrl},
+            #{phoneNumber},
+            NOW(),
+            NOW(),
+            0
+        )
+    </insert>
+
+    <!-- 요양원 목록 조회용 ResultMap -->
+    <resultMap id="FacilityListResultMap" type="com.daview.dto.FacilityDTO">
+        <id property="facilityId" column="facilityId"/>
+        <result property="facilityName" column="facilityName"/>
+        <result property="facilityCharge" column="facilityCharge"/>
+        <result property="facilityType" column="facilityType"/>
+        <result property="facilityAddressLocation" column="facilityAddressLocation"/>
+        <result property="facilityAddressCity" column="facilityAddressCity"/>
+        <result property="facilityTheme" column="facilityTheme"/>
+        <result property="facilityDetailAddress" column="facilityDetailAddress"/>
+        <result property="facilityHomepage" column="facilityHomepage"/>
+        <result property="facilityPhone" column="facilityPhone"/>
+        <result property="facilityCreatedAt" column="facilityCreatedAt"/>
+        <result property="facilityUpdateAt" column="facilityUpdateAt"/>
+        <result property="noticeTitle" column="noticeTitle"/>
+        <result property="noticeContent" column="noticeContent"/>
+        <result property="photoUrl" column="photoUrl"/>
+        <result property="isThumbnail" column="isThumbnail" javaType="String"/>
+        <result property="category" column="category"/>
+        <result property="facilityTag" column="facilityTag"/>
+    </resultMap>
+
+    <!-- 요양원 목록 조회 -->
+    <select id="getAllFacilities" resultMap="FacilityListResultMap">
+        SELECT DISTINCT
+            f.facility_id as facilityId,
+            f.facility_name as facilityName,
+            f.facility_charge as facilityCharge,
+            f.facility_type as facilityType,
+            f.facility_address_location as facilityAddressLocation,
+            f.facility_address_city as facilityAddressCity,
+            f.facility_theme as facilityTheme,
+            f.facility_detail_address as facilityDetailAddress,
+            f.facility_homepage as facilityHomepage,
+            f.facility_phone as facilityPhone,
+            f.facility_created_at as facilityCreatedAt,
+            f.facility_update_at as facilityUpdateAt,
+            fn.notice_title as noticeTitle,
+            fn.notice_content as noticeContent,
+            fp.photo_url as photoUrl,
+            CASE WHEN fp.is_thumbnail = true THEN '썸네일' ELSE '일반' END as isThumbnail,
+            ft.category as category,
+            ft.facility_tag as facilityTag
+        FROM facility f
+        LEFT JOIN facility_notice fn ON f.facility_id = fn.facility_id AND fn.notice_deleted_at IS NULL
+        LEFT JOIN facility_photo fp ON f.facility_id = fp.facility_id
+        LEFT JOIN facility_tag ft ON f.facility_id = ft.facility_id
+        ORDER BY f.facility_created_at DESC
+    </select>
+
+    <!-- 요양원 수정 -->
+    <update id="updateFacility" parameterType="com.daview.dto.FacilityDTO">
+        UPDATE facility
+        SET facility_name = #{facilityName},
+            facility_charge = #{monthlyFee},
+            facility_type = #{facilityType},
+            facility_address_location = #{location},
+            facility_address_city = #{city},
+            facility_theme = #{theme},
+            facility_detail_address = #{detailedAddress},
+            facility_homepage = #{homepageUrl},
+            facility_phone = #{phoneNumber},
+            facility_update_at = NOW()
+        WHERE facility_id = #{facilityId}
+    </update>
+
+    <!-- 요양원 삭제 -->
+    <delete id="deleteFacility" parameterType="java.lang.String">
+        DELETE FROM facility 
+        WHERE facility_id = #{id}
+    </delete>
+
+    <!-- 요양원 상세 조회 -->
+    <select id="getFacilityById" parameterType="java.lang.String" resultType="com.daview.dto.FacilityDTO">
+        SELECT 
+            f.facility_id as facilityId,
+            f.facility_name as facilityName,
+            f.monthly_fee as monthlyFee,
+            f.facility_type as facilityType,
+            f.location,
+            f.city,
+            f.theme,
+            f.detailed_address as detailedAddress,
+            f.homepage_url as homepageUrl,
+            f.phone_number as phoneNumber,
+            f.created_at as createdAt,
+            f.updated_at as updatedAt,
+            COALESCE(fn.notice_title, '공지사항 없음') as noticeTitle,
+            COALESCE(fn.notice_content, '공지사항 내용 없음') as noticeContent,
+            COALESCE(fp.photo_url, '사진 없음') as photoUrl,
+            COALESCE(fp.thumbnail_url, '썸네일 없음') as thumbnailUrl,
+            COALESCE(GROUP_CONCAT(DISTINCT ft.tag_name SEPARATOR ', '), '태그 없음') as tagString
+        FROM facility f
+        LEFT JOIN facility_notice fn ON f.facility_id = fn.facility_id
+        LEFT JOIN facility_photo fp ON f.facility_id = fp.facility_id
+        LEFT JOIN facility_tag ft ON f.facility_id = ft.facility_id
+        WHERE f.facility_id = #{id}
+        GROUP BY f.facility_id, f.facility_name, f.monthly_fee, f.facility_type, f.location, f.city, 
+                 f.theme, f.detailed_address, f.homepage_url, f.phone_number, f.created_at, f.updated_at,
+                 fn.notice_title, fn.notice_content, fp.photo_url, fp.thumbnail_url
+    </select>
 
 </mapper>
