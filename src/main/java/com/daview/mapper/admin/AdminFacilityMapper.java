@@ -13,6 +13,8 @@ public interface AdminFacilityMapper {
     void insertFacility(FacilityDTO facilityDTO);
     List<FacilityDTO> getAllFacilities();
     void updateFacility(FacilityDTO facilityDTO);
-    void deleteFacility(String id);
+    void deleteFacility(String id);  // Soft Delete
+    void restoreFacility(String id);  // Soft Delete 취소 (복구)
+    void permanentDeleteFacility(String id);  // Hard Delete (관리자 전용)
     FacilityDTO getFacilityById(String id);
 }

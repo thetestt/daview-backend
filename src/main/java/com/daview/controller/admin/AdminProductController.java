@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.daview.service.admin.AdminCaregiverService;
+import com.daview.service.admin.AdminFacilityService;
 import com.daview.dto.CaregiverDTO;
+import com.daview.dto.FacilityDTO;
 import com.daview.mapper.UserMapper;
 import com.daview.dto.User;
 
@@ -20,6 +22,9 @@ public class AdminProductController {
 
     @Autowired
     private AdminCaregiverService caregiverService;
+    
+    @Autowired
+    private AdminFacilityService facilityService;
     
     @Autowired
     private UserMapper userMapper;
@@ -39,10 +44,42 @@ public class AdminProductController {
             // ⭐ 수정: type 파라미터에 따라 데이터 필터링
             List<Map<String, Object>> products = new ArrayList<>();
             
-            // 요양원/실버타운 요청 시 빈 결과 반환 (현재 DB에 해당 데이터 없음)
+            // 요양원/실버타운 요청 시 실제 요양원 데이터 조회
             if ("요양원/실버타운".equals(type)) {
-                System.out.println("요양원/실버타운 필터링 - 빈 결과 반환");
-                // 빈 리스트 반환
+                System.out.println("요양원/실버타운 필터링 - 요양원 데이터 조회");
+                List<FacilityDTO> facilities = facilityService.getAllFacilities();
+                System.out.println("DB에서 조회된 요양원 수: " + facilities.size());
+                
+                for (FacilityDTO facility : facilities) {
+                    Map<String, Object> product = new HashMap<>();
+                    
+                    // 프론트엔드가 기대하는 필드명으로 매핑
+                    product.put("prodId", facility.getFacilityId() != null ? facility.getFacilityId() : "미설정");
+                    product.put("prodName", facility.getFacilityName() != null ? facility.getFacilityName() : "시설명 없음");
+                    product.put("prodTypeName", facility.getFacilityType() != null ? facility.getFacilityType() : "요양원/실버타운");
+                    product.put("prodType", "facility");
+                    product.put("prodPrice", 0); // 요양원은 별도 가격 없음
+                    product.put("price", 0);
+                    product.put("prodDetail", facility.getNoticeContent() != null ? facility.getNoticeContent() : "시설 소개가 없습니다.");
+                    product.put("description", facility.getNoticeContent() != null ? facility.getNoticeContent() : "시설 소개가 없습니다.");
+                    
+                    // 추가 정보
+                    product.put("location", 
+                        (facility.getLocation() != null ? facility.getLocation() : "") + 
+                        " " + 
+                        (facility.getCity() != null ? facility.getCity() : ""));
+                    product.put("address", facility.getDetailedAddress() != null ? facility.getDetailedAddress() : "주소 미설정");
+                    product.put("phoneNumber", facility.getPhoneNumber() != null ? facility.getPhoneNumber() : "연락처 미설정");
+                    product.put("monthlyFee", facility.getMonthlyFee() != null ? facility.getMonthlyFee() : 0);
+                    product.put("theme", facility.getTheme() != null ? facility.getTheme() : "테마 미설정");
+                    product.put("createdAt", facility.getFacilityCreatedAt() != null ? facility.getFacilityCreatedAt() : "미설정");
+                    
+                    // 카테고리와 태그 정보 추가
+                    product.put("category", facility.getCategory() != null ? facility.getCategory() : "미설정");
+                    product.put("facilityTag", facility.getFacilityTag() != null ? facility.getFacilityTag() : "태그 없음");
+                    
+                    products.add(product);
+                }
             } else {
                 // 기본값 또는 요양사 타입인 경우 간병인 데이터 조회
                 List<CaregiverDTO> caregivers = caregiverService.getAllCaregivers();

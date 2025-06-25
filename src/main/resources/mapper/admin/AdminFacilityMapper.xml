@@ -37,18 +37,9 @@
             f.facility_homepage,
             f.facility_phone,
             f.default_message,
-            (SELECT notice_title FROM facility_notice fn2 
-             WHERE fn2.facility_id = f.facility_id AND fn2.notice_deleted_at IS NULL 
-             ORDER BY fn2.notice_created_at DESC LIMIT 1) as notice_title,
-            (SELECT notice_content FROM facility_notice fn3 
-             WHERE fn3.facility_id = f.facility_id AND fn3.notice_deleted_at IS NULL 
-             ORDER BY fn3.notice_created_at DESC LIMIT 1) as notice_content,
             (SELECT photo_url FROM facility_photo fp2 
              WHERE fp2.facility_id = f.facility_id AND fp2.is_thumbnail = 1 
              LIMIT 1) as photo_url,
-            1 as is_thumbnail,
-            '' as category,
-            '' as facility_tag,
             f.facility_created_at,
             f.facility_update_at,
             f.facility_deleted_at
@@ -98,18 +89,9 @@
             f.facility_homepage,
             f.facility_phone,
             f.default_message,
-            (SELECT notice_title FROM facility_notice fn2 
-             WHERE fn2.facility_id = f.facility_id AND fn2.notice_deleted_at IS NULL 
-             ORDER BY fn2.notice_created_at DESC LIMIT 1) as notice_title,
-            (SELECT notice_content FROM facility_notice fn3 
-             WHERE fn3.facility_id = f.facility_id AND fn3.notice_deleted_at IS NULL 
-             ORDER BY fn3.notice_created_at DESC LIMIT 1) as notice_content,
             (SELECT photo_url FROM facility_photo fp2 
              WHERE fp2.facility_id = f.facility_id AND fp2.is_thumbnail = 1 
-             LIMIT 1) as photo_url,
-            1 as is_thumbnail,
-            '' as category,
-            '' as facility_tag
+             LIMIT 1) as photo_url
         FROM facility f
         WHERE f.trash_can = 0
         ORDER BY f.facility_created_at DESC
@@ -193,7 +175,6 @@
         <id property="facilityId" column="facilityId"/>
         <result property="facilityName" column="facilityName"/>
         <result property="facilityCharge" column="facilityCharge"/>
-        <result property="facilityType" column="facilityType"/>
         <result property="facilityAddressLocation" column="facilityAddressLocation"/>
         <result property="facilityAddressCity" column="facilityAddressCity"/>
         <result property="facilityTheme" column="facilityTheme"/>
@@ -202,10 +183,7 @@
         <result property="facilityPhone" column="facilityPhone"/>
         <result property="facilityCreatedAt" column="facilityCreatedAt"/>
         <result property="facilityUpdateAt" column="facilityUpdateAt"/>
-        <result property="noticeTitle" column="noticeTitle"/>
-        <result property="noticeContent" column="noticeContent"/>
         <result property="photoUrl" column="photoUrl"/>
-        <result property="isThumbnail" column="isThumbnail" javaType="String"/>
         <result property="category" column="category"/>
         <result property="facilityTag" column="facilityTag"/>
     </resultMap>
@@ -216,7 +194,6 @@
             f.facility_id as facilityId,
             f.facility_name as facilityName,
             f.facility_charge as facilityCharge,
-            f.facility_type as facilityType,
             f.facility_address_location as facilityAddressLocation,
             f.facility_address_city as facilityAddressCity,
             f.facility_theme as facilityTheme,
@@ -225,18 +202,15 @@
             f.facility_phone as facilityPhone,
             f.facility_created_at as facilityCreatedAt,
             f.facility_update_at as facilityUpdateAt,
-            (SELECT notice_title FROM facility_notice fn2 
-             WHERE fn2.facility_id = f.facility_id AND fn2.notice_deleted_at IS NULL 
-             ORDER BY fn2.notice_created_at DESC LIMIT 1) as noticeTitle,
-            (SELECT notice_content FROM facility_notice fn3 
-             WHERE fn3.facility_id = f.facility_id AND fn3.notice_deleted_at IS NULL 
-             ORDER BY fn3.notice_created_at DESC LIMIT 1) as noticeContent,
             (SELECT photo_url FROM facility_photo fp2 
              WHERE fp2.facility_id = f.facility_id AND fp2.is_thumbnail = 1 
              LIMIT 1) as photoUrl,
-            '썸네일' as isThumbnail,
-            '' as category,
-            '' as facilityTag
+            (SELECT category FROM facility_tag ft2 
+             WHERE ft2.facility_id = f.facility_id 
+             LIMIT 1) as category,
+            (SELECT GROUP_CONCAT(DISTINCT facility_tag SEPARATOR ', ') 
+             FROM facility_tag ft3 
+             WHERE ft3.facility_id = f.facility_id) as facilityTag
         FROM facility f
         WHERE f.trash_can = 0
         ORDER BY f.facility_created_at DESC
@@ -258,8 +232,24 @@
         WHERE facility_id = #{facilityId}
     </update>
 
-    <!-- 요양원 삭제 -->
-    <delete id="deleteFacility" parameterType="java.lang.String">
+    <!-- 요양원 삭제 (Soft Delete) -->
+    <update id="deleteFacility" parameterType="java.lang.String">
+        UPDATE facility
+        SET trash_can = 1,
+            facility_deleted_at = NOW()
+        WHERE facility_id = #{id}
+    </update>
+
+    <!-- 요양원 복구 (Soft Delete 취소) -->
+    <update id="restoreFacility" parameterType="java.lang.String">
+        UPDATE facility
+        SET trash_can = 0,
+            facility_deleted_at = NULL
+        WHERE facility_id = #{id}
+    </update>
+
+    <!-- 요양원 영구 삭제 (Hard Delete - 관리자 전용) -->
+    <delete id="permanentDeleteFacility" parameterType="java.lang.String">
         DELETE FROM facility 
         WHERE facility_id = #{id}
     </delete>
