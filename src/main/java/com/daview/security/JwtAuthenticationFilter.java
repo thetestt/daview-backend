@@ -52,6 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 String token = authHeader.substring(7);
                 String username = jwtUtil.extractUsername(token);
+                Long memberId = jwtUtil.extractMemberId(token);
 
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -61,6 +62,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                 new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authToken);
+                        
+                        request.setAttribute("memberId", memberId);
+                        System.out.println("[JWT 필터] memberId = " + memberId);
+                        
+                        System.out.println("memberId from token: " + memberId);
                         System.out.println("JWT authentication successful for: " + username);
                     }
                 }

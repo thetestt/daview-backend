@@ -16,6 +16,9 @@ import com.daview.util.JwtUtil;
 
 @Service
 public class AuthService {
+	
+	@Autowired
+	private JwtUtil jwtUtil;
 
 	@Autowired
 	private CouponService couponService;
@@ -62,7 +65,7 @@ public class AuthService {
 			return response;
 		}
 
-		String token = JwtUtil.generateToken(user.getUsername(), user.getRole(), user.getMemberId());
+		String token = jwtUtil.generateToken(user.getUsername(), user.getRole(), user.getMemberId());
 
 		response.put("success", true);
 		response.put("token", token);

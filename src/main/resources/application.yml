@@ -60,4 +60,8 @@ naver:
     secret-key: "ncp_iam_BPKMKR2vBPVaDAQTWHmLU3Q8APViuXhSDj"
     service-id: "ncp:sms:kr:354802395254:daview"
     sender-phone: "01087665119" 
+    
+jwt:
+  secret: your-secure-secret-key-must-be-long-enough
+
 
