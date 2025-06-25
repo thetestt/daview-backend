@@ -10,15 +10,21 @@
         VALUES (#{chatroomId}, #{senderId}, #{content}, #{sentAt}, 0)
     </insert>
     
-  <select id="getMessagesByRoom" resultType="com.daview.dto.ChatMessageDTO" parameterType="string">
-    SELECT chatroom_id AS chatroomId,
-           sender_id    AS senderId,
-           content,
-           sent_at      AS sentAt
-    FROM chatmessage
-    WHERE chatroom_id = #{chatroomId}
-    ORDER BY sent_at ASC
-  </select>
+<select id="getMessagesByRoom" resultType="com.daview.dto.ChatMessageDTO" parameterType="map">
+  SELECT cm.chatroom_id AS chatroomId,
+         cm.sender_id   AS senderId,
+         cm.content,
+         cm.sent_at     AS sentAt
+  FROM chatmessage cm
+  JOIN chatroom cr ON cm.chatroom_id = cr.chatroom_id
+  WHERE cm.chatroom_id = #{chatroomId}
+    AND (
+      (cr.sender_id = #{memberId} AND cr.sender_trash_can = FALSE)
+      OR
+      (cr.receiver_id = #{memberId} AND cr.receiver_trash_can = FALSE)
+    )
+  ORDER BY cm.sent_at ASC
+</select>
 
 </mapper>
 

@@ -6,5 +6,5 @@ import com.daview.dto.ChatMessageDTO;
 
 public interface ChatMessageService {
     void saveMessage(ChatMessageDTO message);
-    List<ChatMessageDTO> getMessagesByRoom(String chatroomId);
+    List<ChatMessageDTO> getMessagesByRoom(String chatroomId, Long  memberId);
 }

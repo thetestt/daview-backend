@@ -29,11 +29,30 @@ public class ChatRoomDTO {
  // 일반 유저 전용 필드
     private String userName; // 일반 유저 이름
     
+    //채팅방 나가기 사용필드
+    private Boolean senderTrashCan;
+    private Boolean receiverTrashCan;
     
     
     
     
-
+    
+    
+    
+    
+    public Boolean getSenderTrashCan() {
+		return senderTrashCan;
+	}
+	public void setSenderTrashCan(Boolean senderTrashCan) {
+		this.senderTrashCan = senderTrashCan;
+	}
+	public Boolean getReceiverTrashCan() {
+		return receiverTrashCan;
+	}
+	public void setReceiverTrashCan(Boolean receiverTrashCan) {
+		this.receiverTrashCan = receiverTrashCan;
+	}
+    
     public String getCaregiverName() {
 		return caregiverName;
 	}

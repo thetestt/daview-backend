@@ -58,7 +58,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     }
 
     @Override
-    public List<ChatMessageDTO> getMessagesByRoom(String chatroomId) {
-        return chatMessageMapper.getMessagesByRoom(chatroomId);
+    public List<ChatMessageDTO> getMessagesByRoom(String chatroomId, Long memberId) {
+        return chatMessageMapper.getMessagesByRoom(chatroomId, memberId);
     }
 }

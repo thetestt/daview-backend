@@ -45,21 +45,31 @@
   ) cm ON cr.chatroom_id = cm.chatroom_id
 WHERE
   (
-    cr.sender_id = #{memberId}
-    OR cr.receiver_id = #{memberId}
-    OR cr.sender_id IN (
-      SELECT facility_id FROM facility WHERE member_id = #{memberId}
-      UNION
-      SELECT caregiver_id FROM caregiver WHERE member_id = #{memberId}
+    (
+      cr.sender_id = #{memberId} AND cr.sender_trash_can = FALSE
     )
-    OR cr.receiver_id IN (
-      SELECT facility_id FROM facility WHERE member_id = #{memberId}
-      UNION
-      SELECT caregiver_id FROM caregiver WHERE member_id = #{memberId}
+    OR
+    (
+      cr.receiver_id = #{memberId} AND cr.receiver_trash_can = FALSE
+    )
+    OR
+    (
+      cr.sender_id IN (
+        SELECT facility_id FROM facility WHERE member_id = #{memberId}
+        UNION
+        SELECT caregiver_id FROM caregiver WHERE member_id = #{memberId}
+      ) AND cr.sender_trash_can = FALSE
+    )
+    OR
+    (
+      cr.receiver_id IN (
+        SELECT facility_id FROM facility WHERE member_id = #{memberId}
+        UNION
+        SELECT caregiver_id FROM caregiver WHERE member_id = #{memberId}
+      ) AND cr.receiver_trash_can = FALSE
     )
   )
-  AND cr.trash_can = 0
-  ORDER BY cm.sent_at IS NULL, cm.sent_at DESC
+ORDER BY cm.sent_at IS NULL, cm.sent_at DESC
 </select>
   
     <!-- 1. 채팅방 생성 -->
@@ -79,14 +89,24 @@ WHERE
 </select>
 
     <!-- 3. 유저의 모든 채팅방 목록 조회 -->
-    <select id="getChatRoomsByMemberId" resultType="com.daview.dto.ChatRoomDTO">
-        SELECT chatroom_id AS chatroomId,
-               sender_id AS memberId,
-               facility_id AS facilityId,
-               created_at AS createdAt
-        FROM chatroom
-        WHERE sender_id = #{memberId}
-    </select>
+<select id="getChatRoomsByMemberId" resultType="com.daview.dto.ChatRoomDTO">
+    SELECT chatroom_id AS chatroomId,
+           CASE 
+             WHEN sender_id = #{memberId} THEN sender_id
+             ELSE receiver_id
+           END AS memberId,
+           facility_id AS facilityId,
+           created_at AS createdAt
+    FROM chatroom
+    WHERE 
+      (
+        sender_id = #{memberId} AND sender_trash_can = FALSE
+      )
+      OR
+      (
+        receiver_id = #{memberId} AND receiver_trash_can = FALSE
+      )
+</select>
     
     <!-- 채팅방 접근권한 맴버 아이디 -->
 <select id="isUserInChatRoom" resultType="int">
@@ -136,6 +156,11 @@ WHERE
     )
   ) cm ON cr.chatroom_id = cm.chatroom_id
   WHERE cr.chatroom_id = #{chatroomId}
+    AND (
+      (cr.sender_id = #{memberId} AND cr.sender_trash_can = FALSE)
+      OR
+      (cr.receiver_id = #{memberId} AND cr.receiver_trash_can = FALSE)
+    )
 </select>
 
 <select id="getOpponentId" resultType="long">
@@ -266,11 +291,28 @@ WHERE
 </select>
 
 <update id="updateTrashCan">
-    UPDATE chatroom
-    SET trash_can = 1, deleted_at = NOW()
-    WHERE chatroom_id = #{chatroomId}
-      AND (sender_id = #{memberId} OR receiver_id = #{memberId})
+  UPDATE chatroom
+  SET 
+    sender_trash_can = CASE WHEN sender_id = #{memberId} THEN TRUE ELSE sender_trash_can END,
+    receiver_trash_can = CASE WHEN receiver_id = #{memberId} THEN TRUE ELSE receiver_trash_can END,
+    deleted_at = NOW()
+  WHERE chatroom_id = #{chatroomId}
+    AND (sender_id = #{memberId} OR receiver_id = #{memberId})
 </update>
+
+<select id="existsByChatroomIdAndMemberId" resultType="boolean" parameterType="map">
+  SELECT EXISTS (
+    SELECT 1
+    FROM chatroom
+    WHERE chatroom_id = #{chatroomId}
+      AND (
+        (sender_id = #{memberId} AND sender_trash_can = FALSE)
+        OR
+        (receiver_id = #{memberId} AND receiver_trash_can = FALSE)
+      )
+  )
+</select>
+
 
    
 </mapper>

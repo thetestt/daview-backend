@@ -3,7 +3,9 @@ package com.daview.service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -25,19 +27,22 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     private final KafkaChatProducer kafkaChatProducer;
     private final CaregiverMapper caregiverMapper;
     private final UserMapper userMapper;
-
+   
+    
     public ChatRoomServiceImpl(ChatRoomMapper chatRoomMapper,
                                ChatMessageMapper chatMessageMapper,
                                FacilityMapper facilityMapper,
                                CaregiverMapper caregiverMapper,
                                KafkaChatProducer kafkaChatProducer,
-                               UserMapper userMapper) {
+                               UserMapper userMapper
+                               ) {
         this.chatRoomMapper = chatRoomMapper;
         this.chatMessageMapper = chatMessageMapper;
         this.facilityMapper = facilityMapper;
         this.caregiverMapper = caregiverMapper;
         this.kafkaChatProducer = kafkaChatProducer;
         this.userMapper = userMapper;
+       
     }
 
     // ✅ 유저가 속한 채팅방 리스트 가져오기
@@ -156,5 +161,14 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public void exitChatRoom(String chatroomId, Long memberId) {
         // 본인이 속한 채팅방인지 확인하고 trash_can 처리
         chatRoomMapper.updateTrashCan(chatroomId, memberId);
+    }
+    
+    //웹소켓 검증용서비스
+    @Override
+    public boolean isUserInChatroom(String chatroomId, Long memberId) {
+    	Map<String, Object> param = new HashMap<>();
+        param.put("chatroomId", chatroomId);
+        param.put("memberId", memberId);
+        return chatRoomMapper.existsByChatroomIdAndMemberId(param);
     }
 }
