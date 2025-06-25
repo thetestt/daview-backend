@@ -49,6 +49,10 @@ public interface ChatRoomMapper {
     
     void updateTrashCan(@Param("chatroomId") String chatroomId, @Param("memberId") Long memberId);
     
+    
+    // ✅ 채팅방 상세 정보 (sender/receiver 및 trashCan 포함) ← 💬 "내가 나갔는지" 확인용
+    ChatRoomDTO getChatRoomDetailById(@Param("chatroomId") String chatroomId);
+    
     //웹소켓 검증용
     boolean existsByChatroomIdAndMemberId(Map<String, Object> param);
     
