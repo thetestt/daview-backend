@@ -61,4 +61,11 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     public List<ChatMessageDTO> getMessagesByRoom(String chatroomId, Long memberId) {
         return chatMessageMapper.getMessagesByRoom(chatroomId, memberId);
     }
+    
+  //채팅 읽음처리
+    @Override
+    public void markMessagesAsRead(String chatroomId, Long memberId) {
+    	System.out.println("✅ 읽음 처리 요청: chatroomId = " + chatroomId + ", memberId = " + memberId);
+        chatMessageMapper.markMessagesAsRead(chatroomId, memberId);
+    }
 }

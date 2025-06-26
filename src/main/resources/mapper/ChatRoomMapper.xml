@@ -45,29 +45,9 @@
   ) cm ON cr.chatroom_id = cm.chatroom_id
 WHERE
   (
-    (
-      cr.sender_id = #{memberId} AND cr.sender_trash_can = FALSE
-    )
+    (cr.sender_id = #{memberId} AND cr.sender_trash_can = FALSE)
     OR
-    (
-      cr.receiver_id = #{memberId} AND cr.receiver_trash_can = FALSE
-    )
-    OR
-    (
-      cr.sender_id IN (
-        SELECT facility_id FROM facility WHERE member_id = #{memberId}
-        UNION
-        SELECT caregiver_id FROM caregiver WHERE member_id = #{memberId}
-      ) AND cr.sender_trash_can = FALSE
-    )
-    OR
-    (
-      cr.receiver_id IN (
-        SELECT facility_id FROM facility WHERE member_id = #{memberId}
-        UNION
-        SELECT caregiver_id FROM caregiver WHERE member_id = #{memberId}
-      ) AND cr.receiver_trash_can = FALSE
-    )
+    (cr.receiver_id = #{memberId} AND cr.receiver_trash_can = FALSE)
   )
 ORDER BY cm.sent_at IS NULL, cm.sent_at DESC
 </select>
@@ -78,7 +58,7 @@ ORDER BY cm.sent_at IS NULL, cm.sent_at DESC
     VALUES (#{chatroomId}, #{senderId}, #{receiverId}, #{facilityId})
 </insert>
 	
-	<!-- 2. 기존 채팅방 확인 -->
+	<!-- 2. 기존 채팅방 확인 처음로딩때_기본리스트 -->
 <select id="findChatRoomId" resultType="string">
     SELECT chatroom_id
     FROM chatroom
@@ -117,10 +97,15 @@ ORDER BY cm.sent_at IS NULL, cm.sent_at DESC
 </select>
     
     
-
+<!-- 기본 채팅 리스트에 정보넣기 쿼리 + 상대방 나갔는지 체크하려고 했는데 꼬인듯?  -->
 <select id="getChatRoomInfoForList" resultType="com.daview.dto.ChatRoomDTO">
+
   SELECT
     cr.chatroom_id AS chatroomId,
+    cr.sender_id AS senderId,
+    cr.receiver_id AS receiverId,
+    cr.sender_trash_can AS senderTrashCan,
+    cr.receiver_trash_can AS receiverTrashCan,
     CASE
       WHEN cr.sender_id = #{memberId} THEN cr.receiver_id
       ELSE cr.sender_id
@@ -163,6 +148,7 @@ ORDER BY cm.sent_at IS NULL, cm.sent_at DESC
     )
 </select>
 
+
 <select id="getOpponentId" resultType="long">
   SELECT CASE
            WHEN sender_id = #{memberId} THEN receiver_id
@@ -172,9 +158,14 @@ ORDER BY cm.sent_at IS NULL, cm.sent_at DESC
   WHERE chatroom_id = #{chatroomId}
 </select>
 
+<!--  상대방 나갔는지 체트하는 쿼리 추가 -->
 <select id="getChatRoomInfo" resultType="com.daview.dto.ChatRoomDTO">
   SELECT
     cr.chatroom_id AS chatroomId,
+        cr.sender_id AS senderId,
+    cr.receiver_id AS receiverId,
+    cr.sender_trash_can AS senderTrashCan,
+    cr.receiver_trash_can AS receiverTrashCan,
     
     CASE
       WHEN cr.sender_id = #{memberId} THEN cr.receiver_id
