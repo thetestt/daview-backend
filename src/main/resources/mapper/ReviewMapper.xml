@@ -25,4 +25,17 @@
 		FROM review_board
 		WHERE rev_id = #{rev_id}
 	</select>
+	<update id="increaseReviewViews" parameterType="long">
+		UPDATE review_board
+		SET rev_views = rev_views + 1
+		WHERE rev_id = #{revId}
+	</update>
+	<update id="updateReview" parameterType="com.daview.dto.ReviewDTO">
+		UPDATE review_board
+		SET prod_nm = #{prodNm}, 
+			rev_ttl = #{revTtl}, 
+			rev_cont = #{revCont}, 
+			rev_stars = #{revStars}
+		WHERE rev_id = #{revId}
+	</update>
 </mapper>

@@ -12,4 +12,10 @@ public interface ReviewService {
 	int getTotalReviewCount();
 	
 	ReviewDTO getReviewById(Long revId);
+	
+	void increaseReviewViews(Long revId);
+	
+	ReviewDTO getReviewByIdForEdit(Long revId);
+	
+	void updateReview(ReviewDTO review);
 }
