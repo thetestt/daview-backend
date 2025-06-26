@@ -12,6 +12,8 @@
       WHEN cr.sender_id = #{memberId} THEN cr.receiver_id
       ELSE cr.sender_id
     END AS opponentId,
+   
+    
     (
       SELECT du.name
       FROM dv_users du

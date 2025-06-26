@@ -33,7 +33,10 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formatted = parsedDateTime.format(formatter);
         message.setSentAt(formatted);
-
+        
+        // ✅ ✉️ 읽지 않은 상태로 기본 설정
+        message.setIsRead(false);
+        
         // ✅ 1. 메시지 저장
         chatMessageMapper.insertChatMessage(message);
 
@@ -56,7 +59,8 @@ public class ChatMessageServiceImpl implements ChatMessageService {
             messagingTemplate.convertAndSend("/sub/chat/roomList/" + opponentId, updatedReceiverRoom);
         }
     }
-
+    
+//메세지 불러오기
     @Override
     public List<ChatMessageDTO> getMessagesByRoom(String chatroomId, Long memberId) {
         return chatMessageMapper.getMessagesByRoom(chatroomId, memberId);
