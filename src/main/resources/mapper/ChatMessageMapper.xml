@@ -26,5 +26,15 @@
   ORDER BY cm.sent_at ASC
 </select>
 
+<!-- 채팅 읽음처리 -->
+<update id="markMessagesAsRead">
+    UPDATE chatMessage
+    SET is_read = 1
+    WHERE chatroom_id = #{chatroomId}
+      AND sender_id != #{memberId}
+      AND is_read = 0
+</update>
+
+
 </mapper>
 

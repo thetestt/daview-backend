@@ -6,8 +6,15 @@ public class ChatMessageDTO {
     private String content;
     private String sentAt;
     private Long receiverId; 
+    private Boolean isRead;
     
     
+	public Boolean getIsRead() {
+		return isRead;
+	}
+	public void setIsRead(Boolean isRead) {
+		this.isRead = isRead;
+	}
 	public Long getReceiverId() {
 		return receiverId;
 	}
