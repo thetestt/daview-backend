@@ -53,30 +53,58 @@ public class AdminProductController {
                 for (FacilityDTO facility : facilities) {
                     Map<String, Object> product = new HashMap<>();
                     
-                    // 프론트엔드가 기대하는 필드명으로 매핑
+                    // 기본 정보 - 프론트엔드가 기대하는 필드명으로 매핑
                     product.put("prodId", facility.getFacilityId() != null ? facility.getFacilityId() : "미설정");
+                    product.put("facilityId", facility.getFacilityId() != null ? facility.getFacilityId() : "미설정"); // 추가
+                    
                     product.put("prodName", facility.getFacilityName() != null ? facility.getFacilityName() : "시설명 없음");
+                    product.put("facilityName", facility.getFacilityName() != null ? facility.getFacilityName() : "시설명 없음"); // 추가
+                    
                     product.put("prodTypeName", facility.getFacilityType() != null ? facility.getFacilityType() : "요양원/실버타운");
-                    product.put("prodType", "facility");
-                    product.put("prodPrice", 0); // 요양원은 별도 가격 없음
-                    product.put("price", 0);
-                    product.put("prodDetail", facility.getNoticeContent() != null ? facility.getNoticeContent() : "시설 소개가 없습니다.");
-                    product.put("description", facility.getNoticeContent() != null ? facility.getNoticeContent() : "시설 소개가 없습니다.");
+                    product.put("facilityType", facility.getFacilityType() != null ? facility.getFacilityType() : "요양원/실버타운"); // 추가
                     
-                    // 추가 정보
-                    product.put("location", 
-                        (facility.getLocation() != null ? facility.getLocation() : "") + 
-                        " " + 
-                        (facility.getCity() != null ? facility.getCity() : ""));
-                    product.put("address", facility.getDetailedAddress() != null ? facility.getDetailedAddress() : "주소 미설정");
-                    product.put("phoneNumber", facility.getPhoneNumber() != null ? facility.getPhoneNumber() : "연락처 미설정");
-                    product.put("monthlyFee", facility.getMonthlyFee() != null ? facility.getMonthlyFee() : 0);
-                    product.put("theme", facility.getTheme() != null ? facility.getTheme() : "테마 미설정");
-                    product.put("createdAt", facility.getFacilityCreatedAt() != null ? facility.getFacilityCreatedAt() : "미설정");
+                    // 가격 정보
+                    Integer charge = facility.getFacilityCharge() != null ? facility.getFacilityCharge() : 
+                                   (facility.getMonthlyFee() != null ? facility.getMonthlyFee() : 0);
+                    product.put("monthlyFee", charge);
+                    product.put("facilityCharge", charge);
+                    product.put("prodPrice", charge);
+                    product.put("price", charge);
                     
-                    // 카테고리와 태그 정보 추가
+                    // 주소 정보 - 프론트엔드 필드명에 맞춰 매핑
+                    product.put("facilityAddressLocation", facility.getFacilityAddressLocation() != null ? facility.getFacilityAddressLocation() : "미설정");
+                    product.put("location", facility.getFacilityAddressLocation() != null ? facility.getFacilityAddressLocation() : "미설정");
+                    
+                    product.put("facilityAddressCity", facility.getFacilityAddressCity() != null ? facility.getFacilityAddressCity() : "미설정");
+                    product.put("city", facility.getFacilityAddressCity() != null ? facility.getFacilityAddressCity() : "미설정");
+                    
+                    product.put("facilityDetailAddress", facility.getFacilityDetailAddress() != null ? facility.getFacilityDetailAddress() : "주소 미설정");
+                    product.put("address", facility.getFacilityDetailAddress() != null ? facility.getFacilityDetailAddress() : "주소 미설정");
+                    
+                    // 연락처 및 홈페이지
+                    product.put("facilityPhone", facility.getFacilityPhone() != null ? facility.getFacilityPhone() : "연락처 미설정");
+                    product.put("phoneNumber", facility.getFacilityPhone() != null ? facility.getFacilityPhone() : "연락처 미설정");
+                    
+                    product.put("facilityHomepage", facility.getFacilityHomepage() != null ? facility.getFacilityHomepage() : "");
+                    product.put("homepage", facility.getFacilityHomepage() != null ? facility.getFacilityHomepage() : "");
+                    
+                    // 테마
+                    product.put("facilityTheme", facility.getFacilityTheme() != null ? facility.getFacilityTheme() : "테마 미설정");
+                    product.put("theme", facility.getFacilityTheme() != null ? facility.getFacilityTheme() : "테마 미설정");
+                    
+                    // 사진 및 썸네일
+                    product.put("photoUrl", facility.getPhotoUrl() != null ? facility.getPhotoUrl() : "");
+                    product.put("isThumbnail", facility.getIsThumbnail() != null ? facility.getIsThumbnail() : "일반");
+                    
+                    // 카테고리와 태그
                     product.put("category", facility.getCategory() != null ? facility.getCategory() : "미설정");
                     product.put("facilityTag", facility.getFacilityTag() != null ? facility.getFacilityTag() : "태그 없음");
+                    
+                    // 기타
+                    product.put("prodType", "facility");
+                    product.put("prodDetail", facility.getDefaultMessage() != null ? facility.getDefaultMessage() : "시설 소개가 없습니다.");
+                    product.put("description", facility.getDefaultMessage() != null ? facility.getDefaultMessage() : "시설 소개가 없습니다.");
+                    product.put("createdAt", facility.getFacilityCreatedAt() != null ? facility.getFacilityCreatedAt() : "미설정");
                     
                     products.add(product);
                 }
@@ -88,37 +116,64 @@ public class AdminProductController {
                 for (CaregiverDTO caregiver : caregivers) {
                     Map<String, Object> product = new HashMap<>();
                     
-                    // 프론트엔드가 기대하는 필드명으로 매핑
+                    // 기본 정보 - 프론트엔드가 기대하는 필드명으로 매핑
                     product.put("prodId", caregiver.getCaregiverId() != null ? caregiver.getCaregiverId() : "미설정");
-                    product.put("prodName", caregiver.getUsername() != null ? caregiver.getUsername() : ("간병사 ID: " + caregiver.getCaregiverId())); // 실제 사용자명 사용
-                    product.put("prodTypeName", "요양사"); // 고정값 (간병사 -> 요양사로 수정)
-                    product.put("prodType", "caregiver"); // 고정값
+                    product.put("caregiverId", caregiver.getCaregiverId() != null ? caregiver.getCaregiverId() : "미설정"); // 추가
+                    
+                    product.put("prodName", caregiver.getUsername() != null ? caregiver.getUsername() : ("간병사 ID: " + caregiver.getCaregiverId()));
+                    product.put("username", caregiver.getUsername() != null ? caregiver.getUsername() : "미설정"); // 추가
+                    
+                    product.put("prodTypeName", "요양사");
+                    product.put("prodType", "caregiver");
+                    
+                    // 희망급여 정보
                     Integer hopeWorkAmount = caregiver.getHopeWorkAmount();
+                    product.put("hopeWorkAmount", hopeWorkAmount != null ? hopeWorkAmount.intValue() : 0); // 프론트엔드 필드명
                     product.put("prodPrice", hopeWorkAmount != null ? hopeWorkAmount.intValue() : 0);
                     product.put("price", hopeWorkAmount != null ? hopeWorkAmount.intValue() : 0);
+                    
+                    // 소개글
+                    product.put("introduction", caregiver.getIntroduction() != null ? caregiver.getIntroduction() : "소개글이 없습니다."); // 프론트엔드 필드명
                     product.put("prodDetail", caregiver.getIntroduction() != null ? caregiver.getIntroduction() : "소개글이 없습니다.");
                     product.put("description", caregiver.getIntroduction() != null ? caregiver.getIntroduction() : "소개글이 없습니다.");
                     
-                    // 추가 정보
+                    // 희망근무지역 정보  
+                    product.put("hopeWorkAreaLocation", caregiver.getHopeWorkAreaLocation() != null ? caregiver.getHopeWorkAreaLocation() : "미설정"); // 프론트엔드 필드명
+                    product.put("hopeWorkAreaCity", caregiver.getHopeWorkAreaCity() != null ? caregiver.getHopeWorkAreaCity() : "미설정"); // 프론트엔드 필드명
                     product.put("location", 
                         (caregiver.getHopeWorkAreaLocation() != null ? caregiver.getHopeWorkAreaLocation() : "") + 
                         " " + 
                         (caregiver.getHopeWorkAreaCity() != null ? caregiver.getHopeWorkAreaCity() : ""));
-                    product.put("workType", caregiver.getHopeWorkType() != null ? caregiver.getHopeWorkType() : "미설정");
+                    
+                    // 근무 정보
+                    product.put("hopeWorkPlace", caregiver.getHopeWorkPlace() != null ? caregiver.getHopeWorkPlace() : "미설정"); // 프론트엔드 필드명
                     product.put("workPlace", caregiver.getHopeWorkPlace() != null ? caregiver.getHopeWorkPlace() : "미설정");
+                    
+                    product.put("hopeWorkType", caregiver.getHopeWorkType() != null ? caregiver.getHopeWorkType() : "미설정"); // 프론트엔드 필드명
+                    product.put("workType", caregiver.getHopeWorkType() != null ? caregiver.getHopeWorkType() : "미설정");
+                    
+                    product.put("hopeEmploymentType", caregiver.getHopeEmploymentType() != null ? caregiver.getHopeEmploymentType() : "미설정"); // 프론트엔드 필드명
                     product.put("employmentType", caregiver.getHopeEmploymentType() != null ? caregiver.getHopeEmploymentType() : "미설정");
+                    
+                    // 학력
+                    product.put("educationLevel", caregiver.getEducationLevel() != null ? caregiver.getEducationLevel() : "미설정"); // 프론트엔드 필드명
                     product.put("education", caregiver.getEducationLevel() != null ? caregiver.getEducationLevel() : "미설정");
+                    
+                    // 경력 정보
+                    product.put("careerString", caregiver.getCareerString() != null ? caregiver.getCareerString() : "정보 없음"); // 프론트엔드 필드명
+                    product.put("startDateString", caregiver.getStartDateString() != null ? caregiver.getStartDateString() : ""); // 프론트엔드 필드명
+                    product.put("endDateString", caregiver.getEndDateString() != null ? caregiver.getEndDateString() : ""); // 프론트엔드 필드명
+                    
+                    // 자격증 정보
+                    product.put("certificatesString", caregiver.getCertificatesString() != null ? caregiver.getCertificatesString() : "정보 없음"); // 프론트엔드 필드명
+                    
+                    // 생성/수정 날짜
+                    product.put("caregiverCreatedAt", caregiver.getCaregiverCreatedAt() != null ? caregiver.getCaregiverCreatedAt().toString() : "미설정"); // 프론트엔드 필드명
+                    product.put("caregiverUpdateAt", caregiver.getCaregiverUpdateAt() != null ? caregiver.getCaregiverUpdateAt().toString() : "미설정"); // 프론트엔드 필드명
                     product.put("createdAt", caregiver.getCaregiverCreatedAt() != null ? caregiver.getCaregiverCreatedAt().toString() : "미설정");
                     
-                    // 자격증과 경력 정보 추가
-                    product.put("certificatesString", caregiver.getCertificatesString() != null ? caregiver.getCertificatesString() : "정보 없음");
-                    product.put("careerString", caregiver.getCareerString() != null ? caregiver.getCareerString() : "정보 없음");
-                    product.put("startDateString", caregiver.getStartDateString() != null ? caregiver.getStartDateString() : "");
-                    product.put("endDateString", caregiver.getEndDateString() != null ? caregiver.getEndDateString() : "");
-                    
-                    // 사용자 정보 추가
-                    product.put("username", caregiver.getUsername() != null ? caregiver.getUsername() : "미설정");
-                    product.put("userGender", caregiver.getUserGender() != null ? caregiver.getUserGender() : "미설정");
+                    // 사용자 정보
+                    product.put("userGender", caregiver.getUserGender() != null ? caregiver.getUserGender() : "미설정"); // 프론트엔드 필드명
                     
                     products.add(product);
                 }
@@ -178,19 +233,11 @@ public class AdminProductController {
             System.out.println("=== 새로운 상품 등록 요청 시작 ===");
             System.out.println("받은 데이터: " + productData);
             
-            // 요양사만 등록 가능하도록 제한
             String prodTypeName = (String) productData.get("prodTypeName");
-            if (!"요양사".equals(prodTypeName)) {
-                Map<String, Object> errorResponse = new HashMap<>();
-                errorResponse.put("success", false);
-                errorResponse.put("message", "현재는 요양사만 등록 가능합니다.");
-                return ResponseEntity.badRequest().body(errorResponse);
-            }
+            System.out.println("상품 유형: " + prodTypeName);
             
             // 필수 필드 검증
             String prodName = (String) productData.get("prodName");
-            Object hopeWorkAmount = productData.get("hope_work_amount");
-            
             if (prodName == null || prodName.trim().isEmpty()) {
                 Map<String, Object> errorResponse = new HashMap<>();
                 errorResponse.put("success", false);
@@ -198,32 +245,122 @@ public class AdminProductController {
                 return ResponseEntity.badRequest().body(errorResponse);
             }
             
-            if (hopeWorkAmount == null) {
+            // 요양사 등록 처리
+            if ("요양사".equals(prodTypeName)) {
+                Object hopeWorkAmount = productData.get("hope_work_amount");
+                if (hopeWorkAmount == null) {
+                    Map<String, Object> errorResponse = new HashMap<>();
+                    errorResponse.put("success", false);
+                    errorResponse.put("message", "희망급여는 필수 입력 항목입니다.");
+                    return ResponseEntity.badRequest().body(errorResponse);
+                }
+                
+                if (!productData.containsKey("member_id")) {
+                    productData.put("member_id", 1L); // 테스트용 기본값
+                }
+                
+                // 서비스 호출하여 실제 DB에 등록
+                caregiverService.createCaregiverProduct(productData);
+                
+                Map<String, Object> successResponse = new HashMap<>();
+                successResponse.put("success", true);
+                successResponse.put("message", "요양사가 성공적으로 등록되었습니다.");
+                
+                return ResponseEntity.ok()
+                    .header("Content-Type", "application/json; charset=UTF-8")
+                    .body(successResponse);
+                    
+            } 
+            // 기업(시설) 등록 처리
+            else if ("기업".equals(prodTypeName)) {
+                System.out.println("=== 기업 등록 처리 시작 ===");
+                
+                // 기업 필수 필드 검증
+                String facilityName = (String) productData.get("facility_name");
+                String facilityType = (String) productData.get("facility_type");
+                
+                if (facilityName == null || facilityName.trim().isEmpty()) {
+                    Map<String, Object> errorResponse = new HashMap<>();
+                    errorResponse.put("success", false);
+                    errorResponse.put("message", "시설명은 필수 입력 항목입니다.");
+                    return ResponseEntity.badRequest().body(errorResponse);
+                }
+                
+                if (facilityType == null || facilityType.trim().isEmpty()) {
+                    Map<String, Object> errorResponse = new HashMap<>();
+                    errorResponse.put("success", false);
+                    errorResponse.put("message", "시설 유형은 필수 입력 항목입니다.");
+                    return ResponseEntity.badRequest().body(errorResponse);
+                }
+                
+                // Map 데이터를 FacilityDTO로 변환
+                FacilityDTO facilityDTO = new FacilityDTO();
+                
+                // member_id 설정 (필수!)
+                Object memberIdObj = productData.get("member_id");
+                if (memberIdObj != null) {
+                    try {
+                        Long memberId = Long.valueOf(memberIdObj.toString());
+                        facilityDTO.setMemberId(memberId);
+                        System.out.println("member_id 설정됨: " + memberId);
+                    } catch (NumberFormatException e) {
+                        System.err.println("member_id 형변환 오류: " + memberIdObj);
+                        throw new RuntimeException("올바르지 않은 member_id 값입니다.");
+                    }
+                } else {
+                    throw new RuntimeException("member_id가 누락되었습니다.");
+                }
+                
+                facilityDTO.setFacilityName(facilityName);
+                facilityDTO.setFacilityType(facilityType);
+                
+                // 안전한 형변환 - DB의 facility_charge 컬럼에 매핑
+                Object facilityChargeObj = productData.get("facility_charge");
+                if (facilityChargeObj != null && !facilityChargeObj.toString().trim().isEmpty()) {
+                    try {
+                        facilityDTO.setFacilityCharge(Integer.valueOf(facilityChargeObj.toString()));
+                    } catch (NumberFormatException e) {
+                        System.err.println("facility_charge 형변환 오류: " + facilityChargeObj);
+                        facilityDTO.setFacilityCharge(0); // 기본값
+                    }
+                }
+                
+                // DB 컬럼명에 맞게 매핑
+                facilityDTO.setFacilityTheme((String) productData.get("facility_theme"));
+                facilityDTO.setFacilityAddressLocation((String) productData.get("facility_address_location"));
+                facilityDTO.setFacilityAddressCity((String) productData.get("facility_address_city"));
+                facilityDTO.setFacilityDetailAddress((String) productData.get("facility_detail_address"));
+                facilityDTO.setFacilityPhone((String) productData.get("facility_phone"));
+                facilityDTO.setFacilityHomepage((String) productData.get("facility_homepage"));
+                facilityDTO.setDefaultMessage((String) productData.get("default_message"));
+                
+                System.out.println("=== 매핑된 FacilityDTO 정보 ===");
+                System.out.println("시설명: " + facilityDTO.getFacilityName());
+                System.out.println("시설유형: " + facilityDTO.getFacilityType());
+                System.out.println("이용료: " + facilityDTO.getFacilityCharge());
+                System.out.println("주소: " + facilityDTO.getFacilityDetailAddress());
+                
+                System.out.println("변환된 FacilityDTO: " + facilityDTO.getFacilityName() + " - " + facilityDTO.getFacilityType());
+                
+                // 서비스 호출하여 실제 DB에 등록
+                facilityService.addFacility(facilityDTO);
+                
+                Map<String, Object> successResponse = new HashMap<>();
+                successResponse.put("success", true);
+                successResponse.put("message", "시설이 성공적으로 등록되었습니다.");
+                
+                System.out.println("=== 기업 등록 완료 ===");
+                
+                return ResponseEntity.ok()
+                    .header("Content-Type", "application/json; charset=UTF-8")
+                    .body(successResponse);
+            } 
+            else {
                 Map<String, Object> errorResponse = new HashMap<>();
                 errorResponse.put("success", false);
-                errorResponse.put("message", "희망급여는 필수 입력 항목입니다.");
+                errorResponse.put("message", "지원하지 않는 상품 유형입니다: " + prodTypeName);
                 return ResponseEntity.badRequest().body(errorResponse);
             }
-            
-            // TODO: 실제로는 현재 로그인한 관리자가 등록하려는 사용자의 member_id를 확인해야 함
-            // 임시로 테스트용 member_id 추가 (실제 구현에서는 사용자가 선택하거나 입력해야 함)
-            if (!productData.containsKey("member_id")) {
-                // 예시: 기존 DB에 있는 member_id 중 하나를 사용 (실제로는 프론트엔드에서 선택하도록 해야 함)
-                productData.put("member_id", 1L); // 테스트용 기본값
-            }
-            
-            // 서비스 호출하여 실제 DB에 등록
-            caregiverService.createCaregiverProduct(productData);
-            
-            Map<String, Object> successResponse = new HashMap<>();
-            successResponse.put("success", true);
-            successResponse.put("message", "요양사가 성공적으로 등록되었습니다.");
-            
-            System.out.println("=== 상품 등록 완료 ===");
-            
-            return ResponseEntity.ok()
-                .header("Content-Type", "application/json; charset=UTF-8")
-                .body(successResponse);
             
         } catch (Exception e) {
             System.err.println("상품 등록 중 오류 발생: " + e.getMessage());
@@ -253,9 +390,10 @@ public class AdminProductController {
     
     // 회원 목록 조회 API (실제 DB 연동) - Alternative Path
     @GetMapping(value = "/get-users", produces = "application/json; charset=UTF-8")
-    public ResponseEntity<Map<String, Object>> getUsersAlternative() {
+    public ResponseEntity<Map<String, Object>> getUsersAlternative(@RequestParam(required = false) String role) {
         try {
             System.out.println("=== 실제 DB에서 회원 목록 조회 요청 (Alternative) ===");
+            System.out.println("요청된 role: " + role);
             
             // UserMapper null 체크
             if (userMapper == null) {
@@ -265,30 +403,40 @@ public class AdminProductController {
             
             System.out.println("UserMapper 정상 주입됨");
             
-            // 실제 DB에서 CAREGIVER 역할 사용자 조회
-            List<User> caregiverUsers = userMapper.findUsersByRole("CAREGIVER");
-            System.out.println("DB에서 조회된 CAREGIVER 사용자 수: " + caregiverUsers.size());
+            // role 매개변수에 따라 사용자 조회
+            String targetRole = role != null ? role : "CAREGIVER"; // 기본값은 CAREGIVER
+            List<User> users = userMapper.findUsersByRole(targetRole);
+            System.out.println("DB에서 조회된 " + targetRole + " 사용자 수: " + users.size());
             
-            List<Map<String, Object>> users = new ArrayList<>();
+            List<Map<String, Object>> userList = new ArrayList<>();
             
-            for (User user : caregiverUsers) {
+            for (User user : users) {
                 Map<String, Object> userMap = new HashMap<>();
                 userMap.put("member_id", user.getMemberId());
                 userMap.put("username", user.getUsername());
                 userMap.put("name", user.getName());
                 userMap.put("email", user.getEmail());
                 userMap.put("phone", user.getPhone());
-                userMap.put("suggested_product_name", "요양사 " + user.getName()); // 추천 상품명 추가
-                users.add(userMap);
                 
-                System.out.println("사용자: " + user.getName() + " (" + user.getUsername() + ")");
+                // role에 따라 추천 상품명 다르게 설정
+                String suggestedProductName;
+                if ("COMPANY".equals(targetRole)) {
+                    suggestedProductName = user.getName() + " 기업";
+                } else {
+                    suggestedProductName = "요양사 " + user.getName();
+                }
+                userMap.put("suggested_product_name", suggestedProductName);
+                
+                userList.add(userMap);
+                
+                System.out.println("사용자: " + user.getName() + " (" + user.getUsername() + ") - " + targetRole);
             }
             
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
-            response.put("users", users);
+            response.put("users", userList);
             
-            System.out.println("=== 실제 DB 조회 완료 (Alternative): " + users.size() + "명 ===");
+            System.out.println("=== 실제 DB 조회 완료 (Alternative): " + userList.size() + "명 ===");
             
             return ResponseEntity.ok()
                 .header("Content-Type", "application/json; charset=UTF-8")
