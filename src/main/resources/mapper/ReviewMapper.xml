@@ -10,9 +10,19 @@
 		VALUES
 		(#{memberId}, #{prodNm}, #{revTtl}, #{revCont}, #{revStars}, 0, NOW())
 	</insert>
-	<select id="getAllReviews" resultType="com.daview.dto.ReviewDTO">
+	<select id="getReviewsByPage" parameterType="map" resultType="com.daview.dto.ReviewDTO">
 		SELECT *
 		FROM review_board
 		ORDER BY rev_reg_date DESC
+		LIMIT #{size} OFFSET #{offset}
+	</select>
+	<select id="getTotalReviewCount" resultType="int">
+		SELECT COUNT(*) 
+		FROM review_board
+	</select>
+	<select id="getReviewById" parameterType="long" resultType="com.daview.dto.ReviewDTO">
+		SELECT *
+		FROM review_board
+		WHERE rev_id = #{rev_id}
 	</select>
 </mapper>

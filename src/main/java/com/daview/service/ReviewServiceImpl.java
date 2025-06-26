@@ -1,6 +1,8 @@
 package com.daview.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
@@ -21,7 +23,21 @@ public class ReviewServiceImpl implements ReviewService{
 	}
 	
 	@Override
-	public List<ReviewDTO> getAllReviews(){
-		return reviewMapper.getAllReviews();
+	public List<ReviewDTO> getReviewsByPage(int page, int size){
+		Map<String, Integer> params = new HashMap<>();
+		params.put("size", size);
+		params.put("offset", (page - 1) * size);
+		return reviewMapper.getReviewsByPage(params);
+	}
+	
+	@Override
+	public int getTotalReviewCount() {
+		return reviewMapper.getTotalReviewCount();
+	}
+	
+	@Override
+	public ReviewDTO getReviewById(Long revId) {
+		return reviewMapper.getReviewById(revId);
+		
 	}
 }

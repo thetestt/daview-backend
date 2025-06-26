@@ -7,5 +7,9 @@ import com.daview.dto.ReviewDTO;
 public interface ReviewService {
 	void insertReview(ReviewDTO review);
 	
-	List<ReviewDTO> getAllReviews();
+	List<ReviewDTO> getReviewsByPage(int page, int size);
+	
+	int getTotalReviewCount();
+	
+	ReviewDTO getReviewById(Long revId);
 }
