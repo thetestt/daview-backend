@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -43,5 +44,18 @@ public class ReviewController {
 	public ResponseEntity<ReviewDTO> getReviewById(@PathVariable Long revId){
 		ReviewDTO review = reviewService.getReviewById(revId);
 		return ResponseEntity.ok(review);
+	}
+	
+	@GetMapping("/{revId}/edit")
+	public ResponseEntity<ReviewDTO> getReviewByIdForEdit(@PathVariable Long revId){
+		ReviewDTO review = reviewService.getReviewByIdForEdit(revId);
+		return ResponseEntity.ok(review);
+	}
+	
+	@PutMapping("/{revId}/update")
+	public ResponseEntity<String> updateReview(@PathVariable Long revId, @RequestBody ReviewDTO review){
+		review.setRevId(revId);
+		reviewService.updateReview(review);
+		return ResponseEntity.ok("후기 수정 완료");
 	}
 }
