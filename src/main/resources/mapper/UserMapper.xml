@@ -122,7 +122,7 @@
 
 	<select id="getPasswordByUsername" resultType="String">
 		SELECT password
-		FROM members
+		FROM dv_users
 		WHERE username = #{username}
 	</select>
 
