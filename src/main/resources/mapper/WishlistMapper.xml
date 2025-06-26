@@ -4,22 +4,50 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 
-
 <mapper namespace="com.daview.mapper.WishlistMapper">
 
-    <select id="isWishlisted" resultType="boolean">
-        SELECT EXISTS (
-            SELECT 1 FROM wishlist WHERE member_id = #{memberId} AND facility_id = #{facilityId}
-        )
-    </select>
+	<select id="getNursingWishlist"
+		resultType="com.daview.dto.WishlistResponseDTO">
+		SELECT f.facility_id AS id, f.facility_name AS name
+		FROM wishlist w
+		JOIN facility f ON w.facility_id = f.facility_id
+		WHERE w.member_id = #{memberId} AND f.facility_type = '요양원'
+	</select>
 
-    <insert id="insertWishlist">
-        INSERT INTO wishlist (member_id, facility_id)
-        VALUES (#{memberId}, #{facilityId})
-    </insert>
+	<select id="getCaregiverWishlist"
+		resultType="com.daview.dto.WishlistResponseDTO">
+		SELECT c.caregiver_id AS id, c.introduction AS name
+		FROM wishlist w
+		JOIN caregiver c ON w.facility_id = c.caregiver_id
+		WHERE w.member_id = #{memberId}
+	</select>
 
-    <delete id="deleteWishlist">
-        DELETE FROM wishlist WHERE member_id = #{memberId} AND facility_id = #{facilityId}
-    </delete>
+	<select id="getSilvertownWishlist"
+		resultType="com.daview.dto.WishlistResponseDTO">
+		SELECT f.facility_id AS id, f.facility_name AS name
+		FROM wishlist w
+		JOIN facility f ON w.facility_id = f.facility_id
+		WHERE w.member_id = #{memberId} AND f.facility_type = '실버타운'
+	</select>
+
+
+
+
+	<select id="isWishlisted" resultType="boolean">
+		SELECT EXISTS (
+		SELECT 1 FROM wishlist WHERE member_id = #{memberId} AND facility_id =
+		#{facilityId}
+		)
+	</select>
+
+	<insert id="insertWishlist">
+		INSERT INTO wishlist (member_id, facility_id)
+		VALUES (#{memberId}, #{facilityId})
+	</insert>
+
+	<delete id="deleteWishlist">
+		DELETE FROM wishlist WHERE member_id = #{memberId} AND facility_id =
+		#{facilityId}
+	</delete>
 
 </mapper>
