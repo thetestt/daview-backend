@@ -8,8 +8,9 @@ public class ChatRoomDTO {
     private String lastTime;
     private int unreadCount;
     private Long opponentId;
+  
 
-    // 구분
+	// 구분
     private String type; // facility, caregiver, user
     private String facilityType; // 실버타운, 요양원 (facility일 경우만)
 
