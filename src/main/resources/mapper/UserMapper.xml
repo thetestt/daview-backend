@@ -120,5 +120,11 @@
 	</select>
 
 
+	<select id="getPasswordByUsername" resultType="String">
+		SELECT password
+		FROM members
+		WHERE username = #{username}
+	</select>
 
 </mapper>
+

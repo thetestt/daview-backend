@@ -141,6 +141,7 @@
     <!-- 요양원 등록 -->
     <insert id="insertFacility" parameterType="com.daview.dto.FacilityDTO">
         INSERT INTO facility (
+            member_id,
             facility_name, 
             facility_charge, 
             facility_type, 
@@ -155,15 +156,16 @@
             trash_can
         )
         VALUES (
+            #{memberId},
             #{facilityName}, 
-            #{monthlyFee}, 
+            #{facilityCharge}, 
             #{facilityType}, 
-            #{location}, 
-            #{city},
-            #{theme},
-            #{detailedAddress},
-            #{homepageUrl},
-            #{phoneNumber},
+            #{facilityAddressLocation}, 
+            #{facilityAddressCity},
+            #{facilityTheme},
+            #{facilityDetailAddress},
+            #{facilityHomepage},
+            #{facilityPhone},
             NOW(),
             NOW(),
             0
@@ -175,6 +177,7 @@
         <id property="facilityId" column="facilityId"/>
         <result property="facilityName" column="facilityName"/>
         <result property="facilityCharge" column="facilityCharge"/>
+        <result property="facilityType" column="facilityType"/>
         <result property="facilityAddressLocation" column="facilityAddressLocation"/>
         <result property="facilityAddressCity" column="facilityAddressCity"/>
         <result property="facilityTheme" column="facilityTheme"/>
@@ -194,6 +197,7 @@
             f.facility_id as facilityId,
             f.facility_name as facilityName,
             f.facility_charge as facilityCharge,
+            f.facility_type as facilityType,
             f.facility_address_location as facilityAddressLocation,
             f.facility_address_city as facilityAddressCity,
             f.facility_theme as facilityTheme,

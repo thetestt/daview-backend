@@ -4,9 +4,11 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.daview.dto.ReviewDTO;
@@ -27,10 +29,19 @@ public class ReviewController {
 		return ResponseEntity.ok(review);
 	}
 	
-	@GetMapping
-	public ResponseEntity<List<ReviewDTO>> getAllReviews(){
-		List<ReviewDTO> result = reviewService.getAllReviews();
-		return ResponseEntity.ok(result);
+	@GetMapping("/page")
+	public List<ReviewDTO> getReviewsByPage(@RequestParam int page, @RequestParam int size){
+		return reviewService.getReviewsByPage(page, size);
+	}
+	
+	@GetMapping("/count")
+	public int getTotalReviewCount() {
+		return reviewService.getTotalReviewCount();
 	}
 
+	@GetMapping("/{revId}")
+	public ResponseEntity<ReviewDTO> getReviewById(@PathVariable Long revId){
+		ReviewDTO review = reviewService.getReviewById(revId);
+		return ResponseEntity.ok(review);
+	}
 }
