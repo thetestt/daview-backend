@@ -45,29 +45,9 @@
   ) cm ON cr.chatroom_id = cm.chatroom_id
 WHERE
   (
-    (
-      cr.sender_id = #{memberId} AND cr.sender_trash_can = FALSE
-    )
+    (cr.sender_id = #{memberId} AND cr.sender_trash_can = FALSE)
     OR
-    (
-      cr.receiver_id = #{memberId} AND cr.receiver_trash_can = FALSE
-    )
-    OR
-    (
-      cr.sender_id IN (
-        SELECT facility_id FROM facility WHERE member_id = #{memberId}
-        UNION
-        SELECT caregiver_id FROM caregiver WHERE member_id = #{memberId}
-      ) AND cr.sender_trash_can = FALSE
-    )
-    OR
-    (
-      cr.receiver_id IN (
-        SELECT facility_id FROM facility WHERE member_id = #{memberId}
-        UNION
-        SELECT caregiver_id FROM caregiver WHERE member_id = #{memberId}
-      ) AND cr.receiver_trash_can = FALSE
-    )
+    (cr.receiver_id = #{memberId} AND cr.receiver_trash_can = FALSE)
   )
 ORDER BY cm.sent_at IS NULL, cm.sent_at DESC
 </select>
