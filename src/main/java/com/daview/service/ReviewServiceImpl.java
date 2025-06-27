@@ -23,6 +23,11 @@ public class ReviewServiceImpl implements ReviewService{
 	}
 	
 	@Override
+	public List<ReviewDTO> getAllReviews() {
+		return reviewMapper.getAllReviews();
+	}
+	
+	@Override
 	public List<ReviewDTO> getReviewsByPage(int page, int size){
 		Map<String, Integer> params = new HashMap<>();
 		params.put("size", size);

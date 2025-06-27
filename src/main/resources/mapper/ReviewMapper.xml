@@ -10,6 +10,10 @@
 		VALUES
 		(#{memberId}, #{prodNm}, #{revTtl}, #{revCont}, #{revStars}, 0, NOW())
 	</insert>
+	<select id="getAllReviews" resultType="com.daview.dto.ReviewDTO">
+		SELECT * 
+		FROM review_board
+	</select>
 	<select id="getReviewsByPage" parameterType="map" resultType="com.daview.dto.ReviewDTO">
 		SELECT *
 		FROM review_board
