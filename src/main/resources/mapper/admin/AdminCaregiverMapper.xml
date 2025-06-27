@@ -71,15 +71,17 @@
     <!-- 요양사 수정 -->
     <update id="updateCaregiver" parameterType="com.daview.dto.CaregiverDTO">
         UPDATE caregiver
-        SET hope_work_area_location = #{hopeWorkAreaLocation},
-            hope_work_area_city = #{hopeWorkAreaCity},
-            hope_work_place = #{hopeWorkPlace},
-            hope_work_type = #{hopeWorkType},
-            hope_employment_type = #{hopeEmploymentType},
-            education_level = #{educationLevel},
-            introduction = #{introduction},
-            hope_work_amount = #{hopeWorkAmount},
+        <set>
+            <if test="hopeWorkAreaLocation != null">hope_work_area_location = #{hopeWorkAreaLocation},</if>
+            <if test="hopeWorkAreaCity != null">hope_work_area_city = #{hopeWorkAreaCity},</if>
+            <if test="hopeWorkPlace != null">hope_work_place = #{hopeWorkPlace},</if>
+            <if test="hopeWorkType != null">hope_work_type = #{hopeWorkType},</if>
+            <if test="hopeEmploymentType != null">hope_employment_type = #{hopeEmploymentType},</if>
+            <if test="educationLevel != null">education_level = #{educationLevel},</if>
+            <if test="introduction != null">introduction = #{introduction},</if>
+            <if test="hopeWorkAmount > 0">hope_work_amount = #{hopeWorkAmount},</if>
             caregiver_update_at = NOW()
+        </set>
         WHERE caregiver_id = #{caregiverId}
     </update>
 

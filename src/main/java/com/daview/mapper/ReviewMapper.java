@@ -10,6 +10,8 @@ import com.daview.dto.ReviewDTO;
 @Mapper
 public interface ReviewMapper {
 	void insertReview(ReviewDTO review);
+
+	List<ReviewDTO> getAllReviews();
 	
 	List<ReviewDTO> getReviewsByPage(Map<String, Integer> params);
 	

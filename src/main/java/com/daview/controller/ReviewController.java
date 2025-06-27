@@ -30,6 +30,12 @@ public class ReviewController {
 		return ResponseEntity.ok(review);
 	}
 	
+	@GetMapping
+	public ResponseEntity<List<ReviewDTO>> getAllReviews() {
+		List<ReviewDTO> reviews = reviewService.getAllReviews();
+		return ResponseEntity.ok(reviews);
+	}
+	
 	@GetMapping("/page")
 	public List<ReviewDTO> getReviewsByPage(@RequestParam int page, @RequestParam int size){
 		return reviewService.getReviewsByPage(page, size);

@@ -113,20 +113,21 @@
     </insert>
 
     <!-- 수정 -->
-    <update id="update" parameterType="com.daview.dto.FacilityDTO">
+    <update id="updateFacility" parameterType="com.daview.dto.FacilityDTO">
         UPDATE facility
-        SET
-            facility_name = #{facilityName},
-            facility_charge = #{facilityCharge},
-            facility_type = #{facilityType},
-            facility_address_location = #{facilityAddressLocation},
-            facility_address_city = #{facilityAddressCity},
-            facility_theme = #{facilityTheme},
-            facility_detail_address = #{facilityDetailAddress},
-            facility_homepage = #{facilityHomepage},
-            facility_phone = #{facilityPhone},
-            default_message = #{defaultMessage},
+        <set>
+            <if test="facilityName != null">facility_name = #{facilityName},</if>
+            <if test="facilityCharge != null">facility_charge = #{facilityCharge},</if>
+            <if test="facilityType != null">facility_type = #{facilityType},</if>
+            <if test="facilityAddressLocation != null">facility_address_location = #{facilityAddressLocation},</if>
+            <if test="facilityAddressCity != null">facility_address_city = #{facilityAddressCity},</if>
+            <if test="facilityTheme != null">facility_theme = #{facilityTheme},</if>
+            <if test="facilityDetailAddress != null">facility_detail_address = #{facilityDetailAddress},</if>
+            <if test="facilityHomepage != null">facility_homepage = #{facilityHomepage},</if>
+            <if test="facilityPhone != null">facility_phone = #{facilityPhone},</if>
+            <if test="defaultMessage != null">default_message = #{defaultMessage},</if>
             facility_update_at = NOW()
+        </set>
         WHERE facility_id = #{facilityId}
     </update>
 
@@ -220,22 +221,6 @@
         ORDER BY f.facility_created_at DESC
     </select>
 
-    <!-- 요양원 수정 -->
-    <update id="updateFacility" parameterType="com.daview.dto.FacilityDTO">
-        UPDATE facility
-        SET facility_name = #{facilityName},
-            facility_charge = #{monthlyFee},
-            facility_type = #{facilityType},
-            facility_address_location = #{location},
-            facility_address_city = #{city},
-            facility_theme = #{theme},
-            facility_detail_address = #{detailedAddress},
-            facility_homepage = #{homepageUrl},
-            facility_phone = #{phoneNumber},
-            facility_update_at = NOW()
-        WHERE facility_id = #{facilityId}
-    </update>
-
     <!-- 요양원 삭제 (Soft Delete) -->
     <update id="deleteFacility" parameterType="java.lang.String">
         UPDATE facility
@@ -263,29 +248,27 @@
         SELECT 
             f.facility_id as facilityId,
             f.facility_name as facilityName,
-            f.monthly_fee as monthlyFee,
+            f.facility_charge as facilityCharge,
             f.facility_type as facilityType,
-            f.location,
-            f.city,
-            f.theme,
-            f.detailed_address as detailedAddress,
-            f.homepage_url as homepageUrl,
-            f.phone_number as phoneNumber,
-            f.created_at as createdAt,
-            f.updated_at as updatedAt,
-            COALESCE(fn.notice_title, '공지사항 없음') as noticeTitle,
-            COALESCE(fn.notice_content, '공지사항 내용 없음') as noticeContent,
+            f.facility_address_location as facilityAddressLocation,
+            f.facility_address_city as facilityAddressCity,
+            f.facility_theme as facilityTheme,
+            f.facility_detail_address as facilityDetailAddress,
+            f.facility_homepage as facilityHomepage,
+            f.facility_phone as facilityPhone,
+            f.facility_created_at as facilityCreatedAt,
+            f.facility_update_at as facilityUpdateAt,
+            f.default_message as defaultMessage,
             COALESCE(fp.photo_url, '사진 없음') as photoUrl,
-            COALESCE(fp.thumbnail_url, '썸네일 없음') as thumbnailUrl,
-            COALESCE(GROUP_CONCAT(DISTINCT ft.tag_name SEPARATOR ', '), '태그 없음') as tagString
+            COALESCE(GROUP_CONCAT(DISTINCT ft.facility_tag SEPARATOR ', '), '태그 없음') as facilityTag
         FROM facility f
-        LEFT JOIN facility_notice fn ON f.facility_id = fn.facility_id
-        LEFT JOIN facility_photo fp ON f.facility_id = fp.facility_id
+        LEFT JOIN facility_photo fp ON f.facility_id = fp.facility_id AND fp.is_thumbnail = 1
         LEFT JOIN facility_tag ft ON f.facility_id = ft.facility_id
-        WHERE f.facility_id = #{id}
-        GROUP BY f.facility_id, f.facility_name, f.monthly_fee, f.facility_type, f.location, f.city, 
-                 f.theme, f.detailed_address, f.homepage_url, f.phone_number, f.created_at, f.updated_at,
-                 fn.notice_title, fn.notice_content, fp.photo_url, fp.thumbnail_url
+        WHERE f.facility_id = #{id} AND f.trash_can = 0
+        GROUP BY f.facility_id, f.facility_name, f.facility_charge, f.facility_type, 
+                 f.facility_address_location, f.facility_address_city, f.facility_theme, 
+                 f.facility_detail_address, f.facility_homepage, f.facility_phone, 
+                 f.facility_created_at, f.facility_update_at, f.default_message, fp.photo_url
     </select>
 
 </mapper>
