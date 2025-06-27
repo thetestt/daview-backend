@@ -38,17 +38,17 @@ public class AdminProductController {
             @RequestParam(defaultValue = "") String type) {
         
         try {
-            System.out.println("=== AdminProductController.getProducts 호출됨 ===");
-            System.out.println("검색어: " + search + ", 페이지: " + page + ", 사이즈: " + size + ", 타입: " + type);
+            // System.out.println("=== AdminProductController.getProducts 호출됨 ===");
+            // System.out.println("검색어: " + search + ", 페이지: " + page + ", 사이즈: " + size + ", 타입: " + type);
             
             // ⭐ 수정: type 파라미터에 따라 데이터 필터링
             List<Map<String, Object>> products = new ArrayList<>();
             
             // 요양원/실버타운 요청 시 실제 요양원 데이터 조회
             if ("요양원/실버타운".equals(type)) {
-                System.out.println("요양원/실버타운 필터링 - 요양원 데이터 조회");
+                // System.out.println("요양원/실버타운 필터링 - 요양원 데이터 조회");
                 List<FacilityDTO> facilities = facilityService.getAllFacilities();
-                System.out.println("DB에서 조회된 요양원 수: " + facilities.size());
+                // System.out.println("DB에서 조회된 요양원 수: " + facilities.size());
                 
                 for (FacilityDTO facility : facilities) {
                     Map<String, Object> product = new HashMap<>();
@@ -111,7 +111,7 @@ public class AdminProductController {
             } else {
                 // 기본값 또는 요양사 타입인 경우 간병인 데이터 조회
                 List<CaregiverDTO> caregivers = caregiverService.getAllCaregivers();
-                System.out.println("DB에서 조회된 간병인 수: " + caregivers.size());
+                // System.out.println("DB에서 조회된 간병인 수: " + caregivers.size());
             
                 for (CaregiverDTO caregiver : caregivers) {
                     Map<String, Object> product = new HashMap<>();
@@ -191,26 +191,51 @@ public class AdminProductController {
                     .toList();
             }
             
+            // 전체 데이터 수 저장
+            int totalElements = products.size();
+            int totalPages = (int) Math.ceil((double) totalElements / size);
+            
+            // 페이지네이션 적용
+            int startIndex = page * size;
+            int endIndex = Math.min(startIndex + size, totalElements);
+            
+            List<Map<String, Object>> pagedProducts = new ArrayList<>();
+            if (startIndex < totalElements) {
+                pagedProducts = products.subList(startIndex, endIndex);
+            }
+            
+            // System.out.println("=== 페이지네이션 정보 ===");
+            // System.out.println("전체 데이터 수: " + totalElements);
+            // System.out.println("현재 페이지: " + page + " (0부터 시작)");
+            // System.out.println("페이지 크기: " + size);
+            // System.out.println("전체 페이지 수: " + totalPages);
+            // System.out.println("시작 인덱스: " + startIndex);
+            // System.out.println("끝 인덱스: " + endIndex);
+            // System.out.println("현재 페이지 데이터 수: " + pagedProducts.size());
+            
             Map<String, Object> response = new HashMap<>();
-            response.put("content", products);
-            response.put("totalElements", products.size());
-            response.put("totalPages", (int) Math.ceil((double) products.size() / size));
+            response.put("content", pagedProducts);
+            response.put("totalElements", totalElements);
+            response.put("totalPages", totalPages);
             response.put("size", size);
             response.put("number", page);
+            response.put("first", page == 0);
+            response.put("last", page >= totalPages - 1);
+            response.put("numberOfElements", pagedProducts.size());
             
-            System.out.println("=== 응답 데이터 ===");
-            System.out.println("총 간병인 수: " + products.size());
-            if (!products.isEmpty()) {
-                System.out.println("첫 번째 간병인: " + products.get(0).get("prodName"));
-            }
-            System.out.println("=== 응답 반환 성공 ===");
+            // System.out.println("=== 응답 데이터 ===");
+            // System.out.println("총 간병인 수: " + products.size());
+            // if (!products.isEmpty()) {
+            //     System.out.println("첫 번째 간병인: " + products.get(0).get("prodName"));
+            // }
+            // System.out.println("=== 응답 반환 성공 ===");
             
             return ResponseEntity.ok()
                 .header("Content-Type", "application/json; charset=UTF-8")
                 .body(response);
             
         } catch (Exception e) {
-            System.out.println("=== 에러 발생: " + e.getMessage() + " ===");
+            System.err.println("=== AdminProductController 에러 발생: " + e.getMessage() + " ===");
             e.printStackTrace();
             
             // 에러 발생 시 빈 데이터 반환
