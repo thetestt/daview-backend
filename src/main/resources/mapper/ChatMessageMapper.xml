@@ -5,18 +5,22 @@
 
 
 <mapper namespace="com.daview.mapper.ChatMessageMapper">
-<insert id="insertChatMessage" parameterType="com.daview.dto.ChatMessageDTO">
-    INSERT INTO chatMessage (chatroom_id, sender_id, receiver_id, content, sent_at, is_read)
-    VALUES (#{chatroomId}, #{senderId}, #{receiverId}, #{content}, #{sentAt}, 0)
+<insert id="insertChatMessage" parameterType="ChatMessageDTO" useGeneratedKeys="true" keyProperty="chatMessageId">
+    INSERT INTO chatmessage (chatroom_id, sender_id, content, sent_at, is_read)
+    VALUES (#{chatroomId}, #{senderId}, #{content}, #{sentAt}, #{isRead})
 </insert>
     
 <select id="getMessagesByRoom" resultType="com.daview.dto.ChatMessageDTO" parameterType="map">
-  SELECT cm.chatroom_id AS chatroomId,
+  SELECT 
+  
+         cm.chatMessage_id AS chatMessageId,
+         cm.chatroom_id AS chatroomId,
          cm.sender_id   AS senderId,
          cm.receiver_id AS receiverId,
          cm.content,
          cm.sent_at     AS sentAt,
          cm.is_read     AS isRead
+         
   FROM chatmessage cm
   JOIN chatroom cr ON cm.chatroom_id = cr.chatroom_id
   WHERE cm.chatroom_id = #{chatroomId}
@@ -36,6 +40,14 @@
       AND sender_id != #{memberId}
       AND is_read = 0
 </update>
+
+<select id="findUnreadMessageIdsByChatroomAndOpponent" resultType="long">
+  SELECT chatmessage_id
+  FROM chatmessage
+  WHERE chatroom_id = #{chatroomId}
+    AND receiver_id = #{readerId}
+    AND is_read = true
+</select>
 
 
 </mapper>
