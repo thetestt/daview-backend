@@ -45,10 +45,44 @@ public class AdminCaregiverServiceImpl implements AdminCaregiverService {
 
     @Override
     public void updateCaregiver(String id, CaregiverDTO caregiverDTO) {
-        // String 타입 ID를 그대로 사용하여 AdminCaregiverMapper의 최적화된 쿼리 사용
+        // 기존 데이터 조회
+        CaregiverDTO existingCaregiver = caregiverMapper.getCaregiverById(id);
+        if (existingCaregiver == null) {
+            throw new RuntimeException("간병인을 찾을 수 없습니다: " + id);
+        }
+
+        // 변경된 필드만 업데이트
         caregiverDTO.setCaregiverId(id);
+
+        // 변경되지 않은 필드는 기존 값으로 설정
+        if (caregiverDTO.getHopeWorkAreaLocation() == null || caregiverDTO.getHopeWorkAreaLocation().trim().isEmpty()) {
+            caregiverDTO.setHopeWorkAreaLocation(null);
+        }
+        if (caregiverDTO.getHopeWorkAreaCity() == null || caregiverDTO.getHopeWorkAreaCity().trim().isEmpty()) {
+            caregiverDTO.setHopeWorkAreaCity(null);
+        }
+        if (caregiverDTO.getHopeWorkPlace() == null || caregiverDTO.getHopeWorkPlace().trim().isEmpty()) {
+            caregiverDTO.setHopeWorkPlace(null);
+        }
+        if (caregiverDTO.getHopeWorkType() == null || caregiverDTO.getHopeWorkType().trim().isEmpty()) {
+            caregiverDTO.setHopeWorkType(null);
+        }
+        if (caregiverDTO.getHopeEmploymentType() == null || caregiverDTO.getHopeEmploymentType().trim().isEmpty()) {
+            caregiverDTO.setHopeEmploymentType(null);
+        }
+        if (caregiverDTO.getEducationLevel() == null || caregiverDTO.getEducationLevel().trim().isEmpty()) {
+            caregiverDTO.setEducationLevel(null);
+        }
+        if (caregiverDTO.getIntroduction() == null || caregiverDTO.getIntroduction().trim().isEmpty()) {
+            caregiverDTO.setIntroduction(null);
+        }
+        // hopeWorkAmount는 int 타입이므로 0으로 설정하면 매퍼에서 무시됨
+        if (caregiverDTO.getHopeWorkAmount() <= 0) {
+            caregiverDTO.setHopeWorkAmount(existingCaregiver.getHopeWorkAmount());
+        }
+
         caregiverMapper.updateCaregiver(caregiverDTO);
-        System.out.println("===== 요양사 상품 수정 완료 =====");
+        System.out.println("===== 간병인 상품 수정 완료 =====");
         System.out.println("Caregiver ID: " + caregiverDTO.getCaregiverId());
     }
 
