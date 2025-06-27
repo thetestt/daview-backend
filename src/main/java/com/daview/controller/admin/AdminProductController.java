@@ -62,7 +62,6 @@ public class AdminProductController {
                     product.put("facilityName", facility.getFacilityName() != null ? facility.getFacilityName() : "시설명 없음"); // 추가
                     
                     product.put("prodTypeName", facility.getFacilityType() != null ? facility.getFacilityType() : "요양원/실버타운");
-                    product.put("facilityType", facility.getFacilityType() != null ? facility.getFacilityType() : "요양원/실버타운"); // 추가
                     
                     // 가격 정보
                     Integer charge = facility.getFacilityCharge() != null ? facility.getFacilityCharge() : 
@@ -414,73 +413,135 @@ public class AdminProductController {
                 System.out.println("업데이트할 필드들: " + updates.get("updatedFields"));
             }
 
-            CaregiverDTO caregiverDTO = new CaregiverDTO();
-            caregiverDTO.setCaregiverId(id);
+            // 상품 유형 확인
+            String prodTypeName = (String) updates.get("prodTypeName");
+            String facilityType = (String) updates.get("facility_type");
             
-            // 필드 매핑
-            if (updates.containsKey("userGender")) {
-                String userGender = (String) updates.get("userGender");
-                System.out.println("설정할 userGender: " + userGender);
-                caregiverDTO.setUserGender(userGender);
-            }
+            System.out.println("상품 유형: " + prodTypeName);
+            System.out.println("시설 유형: " + facilityType);
             
-            if (updates.containsKey("hope_work_amount")) {
-                String amountStr = String.valueOf(updates.get("hope_work_amount"));
-                System.out.println("설정할 hope_work_amount: " + amountStr);
-                caregiverDTO.setHopeWorkAmount(Integer.parseInt(amountStr));
-            }
+            // 기업(시설) 상품인지 요양사 상품인지 구분
+            boolean isFacility = "기업".equals(prodTypeName) || 
+                               "요양원".equals(prodTypeName) || 
+                               "실버타운".equals(prodTypeName) ||
+                               "요양원".equals(facilityType) || 
+                               "실버타운".equals(facilityType) ||
+                               updates.containsKey("facility_name") ||
+                               updates.containsKey("facility_charge") ||
+                               updates.containsKey("facility_theme");
             
-            if (updates.containsKey("introduction")) {
-                String intro = (String) updates.get("introduction");
-                System.out.println("설정할 introduction: " + intro);
-                caregiverDTO.setIntroduction(intro);
-            }
-            
-            if (updates.containsKey("hope_work_area_location")) {
-                String location = (String) updates.get("hope_work_area_location");
-                System.out.println("설정할 hope_work_area_location: " + location);
-                caregiverDTO.setHopeWorkAreaLocation(location);
-            }
-            
-            if (updates.containsKey("hope_work_area_city")) {
-                String city = (String) updates.get("hope_work_area_city");
-                System.out.println("설정할 hope_work_area_city: " + city);
-                caregiverDTO.setHopeWorkAreaCity(city);
-            }
-            
-            if (updates.containsKey("hope_work_place")) {
-                String place = (String) updates.get("hope_work_place");
-                System.out.println("설정할 hope_work_place: " + place);
-                caregiverDTO.setHopeWorkPlace(place);
-            }
-            
-            if (updates.containsKey("hope_work_type")) {
-                String type = (String) updates.get("hope_work_type");
-                System.out.println("설정할 hope_work_type: " + type);
-                caregiverDTO.setHopeWorkType(type);
-            }
-            
-            if (updates.containsKey("hope_employment_type")) {
-                String empType = (String) updates.get("hope_employment_type");
-                System.out.println("설정할 hope_employment_type: " + empType);
-                caregiverDTO.setHopeEmploymentType(empType);
-            }
+            if (isFacility) {
+                System.out.println("🏢 기업(시설) 상품 수정 처리");
+                
+                // 기업(시설) 수정
+                FacilityDTO facilityDTO = new FacilityDTO();
+                facilityDTO.setFacilityId(id);
+                
+                // 기업 전용 필드 매핑
+                if (updates.containsKey("prodName")) facilityDTO.setFacilityName((String) updates.get("prodName"));
+                if (updates.containsKey("facility_name")) facilityDTO.setFacilityName((String) updates.get("facility_name"));
+                if (updates.containsKey("facility_type")) facilityDTO.setFacilityType((String) updates.get("facility_type"));
+                if (updates.containsKey("facility_charge")) {
+                    String chargeStr = String.valueOf(updates.get("facility_charge"));
+                    if (!chargeStr.isEmpty() && !chargeStr.equals("null")) {
+                        facilityDTO.setFacilityCharge(Integer.parseInt(chargeStr));
+                    }
+                }
+                if (updates.containsKey("facility_theme")) facilityDTO.setFacilityTheme((String) updates.get("facility_theme"));
+                if (updates.containsKey("facility_detail_address")) facilityDTO.setFacilityDetailAddress((String) updates.get("facility_detail_address"));
+                if (updates.containsKey("facility_phone")) facilityDTO.setFacilityPhone((String) updates.get("facility_phone"));
+                if (updates.containsKey("facility_homepage")) facilityDTO.setFacilityHomepage((String) updates.get("facility_homepage"));
+                if (updates.containsKey("introduction")) facilityDTO.setDefaultMessage((String) updates.get("introduction"));
+                if (updates.containsKey("prodDetail")) facilityDTO.setDefaultMessage((String) updates.get("prodDetail"));
+                if (updates.containsKey("category")) facilityDTO.setCategory((String) updates.get("category"));
+                if (updates.containsKey("facility_tag")) facilityDTO.setFacilityTag((String) updates.get("facility_tag"));
+                
+                // 위치 정보
+                if (updates.containsKey("hope_work_area_location")) facilityDTO.setFacilityAddressLocation((String) updates.get("hope_work_area_location"));
+                if (updates.containsKey("hope_work_area_city")) facilityDTO.setFacilityAddressCity((String) updates.get("hope_work_area_city"));
+                
+                System.out.println("변환된 FacilityDTO: " + facilityDTO);
+                
+                facilityService.updateFacility(id, facilityDTO);
+                
+                return ResponseEntity.ok().body(Map.of(
+                    "success", true,
+                    "message", "시설 정보가 성공적으로 수정되었습니다."
+                ));
+                
+            } else {
+                System.out.println("👨‍⚕️ 요양사 상품 수정 처리");
+                
+                // 요양사 수정
+                CaregiverDTO caregiverDTO = new CaregiverDTO();
+                caregiverDTO.setCaregiverId(id);
+                
+                // 요양사 전용 필드 매핑
+                if (updates.containsKey("userGender")) {
+                    String userGender = (String) updates.get("userGender");
+                    System.out.println("설정할 userGender: " + userGender);
+                    caregiverDTO.setUserGender(userGender);
+                }
+                
+                if (updates.containsKey("hope_work_amount")) {
+                    String amountStr = String.valueOf(updates.get("hope_work_amount"));
+                    System.out.println("설정할 hope_work_amount: " + amountStr);
+                    caregiverDTO.setHopeWorkAmount(Integer.parseInt(amountStr));
+                }
+                
+                if (updates.containsKey("introduction")) {
+                    String intro = (String) updates.get("introduction");
+                    System.out.println("설정할 introduction: " + intro);
+                    caregiverDTO.setIntroduction(intro);
+                }
+                
+                if (updates.containsKey("hope_work_area_location")) {
+                    String location = (String) updates.get("hope_work_area_location");
+                    System.out.println("설정할 hope_work_area_location: " + location);
+                    caregiverDTO.setHopeWorkAreaLocation(location);
+                }
+                
+                if (updates.containsKey("hope_work_area_city")) {
+                    String city = (String) updates.get("hope_work_area_city");
+                    System.out.println("설정할 hope_work_area_city: " + city);
+                    caregiverDTO.setHopeWorkAreaCity(city);
+                }
+                
+                if (updates.containsKey("hope_work_place")) {
+                    String place = (String) updates.get("hope_work_place");
+                    System.out.println("설정할 hope_work_place: " + place);
+                    caregiverDTO.setHopeWorkPlace(place);
+                }
+                
+                if (updates.containsKey("hope_work_type")) {
+                    String type = (String) updates.get("hope_work_type");
+                    System.out.println("설정할 hope_work_type: " + type);
+                    caregiverDTO.setHopeWorkType(type);
+                }
+                
+                if (updates.containsKey("hope_employment_type")) {
+                    String empType = (String) updates.get("hope_employment_type");
+                    System.out.println("설정할 hope_employment_type: " + empType);
+                    caregiverDTO.setHopeEmploymentType(empType);
+                }
 
-            // prodDetail이 있으면 introduction으로 설정
-            if (updates.containsKey("prodDetail")) {
-                String detail = (String) updates.get("prodDetail");
-                System.out.println("설정할 prodDetail(introduction): " + detail);
-                caregiverDTO.setIntroduction(detail);
-            }
+                // prodDetail이 있으면 introduction으로 설정
+                if (updates.containsKey("prodDetail")) {
+                    String detail = (String) updates.get("prodDetail");
+                    System.out.println("설정할 prodDetail(introduction): " + detail);
+                    caregiverDTO.setIntroduction(detail);
+                }
 
-            System.out.println("변환된 DTO: " + caregiverDTO);
+                System.out.println("변환된 CaregiverDTO: " + caregiverDTO);
+                
+                caregiverService.updateCaregiver(id, caregiverDTO);
+                
+                return ResponseEntity.ok().body(Map.of(
+                    "success", true,
+                    "message", "요양사 정보가 성공적으로 수정되었습니다."
+                ));
+            }
             
-            caregiverService.updateCaregiver(id, caregiverDTO);
-            
-            return ResponseEntity.ok().body(Map.of(
-                "success", true,
-                "message", "요양사 정보가 성공적으로 수정되었습니다."
-            ));
         } catch (Exception e) {
             System.err.println("상품 수정 중 오류 발생: " + e.getMessage());
             e.printStackTrace();
