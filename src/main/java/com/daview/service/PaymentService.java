@@ -11,4 +11,6 @@ public interface PaymentService {
 	PaymentDTO selectPaymentById(String pymId);
 	
 	List<PaymentWithReservationsDTO> selectPaymentWithReservationsByMemberId(Long memberId);
+	
+	List<String> getProdNmList(Long memberId);
 }
