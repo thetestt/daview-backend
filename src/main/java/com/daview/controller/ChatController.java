@@ -86,9 +86,19 @@ public class ChatController {
 
         // 1. DB에 읽음 처리
         chatMessageService.markMessagesAsRead(dto.getChatroomId(), dto.getReaderId());
+        
+     // 2. 지금 읽힌 메시지 ID들을 조회
+        List<Long> readMessageIds = chatMessageService
+            .findUnreadMessageIdsSentByOpponent(dto.getChatroomId(), dto.getReaderId());
+
+        // 3. DTO에 세팅
+        dto.setChatMessageIds(readMessageIds);
+
 
         // 2. 상대방에게 읽었음을 알림
         messagingTemplate.convertAndSend("/sub/chat/read/" + dto.getChatroomId(), dto);
+        System.out.println("📩 WebSocket 읽음 처리 요청 덩기덕: " + dto);
+        System.out.println("📩 읽음 처리 메시지 IDs: " + readMessageIds);
     }
     
 }
