@@ -67,4 +67,10 @@ public class PaymentController {
 		}
 		return ResponseEntity.ok(payments);
 	}
+	
+	@GetMapping("/prod/{memberId}")
+	public ResponseEntity<List<String>> getProdNmList(@PathVariable Long memberId){
+		List<String> prodNm = paymentService.getProdNmList(memberId);
+		return ResponseEntity.ok(prodNm);
+	}
 }

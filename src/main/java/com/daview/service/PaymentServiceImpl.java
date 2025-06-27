@@ -30,4 +30,9 @@ public class PaymentServiceImpl implements PaymentService {
 	public List<PaymentWithReservationsDTO> selectPaymentWithReservationsByMemberId(Long memberId){
 		return paymentMapper.selectPaymentWithReservationsByMemberId(memberId);
 	}
+	
+	@Override
+	public List<String> getProdNmList(Long memberId){
+		return paymentMapper.getProdNmList(memberId);
+	}
 }
