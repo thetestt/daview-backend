@@ -96,7 +96,7 @@
 		withdrawn,
 		agree_sms,
 		agree_email,
-		agree_push,
+		agree_push
 		FROM
 		dv_users
 		WHERE role = #{role}
