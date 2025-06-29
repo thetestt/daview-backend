@@ -359,16 +359,33 @@ public class AdminProductController {
                 facilityDTO.setFacilityHomepage((String) productData.get("facility_homepage"));
                 facilityDTO.setDefaultMessage((String) productData.get("default_message"));
                 
+                // ⭐ photoUrl 설정 (가장 중요!)
+                String photoUrl = (String) productData.get("photoUrl");
+                if (photoUrl != null && !photoUrl.trim().isEmpty()) {
+                    facilityDTO.setPhotoUrl(photoUrl);
+                    System.out.println("📸 PhotoURL 설정됨: " + photoUrl);
+                } else {
+                    System.out.println("⚠️ PhotoURL이 없음 또는 빈 값");
+                }
+                
                 System.out.println("=== 매핑된 FacilityDTO 정보 ===");
                 System.out.println("시설명: " + facilityDTO.getFacilityName());
                 System.out.println("시설유형: " + facilityDTO.getFacilityType());
                 System.out.println("이용료: " + facilityDTO.getFacilityCharge());
                 System.out.println("주소: " + facilityDTO.getFacilityDetailAddress());
+                System.out.println("사진URL: " + facilityDTO.getPhotoUrl());
                 
                 System.out.println("변환된 FacilityDTO: " + facilityDTO.getFacilityName() + " - " + facilityDTO.getFacilityType());
                 
+                // 🔍 서비스 호출 전 로그
+                System.out.println("🔍 AdminFacilityService.addFacility() 호출 시작");
+                System.out.println("🔍 facilityService 객체: " + facilityService.getClass().getName());
+                
                 // 서비스 호출하여 실제 DB에 등록
                 facilityService.addFacility(facilityDTO);
+                
+                // 🔍 서비스 호출 후 로그  
+                System.out.println("🔍 AdminFacilityService.addFacility() 호출 완료");
                 
                 Map<String, Object> successResponse = new HashMap<>();
                 successResponse.put("success", true);
