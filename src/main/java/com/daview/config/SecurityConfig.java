@@ -49,8 +49,14 @@ public class SecurityConfig {
                     "/api/chat/**",
                     "/api/admin/products/**",
                     "/admin/caregivers/**",  // 요양사 관리 전체 경로 제외
-                    "/admin/facilities/**",  // 요양원 관리 전체 경로 제외                   
+                    "/admin/facilities/**",  // 요양원 관리 전체 경로 제외
+                    "/api/chat/rooms/*/info",
+                    "/api/chat/rooms/*/validate",
+                    "/api/chat/messages/**",
+
+
                     "/api/**"
+                    
                 ).permitAll()
                 
                 

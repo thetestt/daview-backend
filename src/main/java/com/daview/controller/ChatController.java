@@ -5,6 +5,10 @@ import com.daview.dto.ReadMessageDTO;
 import com.daview.service.ChatMessageService;
 import com.daview.service.ChatRoomService;
 import com.daview.service.KafkaChatProducer;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
+@Slf4j
 @RestController
 @RequestMapping("/api/chat")
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
@@ -41,9 +45,16 @@ public class ChatController {
     @Autowired
     private ChatRoomService chatRoomService;
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    
     @MessageMapping("/send") // pub/chat/send
     public void send(ChatMessageDTO message) {
         kafkaChatProducer.sendMessage(message);
+        try {
+            log.info("✅ Kafka로 보낼 메시지: {}", objectMapper.writeValueAsString(message));
+        } catch (JsonProcessingException e) {
+            log.error("❌ 메시지 JSON 변환 실패", e);
+        }
         // WebSocket으로는 이제 응답 안 보내고 Kafka → Redis → DB → 구독 구조로 전환
     }
     
@@ -68,21 +79,20 @@ public class ChatController {
         return response;
     }
     
-    //채팅 읽음처리하는 컨트롤러
-    @PostMapping("/{chatroomId}/read")
-    public ResponseEntity<Void> markMessagesAsRead(
-            @PathVariable String chatroomId,
-            @RequestParam Long memberId
-    ) {
-        chatMessageService.markMessagesAsRead(chatroomId, memberId);
-        return ResponseEntity.ok().build();
-    }
+//    //채팅 읽음처리하는 컨트롤러
+//    @PostMapping("/{chatroomId}/read")
+//    public ResponseEntity<Void> markMessagesAsRead(
+//            @PathVariable String chatroomId,
+//            @RequestParam Long memberId
+//    ) {
+//        chatMessageService.markMessagesAsRead(chatroomId, memberId);
+//        return ResponseEntity.ok().build();
+//    }
     
     
     // ✅ 읽음 처리 WebSocket 수신 처리
     @MessageMapping("/read")
     public void handleRead(@Payload ReadMessageDTO dto) {
-        System.out.println("📩 WebSocket 읽음 처리 요청: " + dto);
 
         // 1. DB에 읽음 처리
         chatMessageService.markMessagesAsRead(dto.getChatroomId(), dto.getReaderId());
@@ -97,8 +107,7 @@ public class ChatController {
 
         // 2. 상대방에게 읽었음을 알림
         messagingTemplate.convertAndSend("/sub/chat/read/" + dto.getChatroomId(), dto);
-        System.out.println("📩 WebSocket 읽음 처리 요청 덩기덕: " + dto);
-        System.out.println("📩 읽음 처리 메시지 IDs: " + readMessageIds);
+
     }
     
 }

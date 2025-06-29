@@ -23,10 +23,15 @@ public interface ChatRoomMapper {
 
     // ✅ 채팅방 새로 생성
     void insertChatRoom(@Param("chatroomId") String chatroomId,
-                        @Param("senderId") Long senderId,
-                        @Param("receiverId") Long receiverId,
-                        @Param("facilityId") String facilityId); 
-
+            @Param("senderId") Long senderId,
+            @Param("receiverId") Long receiverId,
+            @Param("facilityId") String facilityId,
+            @Param("senderName") String senderName,
+            @Param("senderType") String senderType,
+            @Param("receiverName") String receiverName,
+            @Param("receiverType") String receiverType);
+    
+    
     // ✅ 해당 유저가 채팅방에 접근 가능한지 여부
     int isUserInChatRoom(@Param("chatroomId") String chatroomId,
                          @Param("memberId") Long memberId);
@@ -35,6 +40,10 @@ public interface ChatRoomMapper {
     void updateLastMessage(@Param("chatroomId") String chatroomId,
                            @Param("lastMessage") String lastMessage,
                            @Param("lastTime") String lastTime);
+ // ✅ 채팅방의 마지막 메시지 및 시간 업데이트 (최신)
+    void updateLastMessageAndTime(@Param("chatroomId") String chatroomId,
+            @Param("lastMessage") String lastMessage,
+            @Param("sentAt") String sentAt);
 
     // ✅ [✨추가] 특정 채팅방 하나의 리스트 정보를 가져오기 (WebSocket 실시간 업데이트용)
     ChatRoomDTO getChatRoomInfoForList(@Param("memberId") Long memberId,
@@ -55,5 +64,8 @@ public interface ChatRoomMapper {
     
     //웹소켓 검증용
     boolean existsByChatroomIdAndMemberId(Map<String, Object> param);
+    
+    ChatRoomDTO findById(@Param("chatroomId") String chatroomId);
+    
     
 }

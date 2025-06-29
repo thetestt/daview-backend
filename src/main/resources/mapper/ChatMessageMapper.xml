@@ -6,29 +6,30 @@
 
 <mapper namespace="com.daview.mapper.ChatMessageMapper">
 <insert id="insertChatMessage" parameterType="ChatMessageDTO" useGeneratedKeys="true" keyProperty="chatMessageId">
-    INSERT INTO chatmessage (chatroom_id, sender_id, content, sent_at, is_read)
-    VALUES (#{chatroomId}, #{senderId}, #{content}, #{sentAt}, #{isRead})
+    INSERT INTO chatmessage (chatroom_id, sender_id, receiver_id, content, sent_at, is_read)
+    VALUES (#{chatroomId}, #{senderId}, #{receiverId}, #{content}, #{sentAt}, #{isRead})
 </insert>
+
+<update id="updateLastMessageAndTime">
+    UPDATE chatroom
+    SET last_message = #{lastMessage},
+        sent_at = #{sentAt}
+    WHERE chatroom_id = #{chatroomId}
+</update>
+
+
     
 <select id="getMessagesByRoom" resultType="com.daview.dto.ChatMessageDTO" parameterType="map">
-  SELECT 
-  
-         cm.chatMessage_id AS chatMessageId,
-         cm.chatroom_id AS chatroomId,
-         cm.sender_id   AS senderId,
-         cm.receiver_id AS receiverId,
-         cm.content,
-         cm.sent_at     AS sentAt,
-         cm.is_read     AS isRead
-         
+     SELECT 
+    cm.chatMessage_id AS chatMessageId,      -- ✅ key로 쓸 필드
+    cm.chatroom_id,
+    cm.sender_id,
+    cm.receiver_id,
+    cm.content,
+    cm.sent_at,
+    cm.is_read
   FROM chatmessage cm
-  JOIN chatroom cr ON cm.chatroom_id = cr.chatroom_id
   WHERE cm.chatroom_id = #{chatroomId}
-    AND (
-      (cr.sender_id = #{memberId} AND cr.sender_trash_can = FALSE)
-      OR
-      (cr.receiver_id = #{memberId} AND cr.receiver_trash_can = FALSE)
-    )
   ORDER BY cm.sent_at ASC
 </select>
 

@@ -256,4 +256,21 @@
     WHERE caregiver_id = #{facilityId}
 </select>
 
+<!-- 채팅 상단 인포 위한 사용자 나누기  -->
+
+  <select id="findByCaregiverId" resultType="com.daview.dto.CaregiverDTO">
+  SELECT
+    caregiver_id,
+    member_id,
+    hope_work_area_location,
+    hope_work_area_city,
+    default_message
+  FROM caregiver
+  WHERE caregiver_id = #{caregiverId}
+    AND trash_can = 0
+    AND caregiver_deleted_at IS NULL
+  LIMIT 1
+</select>
+
+
 </mapper>

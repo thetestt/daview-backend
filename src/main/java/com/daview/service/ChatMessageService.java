@@ -10,4 +10,5 @@ public interface ChatMessageService {
   //채팅 읽음처리
     public void markMessagesAsRead(String chatroomId, Long memberId);
     public List<Long> findUnreadMessageIdsSentByOpponent(String chatroomId, Long readerId);
+    
 }

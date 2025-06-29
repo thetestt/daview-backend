@@ -61,6 +61,8 @@ public interface UserMapper {
 
 
 	// 수안추가 - 채팅상단 정보불러오기용
-	User findUserById(@Param("memberId") Long memberId);
+	//User findUserById(@Param("memberId") Long memberId);
+	User findByMemberId2(@Param("memberId") Long memberId);
+	User findByMemberId3(@Param("memberId") Long memberId);
 
 }
