@@ -1,6 +1,7 @@
 package com.daview.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,7 @@ public class ReservationController {
 
 	@PostMapping
 	public ResponseEntity<ReservationDTO> createReservation(@RequestBody ReservationDTO reservation) {
+		reservation.setRsvId(UUID.randomUUID().toString());
 		int result = reservationService.insertReservation(reservation);
 
 		if (result == 1) {
@@ -78,13 +80,13 @@ public class ReservationController {
 		}
 	}
 
-	@PutMapping("/{rsvId}/status")
-	public ResponseEntity<String> updateReservationStatus(@PathVariable String rsvId) {
+	@PutMapping("/status")
+	public ResponseEntity<String> updateReservationStatus(@RequestBody List<String> rsvIds) {
 		int rsvType = 3; // 결제완료
 
 		try {
-			reservationService.updateReservationStatus(rsvId, rsvType);
-			return ResponseEntity.ok("예약 상태가 결제 완료로 변경되었습니다.");
+			int updatedCount = reservationService.updateReservationStatus(rsvIds, rsvType);
+			return ResponseEntity.ok(updatedCount + "개의 예약 상태가 결제 완료로 변경되었습니다.");
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("예약 상태 변경이 실패했습니다.");
 		}

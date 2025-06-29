@@ -32,6 +32,7 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 
 	@Override
+	@Transactional
 	public int deleteAllReservation() {
 		return reservationMapper.deleteAllReservation();
 	}
@@ -49,8 +50,17 @@ public class ReservationServiceImpl implements ReservationService {
 	}
 
 	@Override
-	public int updateReservationStatus(String rsvId, int rsvType) {
-		return reservationMapper.updateReservationStatus(rsvId, rsvType);
+	@Transactional
+	public int updateReservationStatus(List<String> rsvIds, int rsvType) {
+		int result = 0;
+		for(String rsvId : rsvIds) {
+			int updated = reservationMapper.updateReservationStatus(rsvId, rsvType);
+			if(updated == 0) {
+				throw new RuntimeException("예약 ID" + rsvId + "를 업데이트하지 못했습니다.");
+			}
+			result += updated;
+		}
+		return result;
 	}
 
 	@Override
