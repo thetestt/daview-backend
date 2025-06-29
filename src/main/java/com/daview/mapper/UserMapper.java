@@ -8,14 +8,14 @@ import org.apache.ibatis.annotations.Param;
 
 import com.daview.dto.CouponDTO;
 import com.daview.dto.User;
-import java.util.List;
-
 import com.daview.dto.UserCoupon;
 
 @Mapper
 public interface UserMapper {
 	User findByUsername(String username);
+
 	void insertUser(User user);
+
 	int countByUsername(String username);
 
 	// 전화번호로 아이디찾기
@@ -40,6 +40,25 @@ public interface UserMapper {
 
 	// 실제 DB에서 CAREGIVER 역할 사용자 조회
 	List<User> findUsersByRole(@Param("role") String role);
+	
+	//환불계좌
+	void updateRefundAccount(
+			@Param("username") String username, 
+			@Param("bankName") String bankName,
+			@Param("accountNumber") String accountNumber);
+	User getRefundAccount(@Param("username") String username);
+	void deleteRefundAccount(@Param("username") String username);
+	void updateMarketingConsent(@Param("username") String username, @Param("marketingAgreed") boolean marketingAgreed);
+	
+	//마케팅동의
+	void updateAgreeSms(@Param("username") String username, @Param("value") boolean value);
+	void updateAgreeEmail(@Param("username") String username, @Param("value") boolean value);
+	void updateAgreePush(@Param("username") String username, @Param("value") boolean value);
+	
+	//회원탈퇴
+	void withdrawUser(@Param("username") String username, @Param("reason") String reason);
+
+
 
 	// 수안추가 - 채팅상단 정보불러오기용
 	User findUserById(@Param("memberId") Long memberId);
