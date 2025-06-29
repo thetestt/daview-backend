@@ -41,7 +41,11 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         chatMessageMapper.insertChatMessage(message); // 이때 message.chatMessageId 가 채워져야 함 (MyBatis <selectKey>)
 
         // ✅ 2. 채팅방 정보 업데이트 (주석은 상황 따라 복구 가능)
-        // chatRoomMapper.updateLastMessage(message.getChatroomId(), message.getContent(), formatted);
+        chatRoomMapper.updateLastMessageAndTime(
+        	    message.getChatroomId(),
+        	    message.getContent(),
+        	    formatted // yyyy-MM-dd HH:mm:ss
+        	);
 
         // ✅ 3. 채팅방 안 (ChatWindow) 실시간 전송
         messagingTemplate.convertAndSend("/sub/chat/room/" + message.getChatroomId(), message);

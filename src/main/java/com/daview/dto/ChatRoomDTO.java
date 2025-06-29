@@ -3,11 +3,11 @@ package com.daview.dto;
 public class ChatRoomDTO {
 
     private String chatroomId;
+    private Long opponentId;
     private String opponentName;
     private String lastMessage;
-    private String lastTime;
+    private String sentAt;
     private int unreadCount;
-    private Long opponentId;
   
 
 	// 구분
@@ -38,11 +38,64 @@ public class ChatRoomDTO {
     private Long senderId; 
     private Long receiverId; 
     
+//채팅방에 저장할 컬럼 
+    private String senderName;
+    private String senderType;
+
+    private String receiverName;
+    private String receiverType;
+    
+    
+    private String userRole;           // 'sender' 또는 'receiver'
+    private boolean iLeftThisRoom;     // 내가 나갔는지
+    private boolean opponentOut;       // 상대가 나갔는지
     
     
     
     
-    public Long getSenderId() {
+    public String getUserRole() {
+		return userRole;
+	}
+	public void setUserRole(String userRole) {
+		this.userRole = userRole;
+	}
+	public boolean isiLeftThisRoom() {
+		return iLeftThisRoom;
+	}
+	public void setiLeftThisRoom(boolean iLeftThisRoom) {
+		this.iLeftThisRoom = iLeftThisRoom;
+	}
+	public boolean isOpponentOut() {
+		return opponentOut;
+	}
+	public void setOpponentOut(boolean opponentOut) {
+		this.opponentOut = opponentOut;
+	}
+	public String getSenderName() {
+		return senderName;
+	}
+	public void setSenderName(String senderName) {
+		this.senderName = senderName;
+	}
+	public String getSenderType() {
+		return senderType;
+	}
+	public void setSenderType(String senderType) {
+		this.senderType = senderType;
+	}
+	public String getReceiverName() {
+		return receiverName;
+	}
+	public void setReceiverName(String receiverName) {
+		this.receiverName = receiverName;
+	}
+	public String getReceiverType() {
+		return receiverType;
+	}
+	public void setReceiverType(String receiverType) {
+		this.receiverType = receiverType;
+	}
+	public Long getSenderId() {
 		return senderId;
 	}
 	public void setSenderId(Long senderId) {
@@ -95,10 +148,15 @@ public class ChatRoomDTO {
     public String getLastMessage() { return lastMessage; }
     public void setLastMessage(String lastMessage) { this.lastMessage = lastMessage; }
 
-    public String getLastTime() { return lastTime; }
-    public void setLastTime(String lastTime) { this.lastTime = lastTime; }
 
-    public int getUnreadCount() { return unreadCount; }
+
+    public String getSentAt() {
+		return sentAt;
+	}
+	public void setSentAt(String sentAt) {
+		this.sentAt = sentAt;
+	}
+	public int getUnreadCount() { return unreadCount; }
     public void setUnreadCount(int unreadCount) { this.unreadCount = unreadCount; }
 
     public Long getOpponentId() { return opponentId; }

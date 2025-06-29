@@ -97,8 +97,12 @@ public class ChatRoomController {
             boolean iLeftRoom = (isSender && Boolean.TRUE.equals(room.getSenderTrashCan())) ||
                                 (isReceiver && Boolean.TRUE.equals(room.getReceiverTrashCan()));
 
-            // ✅ 3. 내가 나가지 않았다면 기존 방 재사용
-            if (!iLeftRoom) {
+           
+         // ✅ 3. 두 사람 모두 나가지 않았을 경우에만 기존 방 재사용
+            boolean receiverLeftRoom = (isSender && Boolean.TRUE.equals(room.getReceiverTrashCan())) ||
+                                       (isReceiver && Boolean.TRUE.equals(room.getSenderTrashCan()));
+
+            if (!iLeftRoom && !receiverLeftRoom) {
                 return Map.of("chatroomId", existingRoomId);
             }
         }

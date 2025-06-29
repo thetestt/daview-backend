@@ -1,9 +1,12 @@
 package com.daview.controller;
 
+import com.daview.dto.ChatReadDTO;
+import com.daview.service.ChatMessageService;
 import com.daview.service.ChatRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 
@@ -11,10 +14,11 @@ import org.springframework.stereotype.Controller;
 public class ChatWebSocketController {
 
     private final ChatRoomService chatRoomService;
-
+    private final ChatMessageService chatMessageService;
    
-    public ChatWebSocketController(ChatRoomService chatRoomService) {
+    public ChatWebSocketController(ChatRoomService chatRoomService, ChatMessageService chatMessageService) {
         this.chatRoomService = chatRoomService;
+        this.chatMessageService = chatMessageService;
     }
 
     // 구독 요청이 들어올 때 자동 호출됨
@@ -32,4 +36,11 @@ public class ChatWebSocketController {
 
         System.out.println("✅ 구독 허용됨: " + chatroomId + ", memberId=" + memberId);
     }
+    
+
+//    @MessageMapping("/read") // 프론트에서 /pub/read 로 보내면 여기 도달
+//    public void handleReadMessage(ChatReadDTO dto) {
+//        System.out.println("📩 읽음 처리 요청 수신: " + dto);
+//        chatMessageService.markMessagesAsRead(dto.getChatroomId(), dto.getReaderId());
+//    }
 }

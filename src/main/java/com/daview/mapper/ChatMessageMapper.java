@@ -15,6 +15,6 @@ public interface ChatMessageMapper {
     void markMessagesAsRead(@Param("chatroomId") String chatroomId, @Param("memberId") Long memberId);
     List<Long> findUnreadMessageIdsByChatroomAndOpponent(@Param("chatroomId") String chatroomId,
             @Param("readerId") Long readerId);
-   
+
     
 }

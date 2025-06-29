@@ -40,6 +40,13 @@ public interface FacilityMapper {
     String findDefaultMessageByFacilityId(@Param("facilityId") String facilityId);
     //String findDefaultMessageByMemberId(@Param("memberId") Long memberId);
     
-    FacilityDTO findFacilityInfoById(@Param("facilityId") String facilityId);
+    //FacilityDTO findFacilityInfoById(@Param("facilityId") String facilityId);
+    //FacilityDTO findByMemberId(@Param("memberId") Long memberId);
+    FacilityDTO findByFacilityId(String facilityId);
+ // member_id로 시설 조회
+    FacilityDTO findByMemberId(@Param("memberId") Long memberId);
+    
+    
+    
 	
 }

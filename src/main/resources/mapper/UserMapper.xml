@@ -100,7 +100,7 @@
 		#{memberId}
 	</select>
 
-	<!-- 1. memberId로 유저 정보 조회 수안추가 채팅상단 정보 -->
+	<!-- 1. memberId로 유저 정보 조회 수안추가 채팅상단 정보 사용x -->
 	<select id="findUserById" resultType="com.daview.dto.User">
 		SELECT member_id AS memberId,
 		username,
@@ -112,6 +112,23 @@
 		FROM dv_users
 		WHERE member_id = #{memberId}
 	</select>
+	 <select id="findByMemberId2" resultType="com.daview.dto.User">
+    SELECT
+      member_id,
+      username,
+      name,
+      phone
+    FROM dv_users
+    WHERE member_id = #{memberId}
+    LIMIT 1
+  </select>
+  <select id="findByMemberId3" resultType="com.daview.dto.User">
+    SELECT *
+    FROM dv_users
+    WHERE member_id = #{memberId}
+    LIMIT 1
+</select>
+	
 
 
 	<select id="findByMemberId" resultType="com.daview.dto.User">
