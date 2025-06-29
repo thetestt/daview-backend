@@ -3,6 +3,7 @@ package com.daview.dto;
 import java.util.Date;
 
 public class PaymentDTO {
+	// 기본 결제 정보
 	private String pymId; // 내부 결제 ID
 	private String impUid; // 플랫폼 결제건 ID
 	private String merchantUid; // 결제 요청 시 주문 ID
@@ -18,6 +19,33 @@ public class PaymentDTO {
 	private String pymNum; // pg사 발행한 결제 거래번호
 	private Date pymDate;
 
+	// 관리자 페이지용 alias 필드들
+	private String paymentId; // pymId와 동일
+	private int amount; // pymPrice와 동일
+	private int status; // pymStatus와 동일
+	private Date paymentDate; // pymDate와 동일
+	private String customerName; // custNm과 동일
+	private String customerPhone; // custTel과 동일
+	private String customerEmail; // custEmTel과 동일
+
+	// 조인해서 가져오는 회원 정보
+	private String memberName;
+	private String memberEmail;
+	private String memberPhone;
+
+	// 조인해서 가져오는 결제 방법 정보
+	private String paymentMethodName;
+	private String paymentNumber; // pymNum과 동일
+
+	// 조인해서 가져오는 예약 정보
+	private String reservationId;
+	private String productName;
+	private String productType;
+	private String reservationTypeName;
+	private Date reservationDate;
+	private Integer reservationStatus;
+
+	// Getters and Setters
 	public String getPymId() {
 		return pymId;
 	}
@@ -130,4 +158,149 @@ public class PaymentDTO {
 		this.pymDate = pymDate;
 	}
 
+	// 관리자 페이지용 alias 필드 getters/setters
+	public String getPaymentId() {
+		return paymentId;
+	}
+
+	public void setPaymentId(String paymentId) {
+		this.paymentId = paymentId;
+	}
+
+	public int getAmount() {
+		return amount;
+	}
+
+	public void setAmount(int amount) {
+		this.amount = amount;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public Date getPaymentDate() {
+		return paymentDate;
+	}
+
+	public void setPaymentDate(Date paymentDate) {
+		this.paymentDate = paymentDate;
+	}
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
+	public String getCustomerPhone() {
+		return customerPhone;
+	}
+
+	public void setCustomerPhone(String customerPhone) {
+		this.customerPhone = customerPhone;
+	}
+
+	public String getCustomerEmail() {
+		return customerEmail;
+	}
+
+	public void setCustomerEmail(String customerEmail) {
+		this.customerEmail = customerEmail;
+	}
+
+	// 조인 필드 getters/setters
+	public String getMemberName() {
+		return memberName;
+	}
+
+	public void setMemberName(String memberName) {
+		this.memberName = memberName;
+	}
+
+	public String getMemberEmail() {
+		return memberEmail;
+	}
+
+	public void setMemberEmail(String memberEmail) {
+		this.memberEmail = memberEmail;
+	}
+
+	public String getMemberPhone() {
+		return memberPhone;
+	}
+
+	public void setMemberPhone(String memberPhone) {
+		this.memberPhone = memberPhone;
+	}
+
+	public String getPaymentMethodName() {
+		return paymentMethodName;
+	}
+
+	public void setPaymentMethodName(String paymentMethodName) {
+		this.paymentMethodName = paymentMethodName;
+	}
+
+	public String getPaymentNumber() {
+		return paymentNumber;
+	}
+
+	public void setPaymentNumber(String paymentNumber) {
+		this.paymentNumber = paymentNumber;
+	}
+
+	public String getReservationId() {
+		return reservationId;
+	}
+
+	public void setReservationId(String reservationId) {
+		this.reservationId = reservationId;
+	}
+
+	public String getProductName() {
+		return productName;
+	}
+
+	public void setProductName(String productName) {
+		this.productName = productName;
+	}
+
+	public String getProductType() {
+		return productType;
+	}
+
+	public void setProductType(String productType) {
+		this.productType = productType;
+	}
+
+	public String getReservationTypeName() {
+		return reservationTypeName;
+	}
+
+	public void setReservationTypeName(String reservationTypeName) {
+		this.reservationTypeName = reservationTypeName;
+	}
+
+	public Date getReservationDate() {
+		return reservationDate;
+	}
+
+	public void setReservationDate(Date reservationDate) {
+		this.reservationDate = reservationDate;
+	}
+
+	public Integer getReservationStatus() {
+		return reservationStatus;
+	}
+
+	public void setReservationStatus(Integer reservationStatus) {
+		this.reservationStatus = reservationStatus;
+	}
 }
