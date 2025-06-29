@@ -30,6 +30,24 @@ public class AuthService {
 	private PasswordEncoder passwordEncoder;
 
 	public boolean signup(SignupRequest request) {
+		if (request.getUsername() == null || request.getUsername().trim().isEmpty()) {
+	        throw new IllegalArgumentException("아이디는 필수입니다.");
+	    }
+	    if (request.getPassword() == null || request.getPassword().trim().isEmpty()) {
+	        throw new IllegalArgumentException("비밀번호는 필수입니다.");
+	    }
+	    if (request.getName() == null || request.getName().trim().isEmpty()) {
+	        throw new IllegalArgumentException("이름은 필수입니다.");
+	    }
+	    if (request.getEmail() == null || request.getEmail().trim().isEmpty()) {
+	        throw new IllegalArgumentException("이메일은 필수입니다.");
+	    }
+	    if (request.getGender() == null || request.getGender().trim().isEmpty()) {
+	        throw new IllegalArgumentException("성별은 필수입니다.");
+	    }
+	    if (request.getRole() == null || request.getRole().trim().isEmpty()) {
+	        throw new IllegalArgumentException("회원 유형은 필수입니다.");
+	    }
 		if (userMapper.findByUsername(request.getUsername()) != null) {
 			return false;
 		}
@@ -41,10 +59,17 @@ public class AuthService {
 		user.setEmail(request.getEmail());
 		user.setPhone(request.getPhone());
 		user.setRole(request.getRole());
+		user.setSmsAgree(request.isSmsAgree());
+		user.setEmailAgree(request.isEmailAgree());
+		user.setPushAgree(request.isPushAgree());
+
+
 
 		userMapper.insertUser(user);
 
-		couponService.issueWelcomeCoupon(user.getMemberId());
+		User savedUser = userMapper.findByUsername(user.getUsername());
+
+		couponService.issueWelcomeCoupon(savedUser.getMemberId());
 
 		return true;
 	}
