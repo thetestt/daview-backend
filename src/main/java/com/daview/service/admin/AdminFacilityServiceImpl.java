@@ -18,7 +18,37 @@ public class AdminFacilityServiceImpl implements AdminFacilityService {
 
     @Override
     public void addFacility(FacilityDTO facilityDTO) {
+        System.out.println("===== 시설 등록 시작 =====");
+        System.out.println("시설명: " + facilityDTO.getFacilityName());
+        System.out.println("사진 URL: " + facilityDTO.getPhotoUrl());
+        
+        // 1. UUID 생성하여 facility_id 설정
+        String facilityId = java.util.UUID.randomUUID().toString();
+        facilityDTO.setFacilityId(facilityId);
+        System.out.println("✅ 생성된 UUID: " + facilityId);
+        
+        // 2. 시설 기본 정보 등록
         facilityMapper.insertFacility(facilityDTO);
+        System.out.println("✅ 시설 기본 정보 등록 완료, facility_id: " + facilityId);
+        
+        // 3. 사진 URL이 있으면 facility_photo 테이블에도 등록
+        if (facilityDTO.getPhotoUrl() != null && !facilityDTO.getPhotoUrl().trim().isEmpty()) {
+            try {
+                if (facilityId != null) {
+                    facilityMapper.insertFacilityPhoto(facilityId, facilityDTO.getPhotoUrl(), true);
+                    System.out.println("✅ 시설 사진 등록 완료: facility_id=" + facilityId + ", url=" + facilityDTO.getPhotoUrl());
+                } else {
+                    System.err.println("❌ 시설 ID가 null이어서 사진 등록 실패");
+                }
+            } catch (Exception e) {
+                System.err.println("❌ 시설 사진 등록 실패: " + e.getMessage());
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("⚠️ 사진 URL이 없어서 facility_photo 테이블 등록 생략");
+        }
+        
+        System.out.println("===== 시설 등록 완료 =====");
     }
 
     @Override
@@ -132,5 +162,39 @@ public class AdminFacilityServiceImpl implements AdminFacilityService {
     @Override
     public FacilityDTO getFacilityById(String id) {
         return facilityMapper.getFacilityById(id);
+    }
+
+    // 시설 사진 관련 메소드 구현
+    @Override
+    public void addFacilityPhoto(String facilityId, String photoUrl, boolean isThumbnail) {
+        try {
+            facilityMapper.insertFacilityPhoto(facilityId, photoUrl, isThumbnail);
+            System.out.println("시설 사진 등록 성공: " + facilityId + " -> " + photoUrl);
+        } catch (Exception e) {
+            System.err.println("시설 사진 등록 실패: " + e.getMessage());
+            throw new RuntimeException("시설 사진 등록에 실패했습니다: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void updateFacilityPhoto(String facilityId, String photoUrl) {
+        try {
+            facilityMapper.updateFacilityPhoto(facilityId, photoUrl);
+            System.out.println("시설 사진 수정 성공: " + facilityId + " -> " + photoUrl);
+        } catch (Exception e) {
+            System.err.println("시설 사진 수정 실패: " + e.getMessage());
+            throw new RuntimeException("시설 사진 수정에 실패했습니다: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void deleteFacilityPhoto(String facilityId, Boolean isThumbnail) {
+        try {
+            facilityMapper.deleteFacilityPhoto(facilityId, isThumbnail);
+            System.out.println("시설 사진 삭제 성공: " + facilityId);
+        } catch (Exception e) {
+            System.err.println("시설 사진 삭제 실패: " + e.getMessage());
+            throw new RuntimeException("시설 사진 삭제에 실패했습니다: " + e.getMessage());
+        }
     }
 }

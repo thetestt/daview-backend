@@ -24,7 +24,15 @@ public class User implements UserDetails {
     private String phone;
     private String email;
     private String role;
-    private String gender; 
+    private String gender;
+    
+    private String bankName;
+    private String accountNumber;
+    
+    private boolean smsAgree;
+    private boolean emailAgree;
+    private boolean pushAgree;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

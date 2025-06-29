@@ -4,19 +4,48 @@
 <mapper namespace="com.daview.mapper.UserMapper">
 
 	<select id="findByUsername" resultType="com.daview.dto.User">
-		SELECT * FROM dv_users
+		SELECT
+		member_id AS
+		memberId,
+		username,
+		password,
+		name,
+		email,
+		phone,
+		role,
+		agree_sms AS
+		agreeSms,
+		agree_email AS agreeEmail,
+		agree_push AS agreePush,
+		bank_name
+		AS bankName,
+		account_number AS accountNumber,
+		user_gender AS gender
+		FROM
+		dv_users
 		WHERE username = #{username}
 	</select>
 
 	<insert id="insertUser">
 		INSERT INTO dv_users (
 		username, password, name,
-		email, phone, role, user_gender
-		) VALUES (
+		email, phone,
+		bank_name, account_number,
+		agree_sms, agree_email,
+		agree_push,
+		role, user_gender
+		)
+		VALUES (
 		#{username}, #{password},
-		#{name}, #{email}, #{phone}, #{role}, 'hidden'
+		#{name},
+		#{email}, #{phone},
+		#{bankName}, #{accountNumber},
+		#{agreeSms},
+		#{agreeEmail}, #{agreePush},
+		#{role}, 'hidden'
 		)
 	</insert>
+
 
 	<select id="countByUsername" resultType="int">
 		SELECT COUNT(*) FROM
@@ -64,11 +93,15 @@
 		role,
 		user_gender,
 		create_at,
-		withdrawn
+		withdrawn,
+		agree_sms,
+		agree_email,
+		agree_push
 		FROM
 		dv_users
 		WHERE role = #{role}
-		AND withdrawn = 0
+		AND
+		withdrawn = 0
 		ORDER BY member_id
 	</select>
 
@@ -108,7 +141,10 @@
 		phone,
 		email,
 		role,
-		user_gender AS gender  <!-- 'gender' 컬럼을 'user_gender'로 변경 -->
+		user_gender AS gender,  <!-- 'gender' 컬럼을 'user_gender'로 변경 -->
+		agree_sms AS agreeSms,
+		agree_email AS agreeEmail,
+		agree_push AS agreePush
 		FROM dv_users
 		WHERE member_id = #{memberId}
 	</select>
@@ -142,6 +178,58 @@
 		FROM dv_users
 		WHERE username = #{username}
 	</select>
+
+	<update id="updateRefundAccount">
+		UPDATE dv_users
+		SET bank_name = #{bankName},
+		account_number = #{accountNumber}
+		WHERE username = #{username}
+	</update>
+
+	<select id="getRefundAccount" resultType="User">
+		SELECT bank_name,
+		account_number
+		FROM dv_users
+		WHERE username = #{username}
+	</select>
+
+	<delete id="deleteRefundAccount">
+		UPDATE dv_users
+		SET bank_name = NULL, account_number =
+		NULL
+		WHERE username = #{username}
+	</delete>
+
+
+	<update id="updateAgreeSms">
+		UPDATE dv_users SET agree_sms = #{value} WHERE
+		username = #{username}
+	</update>
+
+	<update id="updateAgreeEmail">
+		UPDATE dv_users SET agree_email = #{value} WHERE
+		username = #{username}
+	</update>
+
+	<update id="updateAgreePush">
+		UPDATE dv_users SET agree_push = #{value} WHERE
+		username = #{username}
+	</update>
+
+	<update id="withdrawUser">
+		UPDATE dv_users
+		SET
+		withdrawn = 1,
+		withdrawn_reason = #{reason},
+		name = NULL,
+		email = NULL,
+		password = NULL,
+		bank_name = NULL,
+		account_number = NULL
+		WHERE username = #{username}
+	</update>
+
+
 
 </mapper>
 

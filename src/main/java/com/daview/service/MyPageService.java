@@ -31,4 +31,45 @@ public class MyPageService {
 
         return passwordEncoder.matches(inputPassword, hashedPassword);
     }
+    
+    public void saveRefundAccount(String username, String bankName, String accountNumber) {
+    	System.out.println("저장할 username: " + username);
+    	System.out.println("저장할 bankName: " + bankName);
+    	System.out.println("저장할 accountNumber: " + accountNumber);
+        userMapper.updateRefundAccount(username, bankName, accountNumber);
+    }
+
+    public User getRefundAccount(String username) {
+        return userMapper.getRefundAccount(username);
+    }
+
+    public void deleteRefundAccount(String username) {
+        userMapper.deleteRefundAccount(username);
+    }
+
+    public void updateMarketingConsent(String username, boolean marketingAgreed) {
+        userMapper.updateMarketingConsent(username, marketingAgreed);
+    }
+    
+    public void updateMarketingItem(String username, String type, boolean value) {
+        switch (type) {
+            case "sms":
+                userMapper.updateAgreeSms(username, value);
+                break;
+            case "email":
+                userMapper.updateAgreeEmail(username, value);
+                break;
+            case "push":
+                userMapper.updateAgreePush(username, value);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid marketing type");
+        }
+    }
+    
+    public void withdrawUser(String username, String reason) {
+        userMapper.withdrawUser(username, reason);
+    }
+
+
 }

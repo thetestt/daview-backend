@@ -12,4 +12,13 @@ public class SignupRequest {
     private String gender;
     private String phone;
     private String role;
+    private boolean agreeSms;
+    private boolean agreeEmail;
+    private boolean agreePush;
+    
+    public boolean isSmsAgree() { return agreeSms; }
+    public boolean isEmailAgree() { return agreeEmail; }
+    public boolean isPushAgree() { return agreePush; }
+
+
 }
