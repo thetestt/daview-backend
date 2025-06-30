@@ -31,6 +31,12 @@ public class ChatKafkaConsumer {
                 "/sub/chat/room/" + saved.getChatroomId(),
                 saved
             );
+            
+         // ✅ 채팅방 리스트 갱신 알림도 추가!
+            messagingTemplate.convertAndSend(
+                "/sub/chat/roomList/" + saved.getReceiverId(),
+                "new"
+            );
 
         } catch (Exception e) {
             log.error("❌ Kafka Consumer 오류", e);
