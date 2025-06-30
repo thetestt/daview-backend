@@ -257,10 +257,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 welcome.setSenderId(receiverId);  // 관리자/시설
                 welcome.setReceiverId(senderId);  // 유저
                 welcome.setContent(defaultMessage);
-                welcome.setSentAt(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                welcome.setSentAt(now);
                 welcome.setIsRead(true);
                 chatMessageMapper.insertChatMessage(welcome);
                 // kafkaChatProducer.sendMessage(welcome); // 필요 시 사용
+                
+                chatRoomMapper.updateLastMessageAndTime(newRoomId, defaultMessage, now);
             }
         }
 
