@@ -18,9 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.daview.dto.ChangePasswordRequest;
 import com.daview.dto.LoginRequest;
 import com.daview.dto.SignupRequest;
+import com.daview.dto.SmsRequest;
+import com.daview.dto.SmsVerifyRequest;
 import com.daview.dto.User;
 import com.daview.mapper.UserMapper;
 import com.daview.service.AuthService;
+import com.daview.service.SmsService;
 import com.daview.util.EmailUtil;
 
 import jakarta.servlet.http.HttpSession;
@@ -30,6 +33,9 @@ import jakarta.servlet.http.HttpSession;
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 
 public class AuthController {
+	
+	@Autowired
+	private SmsService smsService;
 
 	@Autowired
 	private EmailUtil emailUtil;
@@ -164,6 +170,23 @@ public class AuthController {
 
 	    return ResponseEntity.ok(username); 
 	}
+	
+	@PostMapping("/signup/send-sms-code")
+	public ResponseEntity<?> sendSignupSmsCode(@RequestBody SmsRequest request) {
+	    smsService.sendSignupSmsCode(request.getPhone());
+	    return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/signup/verify-sms-code")
+	public ResponseEntity<?> verifySignupSmsCode(@RequestBody SmsVerifyRequest request) {
+	    boolean verified = smsService.verifySignupSmsCode(request.getPhone(), request.getCode());
+	    if (verified) {
+	        return ResponseEntity.ok().build();
+	    } else {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("인증번호가 일치하지 않습니다.");
+	    }
+	}
+
 
 
 

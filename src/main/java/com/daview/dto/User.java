@@ -28,10 +28,20 @@ public class User implements UserDetails {
     
     private String bankName;
     private String accountNumber;
-    
-    private boolean smsAgree;
-    private boolean emailAgree;
-    private boolean pushAgree;
+
+    private boolean agreeSms;
+    private boolean agreeEmail;
+    private boolean agreePush;
+
+    public boolean isAgreeSms() { return agreeSms; }
+    public void setAgreeSms(boolean agreeSms) { this.agreeSms = agreeSms; }
+
+    public boolean isAgreeEmail() { return agreeEmail; }
+    public void setAgreeEmail(boolean agreeEmail) { this.agreeEmail = agreeEmail; }
+
+    public boolean isAgreePush() { return agreePush; }
+    public void setAgreePush(boolean agreePush) { this.agreePush = agreePush; }
+
 
 
     @Override
