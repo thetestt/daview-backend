@@ -79,6 +79,24 @@
         WHERE member_id = #{memberId}
     </update>
     
+    <update id="withdrawUser">
+        UPDATE dv_users 
+        SET 
+            user_gender = 'hidden',
+            password = NULL,
+            name = NULL,
+            email = NULL,
+            role = 'USER',
+            create_at = NULL,
+            bank_name = NULL,
+            account_number = NULL,
+            agree_sms = 0,
+            agree_email = 0,
+            agree_push = 0,
+            withdrawn = 1
+        WHERE member_id = #{memberId}
+    </update>
+    
     <select id="getUserCountByRole" resultType="map">
         SELECT 
             role,

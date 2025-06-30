@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.daview.mapper.admin.AdminReviewMapper">
+
+    <resultMap id="AdminReviewDtoResultMap" type="com.daview.dto.AdminReviewDTO">
+        <id property="revId" column="rev_id"/>
+        <result property="memberId" column="member_id"/>
+        <result property="memberName" column="member_name"/>
+        <result property="memberUsername" column="member_username"/>
+        <result property="prodNm" column="prod_nm"/>
+        <result property="revTtl" column="rev_ttl"/>
+        <result property="revCont" column="rev_cont"/>
+        <result property="revStars" column="rev_stars"/>
+        <result property="revViews" column="rev_views"/>
+        <result property="revRegDate" column="rev_reg_date"/>
+    </resultMap>
+    
+    <sql id="baseSelectColumns">
+        r.rev_id,
+        r.member_id,
+        u.name as member_name,
+        u.username as member_username,
+        r.prod_nm,
+        r.rev_ttl,
+        r.rev_cont,
+        r.rev_stars,
+        r.rev_views,
+        r.rev_reg_date
+    </sql>
+    
+    <sql id="commonWhereConditions">
+        <where>
+            <if test="search != null and search != ''">
+                AND (
+                    r.rev_ttl LIKE CONCAT('%', #{search}, '%')
+                    OR r.prod_nm LIKE CONCAT('%', #{search}, '%')
+                    OR u.name LIKE CONCAT('%', #{search}, '%')
+                    OR u.username LIKE CONCAT('%', #{search}, '%')
+                )
+            </if>
+            <if test="stars != null">
+                AND r.rev_stars = #{stars}
+            </if>
+            <if test="startDate != null and startDate != ''">
+                <![CDATA[
+                AND DATE(r.rev_reg_date) >= #{startDate}
+                ]]>
+            </if>
+            <if test="endDate != null and endDate != ''">
+                <![CDATA[
+                AND DATE(r.rev_reg_date) <= #{endDate}
+                ]]>
+            </if>
+        </where>
+    </sql>
+    
+    <select id="findAllReviewsForAdmin" resultMap="AdminReviewDtoResultMap">
+        SELECT 
+        <include refid="baseSelectColumns"/>
+        FROM review_board r
+        LEFT JOIN dv_users u ON r.member_id = u.member_id
+        <include refid="commonWhereConditions"/>
+        ORDER BY 
+        <choose>
+            <when test="sortBy == 'revRegDate'">r.rev_reg_date</when>
+            <when test="sortBy == 'revStars'">r.rev_stars</when>
+            <when test="sortBy == 'revViews'">r.rev_views</when>
+            <when test="sortBy == 'memberName'">u.name</when>
+            <otherwise>r.rev_reg_date</otherwise>
+        </choose>
+        <choose>
+            <when test="sortDirection == 'ASC'">ASC</when>
+            <otherwise>DESC</otherwise>
+        </choose>
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+    
+    <select id="countReviewsForAdmin" resultType="int">
+        SELECT COUNT(*)
+        FROM review_board r
+        LEFT JOIN dv_users u ON r.member_id = u.member_id
+        <include refid="commonWhereConditions"/>
+    </select>
+    
+    <select id="findReviewDetailById" resultMap="AdminReviewDtoResultMap">
+        SELECT 
+        <include refid="baseSelectColumns"/>
+        FROM review_board r
+        LEFT JOIN dv_users u ON r.member_id = u.member_id
+        WHERE r.rev_id = #{revId}
+    </select>
+    
+    <delete id="deleteReview">
+        DELETE FROM review_board 
+        WHERE rev_id = #{revId}
+    </delete>
+    
+    <select id="getReviewCountByStars" resultType="map">
+        SELECT 
+            rev_stars as stars,
+            COUNT(*) as count
+        FROM review_board
+        GROUP BY rev_stars
+        ORDER BY rev_stars DESC
+    </select>
+    
+    <select id="getMonthlyReviewStats" resultType="map">
+        SELECT 
+            DATE_FORMAT(rev_reg_date, '%Y-%m') as month,
+            COUNT(*) as count
+        FROM review_board
+        WHERE rev_reg_date >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+        GROUP BY DATE_FORMAT(rev_reg_date, '%Y-%m')
+        ORDER BY month DESC
+    </select>
+    
+    <select id="getAverageRating" resultType="double">
+        SELECT AVG(rev_stars) 
+        FROM review_board
+    </select>
+    
+    <select id="getTotalReviewCount" resultType="int">
+        SELECT COUNT(*) 
+        FROM review_board
+    </select>
+    
+</mapper> 

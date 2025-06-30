@@ -163,6 +163,50 @@ public class AdminUserServiceImpl implements AdminUserService {
     }
     
     @Override
+    public boolean withdrawUser(String memberId) {
+        try {
+            System.out.println("=== AdminUserService: 유저 탈퇴 처리 ===");
+            System.out.println("회원 ID: " + memberId);
+            
+            // 입력값 검증
+            if (memberId == null || memberId.trim().isEmpty()) {
+                throw new IllegalArgumentException("회원 ID가 필요합니다.");
+            }
+            
+            Long memberIdLong;
+            try {
+                memberIdLong = Long.parseLong(memberId);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("유효하지 않은 회원 ID 형식입니다: " + memberId);
+            }
+            
+            // 사용자 존재 여부 확인
+            AdminUserDto user = adminUserMapper.findUserDetailById(memberIdLong);
+            if (user == null) {
+                throw new RuntimeException("해당 ID의 유저를 찾을 수 없습니다: " + memberId);
+            }
+            
+            // 이미 탈퇴한 유저인지 확인
+            if (user.getWithdrawn() != null && user.getWithdrawn() == 1) {
+                throw new RuntimeException("이미 탈퇴한 유저입니다.");
+            }
+            
+            // 데이터베이스 업데이트 (phone, username 제외하고 모든 컬럼을 null로, withdrawn = 1)
+            int updatedRows = adminUserMapper.withdrawUser(memberIdLong);
+            
+            boolean success = updatedRows > 0;
+            System.out.println("탈퇴 처리 " + (success ? "성공" : "실패") + " - 영향받은 행: " + updatedRows);
+            
+            return success;
+            
+        } catch (Exception e) {
+            System.err.println("=== AdminUserService: 유저 탈퇴 처리 오류 ===");
+            e.printStackTrace();
+            throw new RuntimeException("유저 탈퇴 처리 중 오류가 발생했습니다: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
     public Map<String, Object> getUserStatistics() {
         try {
             System.out.println("=== AdminUserService: 유저 통계 조회 ===");
