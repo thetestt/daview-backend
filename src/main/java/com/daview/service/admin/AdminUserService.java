@@ -44,6 +44,14 @@ public interface AdminUserService {
     boolean updateUserStatus(String memberId, String status);
     
     /**
+     * 유저 탈퇴 처리 (개인정보 삭제)
+     * phone, username을 제외한 모든 개인정보를 null로 변경하고 withdrawn을 1로 설정
+     * @param memberId 회원 ID
+     * @return 탈퇴 처리 성공 여부
+     */
+    boolean withdrawUser(String memberId);
+    
+    /**
      * 전체 유저 통계 조회
      * @return 통계 데이터 맵
      */
