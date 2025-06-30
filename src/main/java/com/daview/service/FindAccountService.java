@@ -19,14 +19,22 @@ public class FindAccountService {
 	private UserMapper userMapper;
 
 	public String sendSmsCode(String name, String phone) {
-		String result = smsService.sendSms(phone);
-		if (result != null) {
-			verificationStorage.saveCode(phone, result);
-			return "문자 전송 완료";
-		} else {
-			return "문자 전송 실패";
-		}
+	    String code = createCode(); // 인증번호 직접 생성
+	    String result = smsService.sendSms(phone, code); // 생성한 코드로 문자 전송
+
+	    if (result != null) {
+	        verificationStorage.saveCode(phone, code); // 문자로 보낸 코드 저장
+	        return "문자 전송 완료";
+	    } else {
+	        return "문자 전송 실패";
+	    }
 	}
+	
+	private String createCode() {
+	    int num = (int)(Math.random() * 900000) + 100000;
+	    return String.valueOf(num);
+	}
+
 
 	// 인증번호 검증 로직
 	public boolean verifyCode(String phone, String inputCode) {

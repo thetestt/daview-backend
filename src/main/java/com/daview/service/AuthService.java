@@ -3,6 +3,8 @@ package com.daview.service;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -59,9 +61,10 @@ public class AuthService {
 		user.setEmail(request.getEmail());
 		user.setPhone(request.getPhone());
 		user.setRole(request.getRole());
-		user.setSmsAgree(request.isSmsAgree());
-		user.setEmailAgree(request.isEmailAgree());
-		user.setPushAgree(request.isPushAgree());
+		user.setAgreeSms(request.isAgreeSms());
+		user.setAgreeEmail(request.isAgreeEmail());
+		user.setAgreePush(request.isAgreePush());
+
 
 
 
@@ -118,5 +121,7 @@ public class AuthService {
 		}
 		return sb.toString();
 	}
+
+
 
 }
