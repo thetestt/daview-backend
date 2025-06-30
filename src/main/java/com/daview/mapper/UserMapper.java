@@ -57,6 +57,11 @@ public interface UserMapper {
 	
 	//회원탈퇴
 	void withdrawUser(@Param("username") String username, @Param("reason") String reason);
+	
+	//아이디변경
+	boolean existsByUsername(String username);
+    void updateUsername(@Param("currentUsername") String currentUsername,
+                        @Param("newUsername") String newUsername);
 
 
 
