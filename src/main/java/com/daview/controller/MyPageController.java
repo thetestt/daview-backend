@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -17,11 +18,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.daview.dto.User;
+import com.daview.mapper.UserMapper;
 import com.daview.service.MyPageService;
 
 @RestController
 @RequestMapping("/api/mypage")
 public class MyPageController {
+	
+	@Autowired
+	private UserMapper userMapper;
+
 
 	@Autowired
 	private MyPageService myPageService;
@@ -100,6 +106,34 @@ public class MyPageController {
 	    myPageService.withdrawUser(username, reason);
 	    return ResponseEntity.ok("탈퇴 처리 완료");
 	}
+	
+	@PatchMapping("/account/username")
+	public ResponseEntity<?> changeUsername(
+	    @RequestBody Map<String, String> request,
+	    @AuthenticationPrincipal User user // ✅ 인증된 사용자 정보
+	) {
+	    String newUsername = request.get("newUsername");
+	    String currentUsername = user.getUsername();
+
+	    if (newUsername == null || newUsername.isBlank()) {
+	        return ResponseEntity.badRequest().body("아이디는 비어있을 수 없습니다.");
+	    }
+
+	    if (newUsername.equals(currentUsername)) {
+	        return ResponseEntity.badRequest().body("현재 사용 중인 아이디입니다.");
+	    }
+
+	    boolean exists = userMapper.existsByUsername(newUsername); 
+	    if (exists) {
+	        return ResponseEntity.badRequest().body("이미 사용 중인 아이디입니다.");
+	    }
+
+	    userMapper.updateUsername(currentUsername, newUsername);
+
+	    return ResponseEntity.ok("아이디 변경 완료");
+	}
+
+
 
 
 
