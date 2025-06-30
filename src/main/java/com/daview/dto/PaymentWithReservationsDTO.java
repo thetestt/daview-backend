@@ -20,6 +20,9 @@ public class PaymentWithReservationsDTO {
 	private String pymMethod;
 	private String pymNum;
 	private Date pymDate;
+	private String refundReason;
+	private Date refundDate;
+	
 	private List<ReservationDTO> reservations = new ArrayList<>();
 
 	public String getPymId() {
@@ -140,6 +143,22 @@ public class PaymentWithReservationsDTO {
 
 	public void setPymDate(Date pymDate) {
 		this.pymDate = pymDate;
+	}
+
+	public String getRefundReason() {
+		return refundReason;
+	}
+
+	public void setRefundReason(String refundReason) {
+		this.refundReason = refundReason;
+	}
+
+	public Date getRefundDate() {
+		return refundDate;
+	}
+
+	public void setRefundDate(Date refundDate) {
+		this.refundDate = refundDate;
 	}
 
 	public List<ReservationDTO> getReservations() {

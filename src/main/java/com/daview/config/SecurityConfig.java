@@ -42,6 +42,7 @@ public class SecurityConfig {
                 .requestMatchers(
                     "/api/account/**",
                     "/api/auth/**",
+                    "/api/payment/**",
                     "/uploads/**",
                     "/ws-chat",
                     "/ws-chat/**",
