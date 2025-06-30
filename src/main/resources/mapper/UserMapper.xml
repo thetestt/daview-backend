@@ -229,6 +229,18 @@
 		WHERE username = #{username}
 	</update>
 
+    <select id="existsByUsername" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1 FROM dv_users WHERE username = #{username}
+        )
+    </select>
+
+    <update id="updateUsername">
+        UPDATE dv_users
+        SET username = #{newUsername}
+        WHERE username = #{currentUsername}
+    </update>
+
 
 
 </mapper>

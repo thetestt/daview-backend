@@ -36,6 +36,9 @@ public interface AdminUserMapper {
     // 유저 상태 변경 (활성/비활성)
     int updateUserStatus(@Param("memberId") Long memberId, @Param("withdrawn") Integer withdrawn);
     
+    // 유저 탈퇴 처리 (개인정보 삭제)
+    int withdrawUser(@Param("memberId") Long memberId);
+    
     // 역할별 유저 수 통계
     List<Map<String, Object>> getUserCountByRole();
     

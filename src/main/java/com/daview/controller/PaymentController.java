@@ -1,6 +1,7 @@
 package com.daview.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.daview.dto.CancelRequestDTO;
 import com.daview.dto.PaymentDTO;
 import com.daview.dto.PaymentReservationMapDTO;
 import com.daview.dto.PaymentWithReservationsDTO;
@@ -76,5 +78,32 @@ public class PaymentController {
 	public ResponseEntity<List<String>> getProdNmList(@PathVariable Long memberId) {
 		List<String> prodNm = paymentService.getProdNmList(memberId);
 		return ResponseEntity.ok(prodNm);
+	}
+	
+	@PostMapping("/cancel")
+	public ResponseEntity<String> cancelPayment(@RequestBody CancelRequestDTO cancel) {
+	    String impUid = cancel.getImpUid();
+	    String refundReason = cancel.getRefundReason();
+
+	    try {
+	        boolean result = paymentService.cancelPayment(impUid, refundReason);
+	        if (result) {
+	            return ResponseEntity.ok("환불 성공!");
+	        } else {
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("환불 실패: 이미 취소되었거나 유효하지 않음");
+	        }
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("환불 중 오류: " + e.getMessage());
+	    }
+	}
+	
+	@GetMapping("/refunds/{memberId}")
+	public ResponseEntity<List<PaymentWithReservationsDTO>> getRefundedPayments(@PathVariable Long memberId) {
+	    List<PaymentWithReservationsDTO> refunds = paymentService.getRefundedPaymentsByMemberId(memberId);
+	    if (refunds == null || refunds.isEmpty()) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+	    }
+	    return ResponseEntity.ok(refunds);
 	}
 }

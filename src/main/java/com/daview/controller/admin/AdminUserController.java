@@ -151,6 +151,45 @@ public class AdminUserController {
     }
 
     /**
+     * 유저 탈퇴 처리
+     * PATCH /api/admin/users/{userId}/withdraw
+     */
+    @PatchMapping(value = "/{userId}/withdraw", produces = "application/json; charset=UTF-8")
+    public ResponseEntity<Map<String, Object>> withdrawUser(@PathVariable String userId) {
+        try {
+            System.out.println("=== 유저 탈퇴 처리 요청 ===");
+            System.out.println("유저 ID: " + userId);
+            
+            boolean success = adminUserService.withdrawUser(userId);
+            
+            Map<String, Object> response = new HashMap<>();
+            if (success) {
+                response.put("success", true);
+                response.put("message", "유저가 성공적으로 탈퇴 처리되었습니다.");
+            } else {  
+                response.put("success", false);
+                response.put("message", "유저 탈퇴 처리에 실패했습니다.");
+            }
+            
+            return ResponseEntity.ok()
+                .header("Content-Type", "application/json; charset=UTF-8")
+                .body(response);
+                
+        } catch (Exception e) {
+            System.err.println("유저 탈퇴 처리 중 오류 발생: " + e.getMessage());
+            e.printStackTrace();
+            
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("message", "유저 탈퇴 처리에 실패했습니다: " + e.getMessage());
+            
+            return ResponseEntity.status(500)
+                .header("Content-Type", "application/json; charset=UTF-8")
+                .body(errorResponse);
+        }
+    }
+
+    /**
      * 전체 유저 통계 조회
      * GET /api/admin/users/statistics
      */

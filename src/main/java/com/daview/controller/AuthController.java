@@ -18,9 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.daview.dto.ChangePasswordRequest;
 import com.daview.dto.LoginRequest;
 import com.daview.dto.SignupRequest;
+import com.daview.dto.SmsRequest;
+import com.daview.dto.SmsVerifyRequest;
 import com.daview.dto.User;
 import com.daview.mapper.UserMapper;
 import com.daview.service.AuthService;
+import com.daview.service.SmsService;
 import com.daview.util.EmailUtil;
 
 import jakarta.servlet.http.HttpSession;
@@ -30,6 +33,9 @@ import jakarta.servlet.http.HttpSession;
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 
 public class AuthController {
+	
+	@Autowired
+	private SmsService smsService;
 
 	@Autowired
 	private EmailUtil emailUtil;
@@ -95,32 +101,40 @@ public class AuthController {
 
 	@PostMapping("/email/send")
 	public ResponseEntity<String> sendEmailCode(@RequestBody Map<String, String> request) {
-		String email = request.get("email");
-		try {
-			// 6자리 숫자 인증번호 생성
-			String code = String.valueOf((int) ((Math.random() * 900000) + 100000));
+	    String name = request.get("name");
+	    String email = request.get("email");
 
-			// 이메일 내용 구성
-			String subject = "[다뷰] 이메일 인증번호";
-			String text = "인증번호: " + code;
+	    // 유저 존재 여부 확인
+	    String username = userMapper.findUsernameByEmail(name, email);
+	    if (username == null) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("일치하는 회원 정보가 없습니다.");
+	    }
 
-			System.out.println(">> 받은 이메일: " + email);
-			System.out.println(">> 생성된 인증번호: " + code);
-			System.out.println("보낸 인증번호: " + code);
+	    try {
+	        // 6자리 숫자 인증번호 생성
+	        String code = String.valueOf((int) ((Math.random() * 900000) + 100000));
 
-			// 이메일 전송
-			emailUtil.sendEmail(email, subject, text);
+	        // 이메일 내용 구성
+	        String subject = "[다뷰] 이메일 인증번호";
+	        String text = "인증번호: " + code;
 
-			// 세션에 인증번호 저장
-			session.setAttribute("emailCode", code);
+	        System.out.println(">> 받은 이메일: " + email);
+	        System.out.println(">> 생성된 인증번호: " + code);
 
-			return ResponseEntity.ok("이메일 발송 완료");
-		} catch (Exception e) {
-			System.out.println(">> 이메일 전송 에러: " + e.getMessage());
-			e.printStackTrace(); // 콘솔에 전체 에러 로그
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이메일 전송 실패");
-		}
+	        // 이메일 전송
+	        emailUtil.sendEmail(email, subject, text);
+
+	        // 세션에 인증번호 저장
+	        session.setAttribute("emailCode", code);
+
+	        return ResponseEntity.ok("이메일 발송 완료");
+	    } catch (Exception e) {
+	        System.out.println(">> 이메일 전송 에러: " + e.getMessage());
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이메일 전송 실패");
+	    }
 	}
+
 
 	@PostMapping("/email/verify")
 	public ResponseEntity<Boolean> verifyEmailCode(@RequestBody Map<String, String> request) {
@@ -156,6 +170,23 @@ public class AuthController {
 
 	    return ResponseEntity.ok(username); 
 	}
+	
+	@PostMapping("/signup/send-sms-code")
+	public ResponseEntity<?> sendSignupSmsCode(@RequestBody SmsRequest request) {
+	    smsService.sendSignupSmsCode(request.getPhone());
+	    return ResponseEntity.ok().build();
+	}
+
+	@PostMapping("/signup/verify-sms-code")
+	public ResponseEntity<?> verifySignupSmsCode(@RequestBody SmsVerifyRequest request) {
+	    boolean verified = smsService.verifySignupSmsCode(request.getPhone(), request.getCode());
+	    if (verified) {
+	        return ResponseEntity.ok().build();
+	    } else {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("인증번호가 일치하지 않습니다.");
+	    }
+	}
+
 
 
 

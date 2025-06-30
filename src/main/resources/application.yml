@@ -75,4 +75,9 @@ file:
     path: uploads/                # 업로드 파일 저장 경로 (상대경로)
     url: /api/files/              # 파일 접근 URL 패턴
 
+iamport:
+  api:
+    key: "test"
+    secret: "test"
+
 
