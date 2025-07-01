@@ -42,7 +42,7 @@
 		#{bankName}, #{accountNumber},
 		#{agreeSms},
 		#{agreeEmail}, #{agreePush},
-		#{role}, 'hidden'
+		#{role}, #{userGender}
 		)
 	</insert>
 
