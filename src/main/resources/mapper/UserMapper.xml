@@ -129,15 +129,14 @@
 		SELECT uc.*, c.description, c.discount
 		FROM user_coupons uc
 		JOIN coupons c ON uc.coupon_id = c.coupon_id
-		WHERE uc.member_id =
-		#{memberId}
-		AND uc.used_at IS NULL
+		WHERE uc.member_id = #{memberId}
+		  AND uc.used_at IS NULL
 	</select>
-
+	
 	<update id="useUserCoupon">
-		UPDATE user_coupons
-		SET used_at = NOW()
-		WHERE member_id = #{memberId} AND coupon_id = #{couponId}
+	    UPDATE user_coupons
+	    SET used_at = NOW()
+	    WHERE member_id = #{memberId} AND coupon_id = #{couponId}
 	</update>
 
 	<!-- 1. memberId로 유저 정보 조회 수안추가 채팅상단 정보 사용x -->
@@ -156,7 +155,7 @@
 		FROM dv_users
 		WHERE member_id = #{memberId}
 	</select>
-
+	
 	<select id="findByMemberId2" resultType="com.daview.dto.User">
 		SELECT
 		member_id,
@@ -272,10 +271,8 @@
 		resultType="com.daview.dto.User">
 		SELECT * FROM dv_users
 		WHERE phone = #{phone}
-		AND withdrawn =
-		0
+		AND withdrawn = 0
 	</select>
-
    <select id="findNameByMemberId" resultType="String">
       SELECT name
       FROM dv_users

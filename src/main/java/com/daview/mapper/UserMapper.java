@@ -75,11 +75,6 @@ public interface UserMapper {
     User findOldWithdrawnUser(String phone);
     
     User findActiveUserByPhone(String phone);
-    
-    //프로필 이미지
-    void updateProfileImageUrl(@Param("memberId") Long memberId, @Param("imageUrl") String imageUrl);
-    String getProfileImageUrl(Long memberId);
-
 
 	// 수안추가 - 채팅상단 정보불러오기용
 	//User findUserById(@Param("memberId") Long memberId);
