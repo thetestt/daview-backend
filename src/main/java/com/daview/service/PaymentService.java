@@ -11,4 +11,10 @@ public interface PaymentService {
 	PaymentDTO selectPaymentById(String pymId);
 	
 	List<PaymentWithReservationsDTO> selectPaymentWithReservationsByMemberId(Long memberId);
+	
+	List<String> getProdNmList(Long memberId);
+	
+	boolean cancelPayment(String impUid, String reason) throws Exception;
+	
+	List<PaymentWithReservationsDTO> getRefundedPaymentsByMemberId(Long memberId);
 }

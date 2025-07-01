@@ -4,19 +4,48 @@
 <mapper namespace="com.daview.mapper.UserMapper">
 
 	<select id="findByUsername" resultType="com.daview.dto.User">
-		SELECT * FROM dv_users
+		SELECT
+		member_id AS
+		memberId,
+		username,
+		password,
+		name,
+		email,
+		phone,
+		role,
+		agree_sms AS
+		agreeSms,
+		agree_email AS agreeEmail,
+		agree_push AS agreePush,
+		bank_name
+		AS bankName,
+		account_number AS accountNumber,
+		user_gender AS gender
+		FROM
+		dv_users
 		WHERE username = #{username}
 	</select>
 
 	<insert id="insertUser">
 		INSERT INTO dv_users (
 		username, password, name,
-		email, phone, role, user_gender
-		) VALUES (
+		email, phone,
+		bank_name, account_number,
+		agree_sms, agree_email,
+		agree_push,
+		role, user_gender
+		)
+		VALUES (
 		#{username}, #{password},
-		#{name}, #{email}, #{phone}, #{role}, 'hidden'
+		#{name},
+		#{email}, #{phone},
+		#{bankName}, #{accountNumber},
+		#{agreeSms},
+		#{agreeEmail}, #{agreePush},
+		#{role}, 'hidden'
 		)
 	</insert>
+
 
 	<select id="countByUsername" resultType="int">
 		SELECT COUNT(*) FROM
@@ -31,8 +60,12 @@
 		AND phone = #{phone}
 	</select>
 
-	<!-- <select id="findUsernameByEmail" resultType="string"> SELECT username 
-		FROM dv_users WHERE name = #{name} AND email = #{email} </select> -->
+	<select id="findUsernameByEmail" resultType="string">
+		SELECT username
+		FROM
+		dv_users
+		WHERE name = #{name} AND email = #{email}
+	</select>
 
 	<select id="findUserForReset" resultType="com.daview.dto.User">
 		SELECT *
@@ -49,4 +82,166 @@
 		username = #{username}
 	</update>
 
+	<!-- 실제 DB에서 CAREGIVER 역할 사용자 조회 -->
+	<select id="findUsersByRole" resultType="com.daview.dto.User">
+		SELECT
+		member_id,
+		username,
+		name,
+		email,
+		phone,
+		role,
+		user_gender,
+		create_at,
+		withdrawn,
+		agree_sms,
+		agree_email,
+		agree_push
+		FROM
+		dv_users
+		WHERE role = #{role}
+		AND
+		withdrawn = 0
+		ORDER BY member_id
+	</select>
+
+	<select id="findCouponByCode"
+		resultType="com.daview.dto.CouponDTO">
+		SELECT * FROM coupons WHERE code = #{code}
+	</select>
+
+	<select id="hasUserReceivedCoupon" resultType="int">
+		SELECT COUNT(*)
+		FROM user_coupons
+		WHERE member_id = #{member_id} AND coupon_id =
+		#{coupon_id}
+	</select>
+
+	<insert id="insertUserCoupon">
+		INSERT INTO user_coupons (member_id, coupon_id,
+		received_at, expired_at)
+		VALUES (#{member_id}, #{coupon_id},
+		#{received_at}, #{expired_at})
+	</insert>
+
+	<select id="getCouponsByMemberId"
+		resultType="com.daview.dto.CouponDTO">
+		SELECT uc.*, c.description, c.discount
+		FROM user_coupons uc
+		JOIN coupons c ON uc.coupon_id = c.coupon_id
+		WHERE uc.member_id =
+		#{memberId}
+	</select>
+
+	<!-- 1. memberId로 유저 정보 조회 수안추가 채팅상단 정보 사용x -->
+	<select id="findUserById" resultType="com.daview.dto.User">
+		SELECT member_id AS memberId,
+		username,
+		name,
+		phone,
+		email,
+		role,
+		user_gender AS gender,  <!-- 'gender' 컬럼을 'user_gender'로 변경 -->
+		agree_sms AS agreeSms,
+		agree_email AS agreeEmail,
+		agree_push AS agreePush
+		FROM dv_users
+		WHERE member_id = #{memberId}
+	</select>
+	 <select id="findByMemberId2" resultType="com.daview.dto.User">
+    SELECT
+      member_id,
+      username,
+      name,
+      phone
+    FROM dv_users
+    WHERE member_id = #{memberId}
+    LIMIT 1
+  </select>
+  <select id="findByMemberId3" resultType="com.daview.dto.User">
+    SELECT *
+    FROM dv_users
+    WHERE member_id = #{memberId}
+    LIMIT 1
+</select>
+	
+
+
+	<select id="findByMemberId" resultType="com.daview.dto.User">
+		SELECT * FROM dv_users
+		WHERE member_id = #{memberId}
+	</select>
+
+
+	<select id="getPasswordByUsername" resultType="String">
+		SELECT password
+		FROM dv_users
+		WHERE username = #{username}
+	</select>
+
+	<update id="updateRefundAccount">
+		UPDATE dv_users
+		SET bank_name = #{bankName},
+		account_number = #{accountNumber}
+		WHERE username = #{username}
+	</update>
+
+	<select id="getRefundAccount" resultType="User">
+		SELECT bank_name,
+		account_number
+		FROM dv_users
+		WHERE username = #{username}
+	</select>
+
+	<delete id="deleteRefundAccount">
+		UPDATE dv_users
+		SET bank_name = NULL, account_number =
+		NULL
+		WHERE username = #{username}
+	</delete>
+
+
+	<update id="updateAgreeSms">
+		UPDATE dv_users SET agree_sms = #{value} WHERE
+		username = #{username}
+	</update>
+
+	<update id="updateAgreeEmail">
+		UPDATE dv_users SET agree_email = #{value} WHERE
+		username = #{username}
+	</update>
+
+	<update id="updateAgreePush">
+		UPDATE dv_users SET agree_push = #{value} WHERE
+		username = #{username}
+	</update>
+
+	<update id="withdrawUser">
+		UPDATE dv_users
+		SET
+		withdrawn = 1,
+		withdrawn_reason = #{reason},
+		name = NULL,
+		email = NULL,
+		password = NULL,
+		bank_name = NULL,
+		account_number = NULL
+		WHERE username = #{username}
+	</update>
+
+    <select id="existsByUsername" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1 FROM dv_users WHERE username = #{username}
+        )
+    </select>
+
+    <update id="updateUsername">
+        UPDATE dv_users
+        SET username = #{newUsername}
+        WHERE username = #{currentUsername}
+    </update>
+
+
+
 </mapper>
+

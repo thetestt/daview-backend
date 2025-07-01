@@ -149,10 +149,11 @@
     f.facility_detail_address,
     f.facility_homepage,
     f.facility_phone,
-    fp.photo_url
+    (SELECT photo_url FROM facility_photo fp 
+     WHERE fp.facility_id = f.facility_id 
+     AND fp.is_thumbnail = 1 
+     LIMIT 1) as photo_url
   FROM facility f
-  LEFT JOIN facility_tag ft ON f.facility_id = ft.facility_id
-  LEFT JOIN facility_photo fp ON f.facility_id = fp.facility_id AND fp.is_thumbnail = true
   WHERE (
     LOWER(f.facility_name) LIKE CONCAT('%', LOWER(#{keyword}), '%')
     OR LOWER(f.facility_address_location) LIKE CONCAT('%', LOWER(#{keyword}), '%')
@@ -161,9 +162,14 @@
     OR LOWER(f.facility_detail_address) LIKE CONCAT('%', LOWER(#{keyword}), '%')
     OR LOWER(IFNULL(f.facility_homepage, '')) LIKE CONCAT('%', LOWER(#{keyword}), '%')
     OR LOWER(f.facility_phone) LIKE CONCAT('%', LOWER(#{keyword}), '%')
-    OR LOWER(IFNULL(ft.facility_tag, '')) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+    OR f.facility_id IN (
+      SELECT DISTINCT facility_id 
+      FROM facility_tag 
+      WHERE LOWER(facility_tag) LIKE CONCAT('%', LOWER(#{keyword}), '%')
+    )
   )
   AND f.trash_can = 0
+  ORDER BY f.facility_id DESC
 </select>
 
 
@@ -181,9 +187,11 @@
     f.facility_theme,
     f.facility_homepage,
     f.facility_phone,
-    fp.photo_url
+    (SELECT photo_url FROM facility_photo fp 
+     WHERE fp.facility_id = f.facility_id 
+     AND fp.is_thumbnail = 1 
+     LIMIT 1) as photo_url
   FROM facility f
-  LEFT JOIN facility_photo fp ON f.facility_id = fp.facility_id AND fp.is_thumbnail = 1
 
   <where>
     f.facility_type = '실버타운'
@@ -280,9 +288,11 @@
     f.facility_theme,
     f.facility_homepage,
     f.facility_phone,
-    fp.photo_url
+    (SELECT photo_url FROM facility_photo fp 
+     WHERE fp.facility_id = f.facility_id 
+     AND fp.is_thumbnail = 1 
+     LIMIT 1) as photo_url
   FROM facility f
-  LEFT JOIN facility_photo fp ON f.facility_id = fp.facility_id AND fp.is_thumbnail = 1
 
   <where>
     f.facility_type = '요양원'
@@ -369,7 +379,30 @@
     SELECT default_message FROM facility WHERE facility_id = #{facilityId}
 </select>
 
+<!-- 채팅 상단 인포 위한 사용자 나누기 -->
+<select id="findByFacilityId" resultType="com.daview.dto.FacilityDTO">
+  SELECT
+    facility_id,
+    member_id,
+    facility_name,
+    facility_type,
+    facility_address_location,
+    facility_address_city,
+    facility_phone
+  FROM facility
+  WHERE facility_id = #{facilityId}
+    AND trash_can = 0
+    AND facility_deleted_at IS NULL
+  LIMIT 1
+</select>
 
+
+<select id="findByMemberId" resultType="com.daview.dto.FacilityDTO">
+    SELECT *
+    FROM facility
+    WHERE member_id = #{memberId}
+    LIMIT 1
+</select>
 
 </mapper>
 

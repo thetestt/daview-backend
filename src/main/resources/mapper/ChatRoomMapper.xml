@@ -6,66 +6,93 @@
 <mapper namespace="com.daview.mapper.ChatRoomMapper">
 
 <select id="getChatRoomListForUser" resultType="com.daview.dto.ChatRoomDTO">
-  SELECT
-    cr.chatroom_id AS chatroomId,
-    CASE
-      WHEN cr.sender_id = #{memberId} THEN cr.receiver_id
-      ELSE cr.sender_id
-    END AS opponentId,
-    (
-      SELECT du.name
-      FROM dv_users du
-      WHERE du.member_id = CASE
-        WHEN cr.sender_id = #{memberId} THEN cr.receiver_id
-        ELSE cr.sender_id
-      END
-    ) AS opponentName,
-    cm.content AS lastMessage,
-    cm.sent_at AS lastTime,
-    (
-      SELECT COUNT(*)
-      FROM chatmessage cm2
-      WHERE cm2.chatroom_id = cr.chatroom_id
-        AND cm2.is_read = 0
-        AND cm2.sender_id != #{memberId}
-    ) AS unreadCount
+    SELECT 
+        cr.chatroom_id,
+        cr.last_message,
+        cr.sent_at,
+        cr.sender_id,
+        cr.receiver_id,
+        cr.facility_id,
+        cr.sender_trash_can,
+        cr.receiver_trash_can,
+
+        -- 상대방 정보
+        CASE
+            WHEN cr.sender_id = #{memberId} THEN cr.receiver_id
+            ELSE cr.sender_id
+        END AS opponent_id,
+
+        CASE
+            WHEN cr.sender_id = #{memberId} THEN cr.receiver_name
+            ELSE cr.sender_name
+        END AS opponent_name,
+
+        CASE
+            WHEN cr.sender_id = #{memberId} THEN cr.receiver_type
+            ELSE cr.sender_type
+        END AS type,
+
+        -- 역할 및 상태
+        CASE
+            WHEN cr.sender_id = #{memberId} THEN 'sender'
+            WHEN cr.receiver_id = #{memberId} THEN 'receiver'
+        END AS user_role,
+
+        CASE
+            WHEN cr.sender_id = #{memberId} THEN cr.sender_trash_can
+            ELSE cr.receiver_trash_can
+        END AS i_left_this_room,
+
+        CASE
+            WHEN cr.sender_id = #{memberId} THEN cr.receiver_trash_can
+            ELSE cr.sender_trash_can
+        END AS opponent_out,
+
+        -- 🔥 안 읽은 메시지 수
+        (
+          SELECT COUNT(*)
+          FROM chatmessage cm
+          WHERE cm.chatroom_id = cr.chatroom_id
+            AND cm.is_read = 0
+            AND cm.sender_id != #{memberId}
+        ) AS unread_count
+
   FROM chatroom cr
-  LEFT JOIN (
-    SELECT
-      a1.chatroom_id,
-      a1.content,
-      a1.sent_at
-    FROM chatmessage a1
-    INNER JOIN (
-      SELECT chatroom_id, MAX(sent_at) AS max_sent
-      FROM chatmessage
-      GROUP BY chatroom_id
-    ) a2 ON a1.chatroom_id = a2.chatroom_id
-         AND a1.sent_at = a2.max_sent
-  ) cm ON cr.chatroom_id = cm.chatroom_id
   WHERE
-    cr.sender_id = #{memberId}
-    OR cr.receiver_id = #{memberId}
-    OR cr.sender_id IN (
-      SELECT facility_id FROM facility WHERE member_id = #{memberId}
-      UNION
-      SELECT caregiver_id FROM caregiver WHERE member_id = #{memberId}
+    (
+      (cr.sender_id = #{memberId} AND cr.sender_trash_can = FALSE)
+      OR
+      (cr.receiver_id = #{memberId} AND cr.receiver_trash_can = FALSE)
     )
-    OR cr.receiver_id IN (
-      SELECT facility_id FROM facility WHERE member_id = #{memberId}
-      UNION
-      SELECT caregiver_id FROM caregiver WHERE member_id = #{memberId}
-    )
-  ORDER BY cm.sent_at IS NULL, cm.sent_at DESC
+  ORDER BY cr.sent_at DESC
 </select>
   
     <!-- 1. 채팅방 생성 -->
 <insert id="insertChatRoom">
-    INSERT INTO chatroom (chatroom_id, sender_id, receiver_id, facility_id)
-    VALUES (#{chatroomId}, #{senderId}, #{receiverId}, #{facilityId})
+    INSERT INTO chatroom (
+        chatroom_id,
+        sender_id,
+        receiver_id,
+        facility_id,
+        sender_name,
+        sender_type,
+        receiver_name,
+        receiver_type
+    )
+    VALUES (
+        #{chatroomId},
+        #{senderId},
+        #{receiverId},
+        #{facilityId},
+        #{senderName},
+        #{senderType},
+        #{receiverName},
+        #{receiverType}
+    )
 </insert>
+
 	
-	<!-- 2. 기존 채팅방 확인 -->
+	<!-- 2. 기존 채팅방 확인 처음로딩때_기본리스트 -->
 <select id="findChatRoomId" resultType="string">
     SELECT chatroom_id
     FROM chatroom
@@ -76,14 +103,24 @@
 </select>
 
     <!-- 3. 유저의 모든 채팅방 목록 조회 -->
-    <select id="getChatRoomsByMemberId" resultType="com.daview.dto.ChatRoomDTO">
-        SELECT chatroom_id AS chatroomId,
-               sender_id AS memberId,
-               facility_id AS facilityId,
-               created_at AS createdAt
-        FROM chatroom
-        WHERE sender_id = #{memberId}
-    </select>
+<select id="getChatRoomsByMemberId" resultType="com.daview.dto.ChatRoomDTO">
+    SELECT chatroom_id AS chatroomId,
+           CASE 
+             WHEN sender_id = #{memberId} THEN sender_id
+             ELSE receiver_id
+           END AS memberId,
+           facility_id AS facilityId,
+           created_at AS createdAt
+    FROM chatroom
+    WHERE 
+      (
+        sender_id = #{memberId} AND sender_trash_can = FALSE
+      )
+      OR
+      (
+        receiver_id = #{memberId} AND receiver_trash_can = FALSE
+      )
+</select>
     
     <!-- 채팅방 접근권한 맴버 아이디 -->
 <select id="isUserInChatRoom" resultType="int">
@@ -94,14 +131,22 @@
 </select>
     
     
-
+<!-- 기본 채팅 리스트에 정보넣기 쿼리 + 상대방 나갔는지 체크하려고 했는데 꼬인듯?  -->
 <select id="getChatRoomInfoForList" resultType="com.daview.dto.ChatRoomDTO">
-  SELECT
+
+   SELECT
     cr.chatroom_id AS chatroomId,
+    cr.sender_id AS senderId,
+    cr.receiver_id AS receiverId,
+    cr.sender_trash_can AS senderTrashCan,
+    cr.receiver_trash_can AS receiverTrashCan,
+
     CASE
       WHEN cr.sender_id = #{memberId} THEN cr.receiver_id
       ELSE cr.sender_id
     END AS opponentId,
+
+    -- 기본 이름 (상대방 기준)
     (
       SELECT du.name
       FROM dv_users du
@@ -110,30 +155,103 @@
         ELSE cr.sender_id
       END
     ) AS opponentName,
+
+    -- 마지막 메시지
     cm.content AS lastMessage,
     cm.sent_at AS lastTime,
+
     (
       SELECT COUNT(*)
       FROM chatmessage cm2
       WHERE cm2.chatroom_id = cr.chatroom_id
         AND cm2.is_read = 0
         AND cm2.sender_id != #{memberId}
-    ) AS unreadCount
+    ) AS unreadCount,
+
+    cr.facility_id AS facilityId,
+
+    -- 시설 정보
+    (
+      SELECT f.facility_type
+      FROM facility f
+      WHERE f.facility_id = cr.facility_id
+      LIMIT 1
+    ) AS facilityType,
+    (
+      SELECT f.facility_name
+      FROM facility f
+      WHERE f.facility_id = cr.facility_id
+      LIMIT 1
+    ) AS facilityName,
+    (
+      SELECT f.facility_address_location
+      FROM facility f
+      WHERE f.facility_id = cr.facility_id
+      LIMIT 1
+    ) AS facilityAddressLocation,
+    (
+      SELECT f.facility_address_city
+      FROM facility f
+      WHERE f.facility_id = cr.facility_id
+      LIMIT 1
+    ) AS facilityAddressCity,
+    (
+      SELECT f.facility_phone
+      FROM facility f
+      WHERE f.facility_id = cr.facility_id
+      LIMIT 1
+    ) AS facilityPhone,
+
+    -- 요양사 정보
+    (
+      SELECT c.hope_work_area_location
+      FROM caregiver c
+      WHERE c.caregiver_id = cr.facility_id
+      LIMIT 1
+    ) AS hopeWorkAreaLocation,
+    (
+      SELECT c.hope_work_area_city
+      FROM caregiver c
+      WHERE c.caregiver_id = cr.facility_id
+      LIMIT 1
+    ) AS hopeWorkAreaCity,
+    (
+      SELECT du.name
+      FROM dv_users du
+      WHERE du.member_id = (
+        SELECT c.member_id
+        FROM caregiver c
+        WHERE c.caregiver_id = cr.facility_id
+      )
+    ) AS caregiverName,
+
+    -- 일반 유저 이름 (상대방)
+    (
+      SELECT du.username
+      FROM dv_users du
+      WHERE du.member_id = CASE
+        WHEN cr.sender_id = #{memberId} THEN cr.receiver_id
+        ELSE cr.sender_id
+      END
+    ) AS userName
+
   FROM chatroom cr
   LEFT JOIN (
-    SELECT
-      content,
-      sent_at,
-      chatroom_id
-    FROM chatmessage
-    WHERE (chatroom_id, sent_at) IN (
-      SELECT chatroom_id, MAX(sent_at)
+    SELECT a1.chatroom_id, a1.content, a1.sent_at
+    FROM chatmessage a1
+    INNER JOIN (
+      SELECT chatroom_id, MAX(sent_at) AS max_sent
       FROM chatmessage
       GROUP BY chatroom_id
-    )
+    ) a2 ON a1.chatroom_id = a2.chatroom_id
+         AND a1.sent_at = a2.max_sent
   ) cm ON cr.chatroom_id = cm.chatroom_id
   WHERE cr.chatroom_id = #{chatroomId}
+    
 </select>
+
+
+
 
 <select id="getOpponentId" resultType="long">
   SELECT CASE
@@ -144,13 +262,21 @@
   WHERE chatroom_id = #{chatroomId}
 </select>
 
+<!--  상대방 나갔는지 체트하는 쿼리 추가 -->
 <select id="getChatRoomInfo" resultType="com.daview.dto.ChatRoomDTO">
-  SELECT
-    cr.chatroom_id AS chatroomId,
+   SELECT
+    cr.chatroom_id AS chatroomId,  <!-- cr: chatroom 테이블의 chatroom_id -->
+    cr.sender_id AS senderId,
+    cr.receiver_id AS receiverId,
+    cr.sender_trash_can AS senderTrashCan,
+    cr.receiver_trash_can AS receiverTrashCan,
+    
     CASE
       WHEN cr.sender_id = #{memberId} THEN cr.receiver_id
       ELSE cr.sender_id
     END AS opponentId,
+    
+    -- 기본 이름 (dv_users.name)
     (
       SELECT du.name
       FROM dv_users du
@@ -159,15 +285,89 @@
         ELSE cr.sender_id
       END
     ) AS opponentName,
-    cm.content AS lastMessage,
-    cm.sent_at AS lastTime,
+    
+    -- 마지막 메시지 및 시간
+    cm.content AS lastMessage,  <!-- cm: chatmessage 테이블의 content -->
+    cm.sent_at AS lastTime,    <!-- cm: chatmessage 테이블의 sent_at -->
+    
+    -- 읽지 않은 메시지 수
     (
       SELECT COUNT(*)
       FROM chatmessage cm2
-      WHERE cm2.chatroom_id = cr.chatroom_id
+      WHERE cm2.chatroom_id = cr.chatroom_id  <!-- cr: chatroom 테이블의 chatroom_id -->
         AND cm2.is_read = 0
         AND cm2.sender_id != #{memberId}
-    ) AS unreadCount
+    ) AS unreadCount,
+    
+    -- 시설 정보 (facility_id 추가)
+    cr.facility_id AS facilityId, 
+
+    -- 1. 시설 정보 가져오기
+    (
+      SELECT f.facility_type
+      FROM facility f
+      WHERE f.facility_id = cr.facility_id
+      LIMIT 1
+    ) AS facilityType,
+
+    (
+      SELECT f.facility_name
+      FROM facility f
+      WHERE f.facility_id = cr.facility_id
+      LIMIT 1
+    ) AS facilityName,
+
+    (
+      SELECT f.facility_address_location
+      FROM facility f
+      WHERE f.facility_id = cr.facility_id
+      LIMIT 1
+    ) AS facilityAddressLocation,
+
+    (
+      SELECT f.facility_address_city
+      FROM facility f
+      WHERE f.facility_id = cr.facility_id
+      LIMIT 1
+    ) AS facilityAddressCity,
+
+    (
+      SELECT f.facility_phone
+      FROM facility f
+      WHERE f.facility_id = cr.facility_id
+      LIMIT 1
+    ) AS facilityPhone,
+
+    -- 2. 요양사 정보 (caregiver_id로 조회)
+    (
+      SELECT c.hope_work_area_location
+      FROM caregiver c
+      WHERE c.caregiver_id = cr.facility_id
+    ) AS hopeWorkAreaLocation,
+
+    (
+      SELECT c.hope_work_area_city
+      FROM caregiver c
+      WHERE c.caregiver_id = cr.facility_id
+    ) AS hopeWorkAreaCity,
+    
+    (
+      SELECT du.name
+      FROM dv_users du
+      WHERE du.member_id = (
+        SELECT c.member_id
+        FROM caregiver c
+        WHERE c.caregiver_id = cr.facility_id
+      )
+    ) AS caregiverName,
+    
+    -- 3. 일반 유저 정보 (caregiver_id가 없으면 일반 유저)
+    (
+      SELECT du.name
+      FROM dv_users du
+      WHERE du.member_id = cr.receiver_id
+    ) AS userName
+
   FROM chatroom cr
   LEFT JOIN (
     SELECT
@@ -181,9 +381,69 @@
       GROUP BY chatroom_id
     ) a2 ON a1.chatroom_id = a2.chatroom_id
          AND a1.sent_at = a2.max_sent
-  ) cm ON cr.chatroom_id = cm.chatroom_id
+  ) cm ON cr.chatroom_id = cm.chatroom_id  <!-- cr: chatroom 테이블과 cm: chatmessage 테이블의 조인 -->
   WHERE cr.chatroom_id = #{chatroomId}
 </select>
+
+
+<!-- 채틷방 아이디로 나간방인지 아닌지 검색 -->
+<select id="getChatRoomDetailById" resultType="com.daview.dto.ChatRoomDTO">
+  SELECT 
+        cr.chatroom_id AS chatroomId,
+        cr.sender_id AS senderId,
+        cr.receiver_id AS receiverId,
+        cr.sender_trash_can AS senderTrashCan,
+        cr.receiver_trash_can AS receiverTrashCan
+    FROM chatroom cr
+    WHERE cr.chatroom_id = #{chatroomId}
+</select>
+
+<select id="findById" resultType="com.daview.dto.ChatRoomDTO">
+SELECT 
+    cr.chatroom_id AS chatroomId,
+    cr.sender_id AS senderId,
+    cr.receiver_id AS receiverId,
+    cr.facility_id AS facilityId,
+    cm.content AS lastMessage,
+    cm.sent_at AS lastTime,
+    cr.sender_trash_can AS senderTrashCan,
+    cr.receiver_trash_can AS receiverTrashCan
+FROM chatroom cr
+LEFT JOIN chatmessage cm 
+  ON cr.chatroom_id = cm.chatroom_id 
+  AND cm.sent_at = (
+    SELECT MAX(sent_at)
+    FROM chatmessage
+    WHERE chatroom_id = #{chatroomId}
+  )
+WHERE cr.chatroom_id = #{chatroomId}
+    </select>
+    
+    <!-- 웹소켓 검증용 채팅방 나갔는지 여부 확인 -->
+    <select id="existsByChatroomIdAndMemberId" resultType="boolean">
+  SELECT EXISTS (
+    SELECT 1
+    FROM chatroom
+    WHERE chatroom_id = #{chatroomId}
+      AND (sender_id = #{memberId} OR receiver_id = #{memberId})
+  )
+</select>
+    <!-- 쳇룸에 마지막 메세지 저장 -->
+<update id="updateLastMessageAndTime">
+  UPDATE chatroom
+  SET 
+    last_message = #{lastMessage},
+    sent_at = #{sentAt}
+  WHERE chatroom_id = #{chatroomId}
+</update>
+
+<update id="updateTrashCan" parameterType="map">
+  UPDATE chatroom
+  SET 
+    receiver_trash_can = CASE WHEN #{memberId} = sender_id THEN receiver_trash_can ELSE true END,
+    sender_trash_can = CASE WHEN #{memberId} = receiver_id THEN sender_trash_can ELSE true END
+  WHERE chatroom_id = #{chatroomId}
+</update>
 
    
 </mapper>

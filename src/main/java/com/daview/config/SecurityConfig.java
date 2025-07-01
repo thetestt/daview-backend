@@ -36,19 +36,28 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors(withDefaults()).csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
             .authorizeHttpRequests(auth -> auth
 
                 .requestMatchers(
                     "/api/account/**",
                     "/api/auth/**",
+                    "/api/payment/**",
                     "/uploads/**",
                     "/ws-chat",
                     "/ws-chat/**",
                     "/api/wishlist/check",
                     "/api/chat/**",
                     "/api/admin/products/**",
+                    "/admin/caregivers/**",  // 요양사 관리 전체 경로 제외
+                    "/admin/facilities/**",  // 요양원 관리 전체 경로 제외
+                    "/api/chat/rooms/*/info",
+                    "/api/chat/rooms/*/validate",
+                    "/api/chat/messages/**",
+
+
                     "/api/**"
+                    
                 ).permitAll()
                 
                 
@@ -73,8 +82,8 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(List.of("*"));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedOriginPatterns(List.of("http://localhost:3000"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 

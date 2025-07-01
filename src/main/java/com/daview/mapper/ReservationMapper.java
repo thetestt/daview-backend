@@ -3,6 +3,7 @@ package com.daview.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.daview.dto.ReservationDTO;
 
@@ -18,7 +19,7 @@ public interface ReservationMapper {
 	
 	int updateReservationCount(String rsvId, int rsvCnt);
 	
-	int updateReservationStatus(String rsvId, int rsvType);
+	int updateReservationStatus(@Param("rsvId") String rsvId, @Param("rsvType") int rsvType);
 	
 	List<ReservationDTO> selectReservationByPaymentId(String pymId);
 }

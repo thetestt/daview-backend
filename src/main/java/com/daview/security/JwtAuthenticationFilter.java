@@ -35,8 +35,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         
         // 특정 경로는 JWT 검증 완전히 제외
         if (requestPath.startsWith("/api/admin/products") || 
+            requestPath.startsWith("/admin/caregivers") ||  // 요양사 관리 전체 경로 제외
             requestPath.startsWith("/api/auth") || 
             requestPath.startsWith("/api/account") ||
+            requestPath.startsWith("/api/upload") ||        // 파일 업로드 API 제외
+            requestPath.startsWith("/api/files") ||         // 파일 접근 API 제외
             requestPath.startsWith("/uploads") ||
             requestPath.startsWith("/ws-chat")) {
             System.out.println("JWT Filter skipped for: " + requestPath);
@@ -51,8 +54,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 String token = authHeader.substring(7);
                 String username = jwtUtil.extractUsername(token);
+                Long memberId = jwtUtil.extractMemberId(token);
 
-                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                if (username != null) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
                     if (jwtUtil.validateToken(token, userDetails)) {
@@ -60,9 +64,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                 new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                         authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                         SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                        request.setAttribute("memberId", memberId);
+                        System.out.println("[JWT 필터] memberId = " + memberId);
                         System.out.println("JWT authentication successful for: " + username);
                     }
                 }
+
             } catch (Exception e) {
                 System.out.println("JWT parsing error for " + requestPath + ": " + e.getMessage());
                 // 에러가 발생해도 계속 진행

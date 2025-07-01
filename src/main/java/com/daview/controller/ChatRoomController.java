@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,7 +34,7 @@ public class ChatRoomController {
         return chatRoomService.getChatRoomListForUser(memberId);
     }
     
-    //쳇방 들어가서 아이디 검증하기
+    //쳇방 들어가서 아이디 검증하기 수정테스트250623 06:49
     @GetMapping("/rooms/{chatroomId}/validate")
     public ResponseEntity<?> validateUserInChatRoom(
             @PathVariable String chatroomId,
@@ -82,18 +83,58 @@ public class ChatRoomController {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("memberId 또는 receiverId가 숫자 형식이 아닙니다.");
         }
-
         
+        // ✅ 1. 기존 방 있는지 확인
         String existingRoomId = chatRoomService.findExistingRoom(senderId, receiverId, facilityId);
 
         if (existingRoomId != null) {
-            return Map.of("chatroomId", existingRoomId);
+            // ✅ 2. 해당 방의 trashCan 정보 조회
+            ChatRoomDTO room = chatRoomService.getChatRoomDetailById(existingRoomId);
+
+            boolean isSender = senderId.equals(room.getSenderId());
+            boolean isReceiver = senderId.equals(room.getReceiverId());
+
+            boolean iLeftRoom = (isSender && Boolean.TRUE.equals(room.getSenderTrashCan())) ||
+                                (isReceiver && Boolean.TRUE.equals(room.getReceiverTrashCan()));
+
+           
+         // ✅ 3. 두 사람 모두 나가지 않았을 경우에만 기존 방 재사용
+            boolean receiverLeftRoom = (isSender && Boolean.TRUE.equals(room.getReceiverTrashCan())) ||
+                                       (isReceiver && Boolean.TRUE.equals(room.getSenderTrashCan()));
+
+            if (!iLeftRoom && !receiverLeftRoom) {
+                return Map.of("chatroomId", existingRoomId);
+            }
         }
 
-        System.out.println("✅ ChatRoomController에서 createRoom 호출 예정");
-
+        // ✅ 4. 방이 없거나, 내가 나간 방이면 새 방 생성
         String newRoomId = chatRoomService.createRoom(senderId, receiverId, facilityId);
         return Map.of("chatroomId", newRoomId);
+
+        
+//        String existingRoomId = chatRoomService.findExistingRoom(senderId, receiverId, facilityId);
+//
+//        if (existingRoomId != null) {
+//            return Map.of("chatroomId", existingRoomId);
+//        }
+//
+//        System.out.println("✅ ChatRoomController에서 createRoom 호출 예정");
+//
+//        String newRoomId = chatRoomService.createRoom(senderId, receiverId, facilityId);
+//        return Map.of("chatroomId", newRoomId);
     }
+    
+    
+    @PutMapping("/rooms/{chatroomId}/exit")
+    public ResponseEntity<?> exitChatRoom(
+            @PathVariable String chatroomId,
+            @RequestBody Map<String, Object> payload
+    ) {
+        Long memberId = Long.parseLong(payload.get("memberId").toString());
+        chatRoomService.exitChatRoom(chatroomId, memberId);
+        return ResponseEntity.ok(Map.of("success", true));
+    }
+    
+
     
 }

@@ -1,13 +1,29 @@
 package com.daview.dto;
 
 public class ChatMessageDTO {
+	private Long chatMessageId;
 	private String chatroomId;
     private Long senderId;
     private String content;
     private String sentAt;
     private Long receiverId; 
+    private Boolean isRead;
     
     
+    
+    
+	public Long getChatMessageId() {
+		return chatMessageId;
+	}
+	public void setChatMessageId(Long chatMessageId) {
+		this.chatMessageId = chatMessageId;
+	}
+	public Boolean getIsRead() {
+		return isRead;
+	}
+	public void setIsRead(Boolean isRead) {
+		this.isRead = isRead;
+	}
 	public Long getReceiverId() {
 		return receiverId;
 	}

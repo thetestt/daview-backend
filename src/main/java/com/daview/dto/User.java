@@ -24,7 +24,25 @@ public class User implements UserDetails {
     private String phone;
     private String email;
     private String role;
-    private String gender; 
+    private String gender;
+    
+    private String bankName;
+    private String accountNumber;
+
+    private boolean agreeSms;
+    private boolean agreeEmail;
+    private boolean agreePush;
+
+    public boolean isAgreeSms() { return agreeSms; }
+    public void setAgreeSms(boolean agreeSms) { this.agreeSms = agreeSms; }
+
+    public boolean isAgreeEmail() { return agreeEmail; }
+    public void setAgreeEmail(boolean agreeEmail) { this.agreeEmail = agreeEmail; }
+
+    public boolean isAgreePush() { return agreePush; }
+    public void setAgreePush(boolean agreePush) { this.agreePush = agreePush; }
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -59,5 +77,9 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+    
+    public Long getMemberId() {
+        return memberId;
     }
 }

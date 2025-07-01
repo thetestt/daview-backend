@@ -1,9 +1,13 @@
 package com.daview.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.daview.dto.WishlistDTO;
+import com.daview.dto.WishlistResponseDTO;
 import com.daview.service.WishlistService;
 
 @RestController
@@ -38,4 +43,10 @@ public class WishlistController {
         wishlistService.removeFromWishlist(dto.getMemberId(), dto.getFacilityId());
         return ResponseEntity.ok().build();
     }
+    
+    @GetMapping("/list/{memberId}")
+    public ResponseEntity<Map<String, List<WishlistResponseDTO>>> getWishlist(@PathVariable Long memberId) {
+        return ResponseEntity.ok(wishlistService.getWishlistByMember(memberId));
+    }
+
 }

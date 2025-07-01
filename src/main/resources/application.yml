@@ -21,16 +21,17 @@ spring:
     properties:
       'allow.auto.create.topics': true
 
-    
   mail:
-    host: smtp.naver.com
-    port: 465
-    username: choloover0@naver.com 
-    password: han##485959
+    host: smtp.gmail.com
+    port: 587
+    username: makecritical01@gmail.com
+    password: lzxn dngz umjp tgui
     properties:
-      mail.smtp.auth: true
-      mail.smtp.ssl.enable: true
-
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 logging:
   level:
@@ -40,26 +41,43 @@ logging:
     jdbc.resultset: debug
     jdbc.audit: off
     jdbc.connection: off
-    
+
 mybatis:
   mapper-locations: classpath*:mapper/**/*.xml  # MyBatis 매퍼 XML 파일 위치
   type-aliases-package: com.daview.dto
   configuration:
     map-underscore-to-camel-case: true  # DB 필드명 snake_case → Java camelCase 자동 변환
     # log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl  # MyBatis 로그 SLF4J 사용   
+    cache-enabled: false
     
 server:
   servlet:
     session:
       timeout: 30m
-     
-      
+    multipart:
+      max-file-size: 10MB        # 개별 파일 최대 크기
+      max-request-size: 10MB     # 전체 요청 최대 크기
+      file-size-threshold: 1KB   # 메모리에 저장할 임계값
+
 naver:
   sens:
     access-key: "ncp_iam_BPAMKR4t6gmxw5Yf66MK"
     secret-key: "ncp_iam_BPKMKR2vBPVaDAQTWHmLU3Q8APViuXhSDj"
     service-id: "ncp:sms:kr:354802395254:daview"
     sender-phone: "01087665119" 
+    
+jwt:
+  secret: your-secure-secret-key-must-be-long-enough
 
-      
-      
+# 파일 업로드 설정
+file:
+  upload:
+    path: uploads/                # 업로드 파일 저장 경로 (상대경로)
+    url: /api/files/              # 파일 접근 URL 패턴
+
+iamport:
+  api:
+    key: "test"
+    secret: "test"
+
+

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.daview.mapper.admin.AdminUserMapper">
+
+    <resultMap id="AdminUserDtoResultMap" type="com.daview.dto.AdminUserDto">
+        <id property="memberId" column="member_id"/>
+        <result property="username" column="username"/>
+        <result property="name" column="name"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="role" column="role"/>
+        <result property="createAt" column="create_at"/>
+        <result property="withdrawn" column="withdrawn"/>
+    </resultMap>
+    
+    <sql id="baseSelectColumns">
+        member_id,
+        username,
+        name,
+        email,
+        phone,
+        role,
+        create_at,
+        withdrawn
+    </sql>
+    
+    <sql id="commonWhereConditions">
+        <where>
+            <if test="role != null and role != ''">
+                AND role = #{role}
+            </if>
+            <if test="search != null and search != ''">
+                AND (
+                    name LIKE CONCAT('%', #{search}, '%')
+                    OR email LIKE CONCAT('%', #{search}, '%') 
+                    OR phone LIKE CONCAT('%', #{search}, '%')
+                    OR username LIKE CONCAT('%', #{search}, '%')
+                )
+            </if>
+            <if test="startDate != null and startDate != ''">
+                <![CDATA[
+                AND DATE(create_at) >= #{startDate}
+                ]]>
+            </if>
+            <if test="endDate != null and endDate != ''">
+                <![CDATA[
+                AND DATE(create_at) <= #{endDate}
+                ]]>
+            </if>
+        </where>
+    </sql>
+    
+    <select id="findAllUsersForAdmin" resultMap="AdminUserDtoResultMap">
+        SELECT 
+        <include refid="baseSelectColumns"/>
+        FROM dv_users
+        <include refid="commonWhereConditions"/>
+        ORDER BY create_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+    
+    <select id="countUsersForAdmin" resultType="int">
+        SELECT COUNT(*)
+        FROM dv_users
+        <include refid="commonWhereConditions"/>
+    </select>
+    
+    <select id="findUserDetailById" resultMap="AdminUserDtoResultMap">
+        SELECT 
+        <include refid="baseSelectColumns"/>
+        FROM dv_users
+        WHERE member_id = #{memberId}
+    </select>
+    
+    <update id="updateUserStatus">
+        UPDATE dv_users 
+        SET withdrawn = #{withdrawn}
+        WHERE member_id = #{memberId}
+    </update>
+    
+    <update id="withdrawUser">
+        UPDATE dv_users 
+        SET 
+            user_gender = 'hidden',
+            password = NULL,
+            name = NULL,
+            email = NULL,
+            role = 'USER',
+            create_at = NULL,
+            bank_name = NULL,
+            account_number = NULL,
+            agree_sms = 0,
+            agree_email = 0,
+            agree_push = 0,
+            withdrawn = 1
+        WHERE member_id = #{memberId}
+    </update>
+    
+    <select id="getUserCountByRole" resultType="map">
+        SELECT 
+            role,
+            COUNT(*) as count
+        FROM dv_users
+        WHERE withdrawn = 0
+        GROUP BY role
+        ORDER BY count DESC
+    </select>
+    
+    <select id="getUserCountByStatus" resultType="map">
+        SELECT 
+            CASE 
+                WHEN withdrawn = 0 THEN 'ACTIVE'
+                WHEN withdrawn = 1 THEN 'WITHDRAWN'
+                ELSE 'UNKNOWN'
+            END as status,
+            COUNT(*) as count
+        FROM dv_users
+        GROUP BY withdrawn
+        ORDER BY withdrawn
+    </select>
+    
+    <select id="getMonthlySignupStats" resultType="map">
+        SELECT 
+            DATE_FORMAT(create_at, '%Y-%m') as month,
+            COUNT(*) as count
+        FROM dv_users
+        WHERE create_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+        GROUP BY DATE_FORMAT(create_at, '%Y-%m')
+        ORDER BY month DESC
+    </select>
+    
+    <select id="findUsersByRole" resultMap="AdminUserDtoResultMap">
+        SELECT 
+        <include refid="baseSelectColumns"/>
+        FROM dv_users
+        WHERE role = #{role}
+        AND withdrawn = 0
+        ORDER BY name ASC
+    </select>
+    
+    <select id="getNewUsersCount" resultType="int">
+        SELECT COUNT(*)
+        FROM dv_users
+        WHERE 
+        <choose>
+            <when test="period == 'TODAY'">
+                DATE(create_at) = CURDATE()
+            </when>
+            <when test="period == 'WEEK'">
+                <![CDATA[
+                create_at >= DATE_SUB(NOW(), INTERVAL 1 WEEK)
+                ]]>
+            </when>
+            <when test="period == 'MONTH'">
+                <![CDATA[
+                create_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+                ]]>
+            </when>
+            <otherwise>
+                1 = 0
+            </otherwise>
+        </choose>
+    </select>
+    
+</mapper> 

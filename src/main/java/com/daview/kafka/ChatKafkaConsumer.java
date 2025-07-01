@@ -23,13 +23,19 @@ public class ChatKafkaConsumer {
         try {
             ChatMessageDTO message = objectMapper.readValue(messageJson, ChatMessageDTO.class);
 
-            // ✅ DB에 저장
-            chatMessageService.saveMessage(message);
+            // ✅ DB에 저장하고 저장된 메시지로 다시 받음
+            ChatMessageDTO saved = chatMessageService.saveMessage(message);
 
-            // ✅ WebSocket으로 브로드캐스트 (채팅방 별 경로로 전송)
+            // ✅ WebSocket으로 저장된 메시지를 보냄 (ID 포함됨)
             messagingTemplate.convertAndSend(
-                "/sub/chat/room/" + message.getChatroomId(),
-                message
+                "/sub/chat/room/" + saved.getChatroomId(),
+                saved
+            );
+            
+         // ✅ 채팅방 리스트 갱신 알림도 추가!
+            messagingTemplate.convertAndSend(
+                "/sub/chat/roomList/" + saved.getReceiverId(),
+                "new"
             );
 
         } catch (Exception e) {

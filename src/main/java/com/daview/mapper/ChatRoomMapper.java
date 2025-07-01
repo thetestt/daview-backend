@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface ChatRoomMapper {
@@ -22,10 +23,15 @@ public interface ChatRoomMapper {
 
     // ✅ 채팅방 새로 생성
     void insertChatRoom(@Param("chatroomId") String chatroomId,
-                        @Param("senderId") Long senderId,
-                        @Param("receiverId") Long receiverId,
-                        @Param("facilityId") String facilityId); 
-
+            @Param("senderId") Long senderId,
+            @Param("receiverId") Long receiverId,
+            @Param("facilityId") String facilityId,
+            @Param("senderName") String senderName,
+            @Param("senderType") String senderType,
+            @Param("receiverName") String receiverName,
+            @Param("receiverType") String receiverType);
+    
+    
     // ✅ 해당 유저가 채팅방에 접근 가능한지 여부
     int isUserInChatRoom(@Param("chatroomId") String chatroomId,
                          @Param("memberId") Long memberId);
@@ -34,6 +40,10 @@ public interface ChatRoomMapper {
     void updateLastMessage(@Param("chatroomId") String chatroomId,
                            @Param("lastMessage") String lastMessage,
                            @Param("lastTime") String lastTime);
+ // ✅ 채팅방의 마지막 메시지 및 시간 업데이트 (최신)
+    void updateLastMessageAndTime(@Param("chatroomId") String chatroomId,
+            @Param("lastMessage") String lastMessage,
+            @Param("sentAt") String sentAt);
 
     // ✅ [✨추가] 특정 채팅방 하나의 리스트 정보를 가져오기 (WebSocket 실시간 업데이트용)
     ChatRoomDTO getChatRoomInfoForList(@Param("memberId") Long memberId,
@@ -45,4 +55,17 @@ public interface ChatRoomMapper {
     
     ChatRoomDTO getChatRoomInfo(@Param("chatroomId") String chatroomId,
             @Param("memberId") Long memberId);
+    
+    void updateTrashCan(@Param("chatroomId") String chatroomId, @Param("memberId") Long memberId);
+    
+    
+    // ✅ 채팅방 상세 정보 (sender/receiver 및 trashCan 포함) ← 💬 "내가 나갔는지" 확인용
+    ChatRoomDTO getChatRoomDetailById(@Param("chatroomId") String chatroomId);
+    
+    //웹소켓 검증용
+    boolean existsByChatroomIdAndMemberId(Map<String, Object> param);
+    
+    ChatRoomDTO findById(@Param("chatroomId") String chatroomId);
+    
+    
 }

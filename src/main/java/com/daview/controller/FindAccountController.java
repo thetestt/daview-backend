@@ -30,11 +30,22 @@ public class FindAccountController {
 
 	// 전화번호 인증번호 전송
 	@PostMapping("/send-sms-code")
-	public String sendSmsCode(@RequestBody Map<String, String> request) {
+	public ResponseEntity<?> sendSmsCode(@RequestBody Map<String, String> request) {
 	    String name = request.get("name");
 	    String phone = request.get("phone");
-	    return findAccountService.sendSmsCode(name, phone);
+
+	    // DB에 해당 유저가 실제로 존재하는지 확인
+	    String username = findAccountService.findUsernameByPhone(name, phone);
+
+	    if (username == null) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("일치하는 회원 정보가 없습니다.");
+	    }
+
+	    // 존재하는 경우에만 문자 전송
+	    findAccountService.sendSmsCode(name, phone);
+	    return ResponseEntity.ok("인증번호 전송됨");
 	}
+
 	// 인증번호 인증하기
 	 @PostMapping("/verify-code")
 	    public ResponseEntity<?> verifyCode(@RequestBody VerificationRequest request) {

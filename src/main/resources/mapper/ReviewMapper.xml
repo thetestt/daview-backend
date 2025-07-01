@@ -4,5 +4,42 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.daview.mapper.ReviewMapper">
-
+	<insert id="insertReview" parameterType="com.daview.dto.ReviewDTO">
+		INSERT INTO review_board
+		(member_id, prod_nm, rev_ttl, rev_cont, rev_stars, rev_views, rev_reg_date)
+		VALUES
+		(#{memberId}, #{prodNm}, #{revTtl}, #{revCont}, #{revStars}, 0, NOW())
+	</insert>
+	<select id="getAllReviews" resultType="com.daview.dto.ReviewDTO">
+		SELECT * 
+		FROM review_board
+	</select>
+	<select id="getReviewsByPage" parameterType="map" resultType="com.daview.dto.ReviewDTO">
+		SELECT *
+		FROM review_board
+		ORDER BY rev_reg_date DESC
+		LIMIT #{size} OFFSET #{offset}
+	</select>
+	<select id="getTotalReviewCount" resultType="int">
+		SELECT COUNT(*) 
+		FROM review_board
+	</select>
+	<select id="getReviewById" parameterType="long" resultType="com.daview.dto.ReviewDTO">
+		SELECT *
+		FROM review_board
+		WHERE rev_id = #{rev_id}
+	</select>
+	<update id="increaseReviewViews" parameterType="long">
+		UPDATE review_board
+		SET rev_views = rev_views + 1
+		WHERE rev_id = #{revId}
+	</update>
+	<update id="updateReview" parameterType="com.daview.dto.ReviewDTO">
+		UPDATE review_board
+		SET prod_nm = #{prodNm}, 
+			rev_ttl = #{revTtl}, 
+			rev_cont = #{revCont}, 
+			rev_stars = #{revStars}
+		WHERE rev_id = #{revId}
+	</update>
 </mapper>
