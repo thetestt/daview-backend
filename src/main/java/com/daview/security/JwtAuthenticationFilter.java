@@ -39,8 +39,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             requestPath.startsWith("/api/auth") || 
             requestPath.startsWith("/api/account") ||
             requestPath.startsWith("/api/upload") ||        // 파일 업로드 API 제외
-            requestPath.startsWith("/api/files") ||         // 파일 접근 API 제외
-            requestPath.startsWith("/uploads") ||
+            requestPath.startsWith("/api/files") ||         // 파일 접근 API 제외 (하위 호환성)
+            requestPath.startsWith("/uploads") ||           // 통일된 파일 경로
             requestPath.startsWith("/ws-chat")) {
             System.out.println("JWT Filter skipped for: " + requestPath);
             filterChain.doFilter(request, response);
