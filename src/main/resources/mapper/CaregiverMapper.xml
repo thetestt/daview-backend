@@ -35,7 +35,7 @@
   <select id="getAllCaregivers" resultMap="CaregiverMap">
     SELECT
       c.*,
-      u.username,
+      u.name,
       u.user_gender
     FROM caregiver c
     JOIN dv_users u ON c.member_id = u.member_id
