@@ -43,4 +43,9 @@ public class CouponService {
     public List<UserCoupon> getMyCoupons(Long memberId) {
         return userMapper.getCouponsByMemberId(memberId);
     }
+    
+    public boolean useCoupon(Long memberId, Long couponId) {
+        int updated = userMapper.useUserCoupon(memberId, couponId);
+        return updated > 0;
+    }
 }

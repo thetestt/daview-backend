@@ -20,4 +20,7 @@ public interface ReviewService {
 	ReviewDTO getReviewByIdForEdit(Long revId);
 	
 	void updateReview(ReviewDTO review);
+	
+	List<ReviewDTO> getReviewsByMemberId(Long memberId);
+
 }

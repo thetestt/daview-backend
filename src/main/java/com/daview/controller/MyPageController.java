@@ -1,6 +1,7 @@
 package com.daview.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,15 +12,19 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.daview.dto.ReviewDTO;
 import com.daview.dto.User;
 import com.daview.mapper.UserMapper;
 import com.daview.service.MyPageService;
+import com.daview.service.ReviewService;
+
 
 @RestController
 @RequestMapping("/api/mypage")
@@ -31,6 +36,10 @@ public class MyPageController {
 
 	@Autowired
 	private MyPageService myPageService;
+	
+	@Autowired
+	private ReviewService reviewService;
+
 
 	// 로그인한 사용자 정보 반환 (마이페이지 프로필용)
 	@PreAuthorize("hasAnyRole('USER', 'ADMIN', 'COMPANY', 'CAREGIVER')")
@@ -132,6 +141,7 @@ public class MyPageController {
 
 	    return ResponseEntity.ok("아이디 변경 완료");
 	}
+
 
 
 

@@ -64,4 +64,10 @@ public class ReviewController {
 		reviewService.updateReview(review);
 		return ResponseEntity.ok("후기 수정 완료");
 	}
+	
+	@GetMapping("/member/{memberId}")
+	public ResponseEntity<?> getMyReviews(@PathVariable Long memberId) {
+	    List<ReviewDTO> reviews = reviewService.getReviewsByMemberId(memberId);
+	    return ResponseEntity.ok(reviews);
+	}
 }
