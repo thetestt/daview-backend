@@ -22,4 +22,7 @@ public interface ReviewMapper {
 	void increaseReviewViews(Long revId);
 	
 	void updateReview(ReviewDTO review);
+	
+	List<ReviewDTO> findByMemberId(Long memberId);
+
 }
