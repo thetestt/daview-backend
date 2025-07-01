@@ -60,4 +60,9 @@ public class ReviewServiceImpl implements ReviewService{
 	public void updateReview(ReviewDTO review) {
 		reviewMapper.updateReview(review);
 	}
+	@Override
+	public List<ReviewDTO> getReviewsByMemberId(Long memberId) {
+	    return reviewMapper.findByMemberId(memberId);
+	}
+
 }
