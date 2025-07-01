@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.daview.dto.ReviewDTO;
 import com.daview.mapper.ReviewMapper;
+import com.daview.mapper.UserMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class ReviewServiceImpl implements ReviewService{
 	
 	private final ReviewMapper reviewMapper;
+	private final UserMapper userMapper;
 	
 	@Override
 	public void insertReview(ReviewDTO review) {
@@ -63,6 +65,11 @@ public class ReviewServiceImpl implements ReviewService{
 	@Override
 	public List<ReviewDTO> getReviewsByMemberId(Long memberId) {
 	    return reviewMapper.findByMemberId(memberId);
+	}
+	
+	@Override
+	public String findNameByMemberId(Long memberId) {
+		return userMapper.findNameByMemberId(memberId);
 	}
 
 }

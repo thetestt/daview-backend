@@ -18,6 +18,7 @@ public class PaymentDTO {
 	private String pymMethod;
 	private String pymNum; // pg사 발행한 결제 거래번호
 	private Date pymDate;
+	private int couponDiscount;
 
 	// 관리자 페이지용 alias 필드들
 	private String paymentId; // pymId와 동일
@@ -156,6 +157,14 @@ public class PaymentDTO {
 
 	public void setPymDate(Date pymDate) {
 		this.pymDate = pymDate;
+	}
+	
+	public int getCouponDiscount() {
+		return couponDiscount;
+	}
+
+	public void setCouponDiscount(int couponDiscount) {
+		this.couponDiscount = couponDiscount;
 	}
 
 	// 관리자 페이지용 alias 필드 getters/setters
@@ -303,4 +312,5 @@ public class PaymentDTO {
 	public void setReservationStatus(Integer reservationStatus) {
 		this.reservationStatus = reservationStatus;
 	}
+
 }

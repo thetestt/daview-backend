@@ -80,5 +80,7 @@ public interface UserMapper {
 	//User findUserById(@Param("memberId") Long memberId);
 	User findByMemberId2(@Param("memberId") Long memberId);
 	User findByMemberId3(@Param("memberId") Long memberId);
+	
+	String findNameByMemberId(@Param("memberId") Long memberId);
 
 }

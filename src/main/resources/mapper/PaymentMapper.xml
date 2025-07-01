@@ -8,11 +8,11 @@
 		INSERT INTO payment (
 			pym_id, imp_uid, merchant_uid, member_id,
 			cust_nm, cust_tel, cust_em_tel, cust_date, cust_memo,
-			pym_price, pym_status, pym_method, pym_num
+			pym_price, pym_status, pym_method, pym_num, coupon_discount
 		) VALUES (
 			#{pymId}, #{impUid}, #{merchantUid}, #{memberId},
 			#{custNm}, #{custTel}, #{custEmTel}, #{custDate}, #{custMemo},
-			#{pymPrice}, #{pymStatus}, #{pymMethod}, #{pymNum}
+			#{pymPrice}, #{pymStatus}, #{pymMethod}, #{pymNum}, #{couponDiscount}
 		)
 	</insert>
 	<select id="selectPaymentById" resultType="com.daview.dto.PaymentDTO">
@@ -24,7 +24,7 @@
 		SELECT
 	    	p.pym_id, p.imp_uid, p.merchant_uid, p.member_id, 
 	    	p.cust_nm, p.cust_tel, p.cust_em_tel, p.cust_date, p.cust_memo,
-	    	p.pym_price, p.pym_status, p.pym_method, p.pym_num, p.pym_date,
+	    	p.pym_price, p.pym_status, p.pym_method, p.pym_num, p.pym_date, p.coupon_discount,
 	        r.rsv_id, r.member_id AS r_member_id, r.prod_id,
 	        r.prod_type, r.prod_price, r.prod_nm, r.prod_detail,
 	        r.prod_photo, r.rsv_type, r.rsv_date, r.rsv_cnt
@@ -51,6 +51,7 @@
 	    <result property="pymDate" column="pym_date"/>
 	    <result property="refundReason" column="refund_reason" />
 	    <result property="refundDate" column="refund_date" />
+	    <result property="couponDiscount" column="coupon_discount" />
 	    
 	    <collection property="reservations" ofType="com.daview.dto.ReservationDTO" javaType="ArrayList">
 	    	<id property="rsvId" column="rsv_id" />
@@ -85,8 +86,8 @@
 	<select id="selectRefundedPaymentsByMemberId" parameterType="long" resultMap="PaymentWithReservationsMap">
 	    SELECT
 	        p.pym_id, p.imp_uid, p.merchant_uid, p.member_id, 
-	        p.cust_nm, p.cust_tel, p.cust_em_tel, p.cust_date, p.cust_memo,
-	        p.pym_price, p.pym_status, p.pym_method, p.pym_num, p.pym_date, p.refund_reason, p.refund_date,
+	        p.cust_nm, p.cust_tel, p.cust_em_tel, p.cust_date, p.cust_memo, p.pym_price, p.pym_status, p.pym_method, 
+	        p.pym_num, p.pym_date, p.refund_reason, p.refund_date, p.coupon_discount,
 	        r.rsv_id, r.member_id AS r_member_id, r.prod_id,
 	        r.prod_type, r.prod_price, r.prod_nm, r.prod_detail,
 	        r.prod_photo, r.rsv_type, r.rsv_date, r.rsv_cnt

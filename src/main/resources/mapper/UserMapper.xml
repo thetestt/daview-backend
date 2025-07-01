@@ -273,12 +273,21 @@
 		WHERE phone = #{phone}
 		AND withdrawn = 0
 	</select>
+   <select id="findNameByMemberId" resultType="String">
+      SELECT name
+      FROM dv_users
+      WHERE member_id = #{memberId}
+   </select>
+	<update id="updateProfileImageUrl">
+		UPDATE dv_users
+		SET profile_image_url = #{imageUrl}
+		WHERE member_id = #{memberId}
+	</update>
 
-
-
-
-
-
-
+	<select id="getProfileImageUrl" resultType="String">
+		SELECT profile_image_url
+		FROM dv_users
+		WHERE member_id = #{memberId}
+	</select>
 </mapper>
 

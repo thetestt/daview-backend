@@ -10,7 +10,6 @@
     (rev_id, member_id, parent_comment_id, comment_text, comment_reg_date)
     VALUES (#{revId}, #{memberId}, #{parentCommentId}, #{commentText}, NOW())
   </insert>
-
   <select id="getCommentsByReviewId" parameterType="long" resultType="com.daview.dto.ReviewCommentDTO">
     SELECT * 
       FROM review_comment 
@@ -18,13 +17,11 @@
        AND is_deleted = 0
      ORDER BY comment_reg_date ASC
   </select>
-
   <update id="updateComment" parameterType="com.daview.dto.ReviewCommentDTO">
     UPDATE review_comment 
        SET comment_text = #{commentText} 
      WHERE comment_id = #{commentId}
   </update>
-
   <update id="deleteComment" parameterType="long">
     UPDATE review_comment
        SET is_deleted = TRUE
