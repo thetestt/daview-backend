@@ -22,7 +22,8 @@ public class PaymentWithReservationsDTO {
 	private Date pymDate;
 	private String refundReason;
 	private Date refundDate;
-	
+	private int couponDiscount;
+
 	private List<ReservationDTO> reservations = new ArrayList<>();
 
 	public String getPymId() {
@@ -167,6 +168,14 @@ public class PaymentWithReservationsDTO {
 
 	public void setReservations(List<ReservationDTO> reservations) {
 		this.reservations = reservations;
+	}
+
+	public int getCouponDiscount() {
+		return couponDiscount;
+	}
+
+	public void setCouponDiscount(int couponDiscount) {
+		this.couponDiscount = couponDiscount;
 	}
 
 }

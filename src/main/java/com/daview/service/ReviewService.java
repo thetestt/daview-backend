@@ -22,5 +22,7 @@ public interface ReviewService {
 	void updateReview(ReviewDTO review);
 	
 	List<ReviewDTO> getReviewsByMemberId(Long memberId);
+	
+	String findNameByMemberId(Long memberId);
 
 }

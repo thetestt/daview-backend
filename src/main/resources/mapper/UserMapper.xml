@@ -273,12 +273,11 @@
 		WHERE phone = #{phone}
 		AND withdrawn = 0
 	</select>
-
-
-
-
-
-
+   <select id="findNameByMemberId" resultType="String">
+      SELECT name
+      FROM dv_users
+      WHERE member_id = #{memberId}
+   </select>
 
 </mapper>
 
