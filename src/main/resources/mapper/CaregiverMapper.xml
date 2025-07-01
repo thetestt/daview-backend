@@ -145,11 +145,11 @@
           <if test="certificates != null and certificates.size > 0">
             (
               <foreach item="item" collection="certificates" separator=" OR ">
-                EXISTS (
-                  SELECT 1 FROM caregiver_certificates cert
-                  WHERE cert.caregiver_id = c.caregiver_id
-                  AND LOWER(cert.certificate_name) = LOWER(#{item})
-                )
+				  EXISTS (
+				    SELECT 1 FROM caregiver_certificates cert
+				    WHERE cert.caregiver_id = c.caregiver_id
+				    AND LOWER(cert.certificate_name) LIKE CONCAT('%', LOWER(#{item}), '%')
+				  )
               </foreach>
             )
           </if>
