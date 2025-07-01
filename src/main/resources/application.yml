@@ -73,7 +73,7 @@ jwt:
 file:
   upload:
     path: uploads/                # 업로드 파일 저장 경로 (상대경로)
-    url: /api/files/              # 파일 접근 URL 패턴
+    url: /uploads/                # /api/files/에서 /uploads/로 변경
 
 iamport:
   api:
