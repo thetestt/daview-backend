@@ -52,9 +52,16 @@ public class AuthController {
 	private AuthService authService;
 
 	@PostMapping("/signup")
-	public boolean signup(@RequestBody SignupRequest request) {
-		return authService.signup(request);
+	public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
+	    try {
+	        authService.checkPhoneBlockedForSignup(request.getPhone()); // 검사 추가
+	        boolean result = authService.signup(request);               // 기존 회원가입 로직
+	        return ResponseEntity.ok(result);
+	    } catch (IllegalStateException e) {
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+	    }
 	}
+
 
 	@PostMapping("/login")
 	public Map<String, Object> login(@RequestBody LoginRequest request) {

@@ -150,34 +150,33 @@
 		user_gender AS gender,  <!-- 'gender' 컬럼을 'user_gender'로 변경 -->
 		agree_sms AS agreeSms,
 		agree_email AS agreeEmail,
-		agree_push AS agreePush
+		agree_push AS
+		agreePush
 		FROM dv_users
 		WHERE member_id = #{memberId}
 	</select>
-	 <select id="findByMemberId2" resultType="com.daview.dto.User">
-    SELECT
-      member_id,
-      username,
-      name,
-      phone
-    FROM dv_users
-    WHERE member_id = #{memberId}
-    LIMIT 1
-  </select>
-  <select id="findByMemberId3" resultType="com.daview.dto.User">
-    SELECT *
-    FROM dv_users
-    WHERE member_id = #{memberId}
-    LIMIT 1
-</select>
 	
-
+	<select id="findByMemberId2" resultType="com.daview.dto.User">
+		SELECT
+		member_id,
+		username,
+		name,
+		phone
+		FROM dv_users
+		WHERE member_id = #{memberId}
+		LIMIT 1
+	</select>
+	<select id="findByMemberId3" resultType="com.daview.dto.User">
+		SELECT *
+		FROM dv_users
+		WHERE member_id = #{memberId}
+		LIMIT 1
+	</select>
 
 	<select id="findByMemberId" resultType="com.daview.dto.User">
 		SELECT * FROM dv_users
 		WHERE member_id = #{memberId}
 	</select>
-
 
 	<select id="getPasswordByUsername" resultType="String">
 		SELECT password
@@ -226,7 +225,8 @@
 		UPDATE dv_users
 		SET
 		withdrawn = 1,
-		withdrawn_reason = #{reason},
+		withdrawn_reason =
+		#{reason},
 		name = NULL,
 		email = NULL,
 		password = NULL,
@@ -235,17 +235,48 @@
 		WHERE username = #{username}
 	</update>
 
-    <select id="existsByUsername" resultType="boolean">
-        SELECT EXISTS (
-            SELECT 1 FROM dv_users WHERE username = #{username}
-        )
-    </select>
+	<select id="existsByUsername" resultType="boolean">
+		SELECT EXISTS (
+		SELECT 1
+		FROM dv_users WHERE username = #{username}
+		)
+	</select>
 
-    <update id="updateUsername">
-        UPDATE dv_users
-        SET username = #{newUsername}
-        WHERE username = #{currentUsername}
-    </update>
+	<update id="updateUsername">
+		UPDATE dv_users
+		SET username = #{newUsername}
+		WHERE
+		username = #{currentUsername}
+	</update>
+
+	<select id="findWithdrawnUserWithin14Days"
+		resultType="com.daview.dto.User">
+		SELECT * FROM dv_users
+		WHERE phone = #{phone}
+		AND withdrawn =
+		1
+		AND TIMESTAMPDIFF(DAY, withdrawn_at, NOW()) &lt; 14
+	</select>
+
+	<select id="findOldWithdrawnUser"
+		resultType="com.daview.dto.User">
+		SELECT * FROM dv_users
+		WHERE phone = #{phone}
+		AND withdrawn =
+		1
+		AND TIMESTAMPDIFF(DAY, withdrawn_at, NOW()) &gt;= 14
+	</select>
+
+	<select id="findActiveUserByPhone"
+		resultType="com.daview.dto.User">
+		SELECT * FROM dv_users
+		WHERE phone = #{phone}
+		AND withdrawn = 0
+	</select>
+
+
+
+
 
 
 
