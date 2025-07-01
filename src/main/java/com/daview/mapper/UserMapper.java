@@ -62,8 +62,18 @@ public interface UserMapper {
 	boolean existsByUsername(String username);
     void updateUsername(@Param("currentUsername") String currentUsername,
                         @Param("newUsername") String newUsername);
+    
+    //탈퇴 시 탈퇴정보 저장
+    void markUserAsWithdrawn(@Param("id") Long id, @Param("reason") String reason);
 
-
+    
+    //탈퇴 후 14일간 재가입 금지
+    User findWithdrawnUserWithin14Days(String phone);
+    
+    //탈퇴 후 재가입 시 쿠폰X
+    User findOldWithdrawnUser(String phone);
+    
+    User findActiveUserByPhone(String phone);
 
 	// 수안추가 - 채팅상단 정보불러오기용
 	//User findUserById(@Param("memberId") Long memberId);
