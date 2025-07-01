@@ -19,6 +19,7 @@
     <result property="hopeWorkAmount" column="hope_work_amount"/>
     <result property="caregiverCreatedAt" column="caregiver_created_at"/>
     <result property="caregiverUpdateAt" column="caregiver_update_at"/>
+    <result property="name" column="name" />
     <result property="username" column="username"/>
     <result property="userGender" column="user_gender"/>
     
@@ -35,7 +36,7 @@
   <select id="getAllCaregivers" resultMap="CaregiverMap">
     SELECT
       c.*,
-      u.username,
+      u.name,
       u.user_gender
     FROM caregiver c
     JOIN dv_users u ON c.member_id = u.member_id
@@ -58,7 +59,7 @@
 	<select id="getCaregiverById" resultMap="CaregiverMap">
   SELECT
     c.*,
-    u.username,
+    u.name,
     u.user_gender
   FROM caregiver c
   JOIN dv_users u ON c.member_id = u.member_id
@@ -96,7 +97,7 @@
     c.hope_work_amount,
     c.caregiver_created_at,
     c.caregiver_update_at,
-    u.username,
+    u.name,
     u.user_gender
   FROM caregiver c
   LEFT JOIN dv_users u ON c.member_id = u.member_id
@@ -123,7 +124,7 @@
  <select id="searchCaregiversWithFilters" parameterType="map" resultMap="CaregiverMap">
     SELECT DISTINCT
       c.*,
-      u.username,
+      u.name,
       u.user_gender
     FROM caregiver c
     INNER JOIN dv_users u ON c.member_id = u.member_id
@@ -144,11 +145,11 @@
           <if test="certificates != null and certificates.size > 0">
             (
               <foreach item="item" collection="certificates" separator=" OR ">
-                EXISTS (
-                  SELECT 1 FROM caregiver_certificates cert
-                  WHERE cert.caregiver_id = c.caregiver_id
-                  AND LOWER(cert.certificate_name) = LOWER(#{item})
-                )
+				  EXISTS (
+				    SELECT 1 FROM caregiver_certificates cert
+				    WHERE cert.caregiver_id = c.caregiver_id
+				    AND LOWER(cert.certificate_name) LIKE CONCAT('%', LOWER(#{item}), '%')
+				  )
               </foreach>
             )
           </if>

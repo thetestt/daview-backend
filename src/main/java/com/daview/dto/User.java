@@ -1,15 +1,17 @@
 package com.daview.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -28,6 +30,10 @@ public class User implements UserDetails {
     
     private String bankName;
     private String accountNumber;
+    
+    private int withdrawn;
+    private LocalDateTime withdrawnAt;
+
 
     private boolean agreeSms;
     private boolean agreeEmail;

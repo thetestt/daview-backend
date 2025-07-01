@@ -12,8 +12,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import com.daview.dto.User;
+import com.daview.mapper.UserMapper;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,6 +35,10 @@ public class SmsService {
 
     @Value("${naver.sens.sender-phone}")
     private String senderPhone;
+    
+    @Autowired
+    private UserMapper userMapper;
+
 
     public String sendSms(String to, String code) {
         try {
@@ -98,6 +106,11 @@ public class SmsService {
     private final Map<String, String> signupVerificationCodes = new ConcurrentHashMap<>();
 
     public void sendSignupSmsCode(String phone) {
+    	User user = userMapper.findActiveUserByPhone(phone);
+        if (user != null) {
+            throw new IllegalStateException("이미 사용 중인 전화번호입니다.");
+        }
+    	
         String cleanPhone = phone.replaceAll("-", "");
         String code = generateRandomCode();
         signupVerificationCodes.put(cleanPhone, code);

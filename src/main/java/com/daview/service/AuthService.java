@@ -3,8 +3,6 @@ package com.daview.service;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -121,7 +119,25 @@ public class AuthService {
 		}
 		return sb.toString();
 	}
+	
+	
+	public void checkPhoneBlockedForSignup(String phone) {
+	    User user = userMapper.findWithdrawnUserWithin14Days(phone);
+	    if (user != null) {
+	        throw new IllegalStateException("해당 번호는 탈퇴 후 14일 이내 재가입이 불가합니다.");
+	    }
+	}
+	
+	// 회원가입 전에 모든 조건 검사
+    public void validateSignup(SignupRequest request) {
+        checkPhoneBlockedForSignup(request.getPhone());
 
+    }
 
-
+    // 실제 회원 가입 처리
+    public void registerUser(SignupRequest request) {
+    	// 회원 DB 저장 로직
+    }
 }
+
+
