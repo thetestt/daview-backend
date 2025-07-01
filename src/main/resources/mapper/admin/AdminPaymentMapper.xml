@@ -7,21 +7,29 @@
     <select id="selectPaymentList" resultType="com.daview.dto.PaymentDTO">
         SELECT 
             p.pym_id as paymentId,
+            p.pym_id as pymId,
             p.imp_uid as impUid,
             p.merchant_uid as merchantUid,
             p.member_id as memberId,
             u.name as memberName,
             p.cust_nm as customerName,
+            p.cust_nm as custNm,
             p.cust_tel as customerPhone,
+            p.cust_tel as custTel,
             p.cust_em_tel as customerEmail,
+            p.cust_em_tel as custEmTel,
             p.cust_date as customerDate,
             p.cust_memo as customerMemo,
+            p.cust_memo as custMemo,
             p.pym_price as amount,
+            p.pym_price as pymPrice,
             p.pym_status as status,
+            p.pym_status as pymStatus,
             p.pym_method as paymentMethod,
-            pt.pym_name as paymentMethodName,
+            p.pym_method as paymentMethodName,
             p.pym_num as paymentNumber,
             p.pym_date as paymentDate,
+            p.pym_date as pymDate,
             -- 예약 정보 (매핑 테이블을 통해)
             prm.rsv_id as reservationId,
             r.prod_nm as productName,
@@ -29,7 +37,6 @@
             rt.rsv_name as reservationTypeName
         FROM payment p
         LEFT JOIN dv_users u ON p.member_id = u.member_id
-        LEFT JOIN pym_type pt ON p.pym_method = pt.pym_type
         LEFT JOIN payment_reservation_map prm ON p.pym_id = prm.pym_id
         LEFT JOIN reservation r ON prm.rsv_id = r.rsv_id
         LEFT JOIN rsv_type rt ON r.rsv_type = rt.rsv_type
@@ -124,7 +131,7 @@
             p.pym_price as amount,
             p.pym_status as status,
             p.pym_method as paymentMethod,
-            pt.pym_name as paymentMethodName,
+            p.pym_method as paymentMethodName,
             p.pym_num as paymentNumber,
             p.pym_date as paymentDate,
             -- 예약 정보
@@ -136,7 +143,6 @@
             r.rsv_type as reservationStatus
         FROM payment p
         LEFT JOIN dv_users u ON p.member_id = u.member_id
-        LEFT JOIN pym_type pt ON p.pym_method = pt.pym_type
         LEFT JOIN payment_reservation_map prm ON p.pym_id = prm.pym_id
         LEFT JOIN reservation r ON prm.rsv_id = r.rsv_id
         LEFT JOIN rsv_type rt ON r.rsv_type = rt.rsv_type
@@ -203,24 +209,24 @@
     <select id="selectPaymentMethodStatistics" resultType="map">
         SELECT 
             p.pym_method as paymentMethod,
-            pt.pym_name as paymentMethodName,
+            p.pym_method as paymentMethodName,
             COUNT(*) as count,
             COALESCE(SUM(p.pym_price), 0) as totalAmount,
             ROUND(COUNT(*) * 100.0 / (SELECT COUNT(*) FROM payment), 2) as percentage
         FROM payment p
-        LEFT JOIN pym_type pt ON p.pym_method = pt.pym_type
         WHERE p.pym_method IS NOT NULL
-        GROUP BY p.pym_method, pt.pym_name
+        GROUP BY p.pym_method
         ORDER BY count DESC
     </select>
     
     <!-- 결제 방법 목록 조회 -->
     <select id="selectPaymentMethods" resultType="map">
-        SELECT 
-            pym_type as value,
-            pym_name as label
-        FROM pym_type
-        ORDER BY pym_type
+        SELECT DISTINCT
+            pym_method as value,
+            pym_method as label
+        FROM payment
+        WHERE pym_method IS NOT NULL
+        ORDER BY pym_method
     </select>
     
     <!-- 예약 타입 목록 조회 -->

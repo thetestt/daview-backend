@@ -36,6 +36,7 @@ public interface UserMapper {
 	int hasUserReceivedCoupon(Map<String, Object> params); // 중복 발급 방지
 	void insertUserCoupon(Map<String, Object> params); // 쿠폰 발급
 	List<UserCoupon> getCouponsByMemberId(Long memberId); // 마이페이지 쿠폰 목록
+	int useUserCoupon(Long memberId, Long couponId);
 	User findByMemberId(Long memberId);
 
 	// 실제 DB에서 CAREGIVER 역할 사용자 조회
