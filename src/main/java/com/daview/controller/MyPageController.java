@@ -1,8 +1,11 @@
 package com.daview.controller;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +20,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-import com.daview.dto.ReviewDTO;
+
 import com.daview.dto.User;
 import com.daview.mapper.UserMapper;
 import com.daview.service.MyPageService;
@@ -141,11 +149,49 @@ public class MyPageController {
 
 	    return ResponseEntity.ok("아이디 변경 완료");
 	}
+	
+	@PostMapping("/profile-image")
+    public ResponseEntity<?> uploadProfileImage(
+            @RequestParam("memberId") Long memberId,
+            @RequestPart("file") MultipartFile file) {
 
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("파일이 없습니다.");
+        }
 
+        try {
+            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+            String savePath = "/uploads/profile/" + fileName;
+            String fullPath = new File(savePath).getAbsolutePath();
 
+            File dest = new File(fullPath);
+            dest.getParentFile().mkdirs();
+            file.transferTo(dest);
 
+            userMapper.updateProfileImageUrl(memberId, savePath);
 
+            return ResponseEntity.ok("이미지 업로드 성공");
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("이미지 업로드 실패");
+        }
+    }
 
+    @GetMapping("/profile-image/{memberId}")
+    public ResponseEntity<?> getProfileImage(@PathVariable Long memberId) {
+        String imageUrl = userMapper.getProfileImageUrl(memberId);
 
+        if (imageUrl == null || imageUrl.isBlank()) {
+            return ResponseEntity.ok("/uploads/profile/default-profile.png");
+        }
+
+        return ResponseEntity.ok(imageUrl);
+    }
 }
+
+
+
+
+
+
+
+
