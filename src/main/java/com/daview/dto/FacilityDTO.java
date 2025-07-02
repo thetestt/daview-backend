@@ -32,6 +32,7 @@ public class FacilityDTO {
     private List<String> photos;
     private List<String> tags;
     private List<NoticeDTO> notices;
+    private List<String> services;  // 제공 서비스 목록
     
     // 기존 필드들 (호환성을 위해 유지)
     private Long memberId;
@@ -49,6 +50,13 @@ public class FacilityDTO {
     private String facilityUpdateAt;
     private String facilityDeletedAt;
     private String defaultMessage;
+    
+    // 기업 대시보드용 추가 필드들
+    private String facilityEmail;
+    private String facilityWebsite;
+    private String introduction;
+    private Integer capacity;
+    private String establishedDate;
 
     // 새 필드들의 Getters and Setters
     public String getFacilityId() {
@@ -248,6 +256,13 @@ public class FacilityDTO {
         this.notices = notices;
     }
     
+    public List<String> getServices() {
+        return services;
+    }
+    public void setServices(List<String> services) {
+        this.services = services;
+    }
+    
     public String getIsThumbnail() {
         return isThumbnail;
     }
@@ -295,5 +310,141 @@ public class FacilityDTO {
     }
     public void setDefaultMessage(String defaultMessage) {
         this.defaultMessage = defaultMessage;
+    }
+    
+    // 기업 대시보드용 추가 필드들의 getter/setter
+    public String getFacilityEmail() {
+        return facilityEmail;
+    }
+    public void setFacilityEmail(String facilityEmail) {
+        this.facilityEmail = facilityEmail;
+    }
+    
+    public String getFacilityWebsite() {
+        return facilityWebsite;
+    }
+    public void setFacilityWebsite(String facilityWebsite) {
+        this.facilityWebsite = facilityWebsite;
+    }
+    
+    public String getIntroduction() {
+        return introduction;
+    }
+    public void setIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+    
+    public Integer getCapacity() {
+        return capacity;
+    }
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
+    }
+    
+    public String getEstablishedDate() {
+        return establishedDate;
+    }
+    public void setEstablishedDate(String establishedDate) {
+        this.establishedDate = establishedDate;
+    }
+    
+    // ==================== snake_case 접근자 (프론트엔드 호환성) ====================
+    
+    public String getFacility_name() {
+        return facilityName;
+    }
+    public void setFacility_name(String facility_name) {
+        this.facilityName = facility_name;
+    }
+    
+    public String getFacility_type() {
+        return facilityType;
+    }
+    public void setFacility_type(String facility_type) {
+        this.facilityType = facility_type;
+    }
+    
+    public String getFacility_address_location() {
+        return facilityAddressLocation;
+    }
+    public void setFacility_address_location(String facility_address_location) {
+        this.facilityAddressLocation = facility_address_location;
+    }
+    
+    public String getFacility_address_city() {
+        return facilityAddressCity;
+    }
+    public void setFacility_address_city(String facility_address_city) {
+        this.facilityAddressCity = facility_address_city;
+    }
+    
+    public String getFacility_detail_address() {
+        return facilityDetailAddress;
+    }
+    public void setFacility_detail_address(String facility_detail_address) {
+        this.facilityDetailAddress = facility_detail_address;
+    }
+    
+    public String getFacility_phone() {
+        return facilityPhone;
+    }
+    public void setFacility_phone(String facility_phone) {
+        this.facilityPhone = facility_phone;
+    }
+    
+    public String getFacility_homepage() {
+        return facilityHomepage;
+    }
+    public void setFacility_homepage(String facility_homepage) {
+        this.facilityHomepage = facility_homepage;
+    }
+    
+    public String getFacility_theme() {
+        return facilityTheme;
+    }
+    public void setFacility_theme(String facility_theme) {
+        this.facilityTheme = facility_theme;
+    }
+    
+    public Integer getFacility_charge() {
+        return facilityCharge;
+    }
+    public void setFacility_charge(Integer facility_charge) {
+        this.facilityCharge = facility_charge;
+    }
+    
+    public String getDefault_message() {
+        return defaultMessage;
+    }
+    public void setDefault_message(String default_message) {
+        this.defaultMessage = default_message;
+    }
+    
+    public String getFacility_tag() {
+        return facilityTag;
+    }
+    public void setFacility_tag(String facility_tag) {
+        this.facilityTag = facility_tag;
+    }
+    
+    public String getEstablished_date() {
+        return establishedDate;
+    }
+    public void setEstablished_date(String established_date) {
+        this.establishedDate = established_date;
+    }
+    
+    public String getFacility_email() {
+        return facilityEmail;
+    }
+    public void setFacility_email(String facility_email) {
+        this.facilityEmail = facility_email;
+    }
+    
+    public String getFacility_website() {
+        return facilityWebsite;
+    }
+    public void setFacility_website(String facility_website) {
+        this.facilityWebsite = facility_website;
     }
 }

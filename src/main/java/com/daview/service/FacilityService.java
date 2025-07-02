@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+import java.util.ArrayList;
 
 @Service
 public class FacilityService {
@@ -77,8 +78,97 @@ public class FacilityService {
         return facilityMapper.searchSilvertownWithFilters(request);
     }
     
-
+    // =================== 기업 대시보드 관련 메소드 ===================
     
+    /**
+     * memberId로 본인 시설 정보 조회
+     */
+    public FacilityDTO getFacilityByMemberId(Long memberId) {
+        try {
+            System.out.println("🏢 memberId로 시설 정보 조회: " + memberId);
+            FacilityDTO facility = facilityMapper.findByMemberId(memberId);
+            
+            if (facility != null) {
+                System.out.println("✅ 시설 정보 조회 성공: " + facility.getFacilityName());
+                
+                // 시설 추가 정보도 조회 (photos, tags, notices)
+                if (facility.getFacilityId() != null) {
+                    facility.setPhotos(facilityMapper.getFacilityPhotos(facility.getFacilityId()));
+                    facility.setTags(facilityMapper.getFacilityTags(facility.getFacilityId()));
+                    facility.setNotices(facilityMapper.getFacilityNotices(facility.getFacilityId()));
+                }
+                
+                // 서비스 목록도 조회
+                try {
+                    List<String> services = facilityMapper.getFacilityServices(memberId);
+                    facility.setServices(services);
+                    System.out.println("✅ 서비스 목록 조회 완료: " + services.size() + "개");
+                } catch (Exception e) {
+                    System.out.println("⚠️ 서비스 목록 조회 중 오류 (무시): " + e.getMessage());
+                    facility.setServices(new ArrayList<>());
+                }
+            } else {
+                System.out.println("❌ memberId " + memberId + "에 해당하는 시설이 없습니다.");
+            }
+            
+            return facility;
+        } catch (Exception e) {
+            System.out.println("❌ 시설 정보 조회 중 오류: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    /**
+     * 시설 정보 수정
+     */
+    public int updateFacilityProfile(FacilityDTO facilityDTO) {
+        try {
+            System.out.println("🏢 시설 정보 수정 시작 - memberId: " + facilityDTO.getMemberId());
+            
+            // 필수 필드 검증
+            if (facilityDTO.getFacilityName() == null || facilityDTO.getFacilityName().trim().isEmpty()) {
+                System.out.println("❌ 시설명이 필수입니다.");
+                return 0;
+            }
+            
+            if (facilityDTO.getFacilityType() == null || facilityDTO.getFacilityType().trim().isEmpty()) {
+                System.out.println("❌ 시설 유형이 필수입니다.");
+                return 0;
+            }
+            
+            // 시설 기본 정보 업데이트
+            int result = facilityMapper.updateFacilityProfile(facilityDTO);
+            
+            if (result > 0) {
+                System.out.println("✅ 시설 기본 정보 수정 성공");
+                
+                // 서비스 항목 업데이트 (있는 경우)
+                if (facilityDTO.getServices() != null && !facilityDTO.getServices().isEmpty()) {
+                    try {
+                        // 기존 서비스 태그 삭제 후 새로 추가
+                        facilityMapper.deleteFacilityServiceTags(facilityDTO.getMemberId());
+                        
+                        for (String service : facilityDTO.getServices()) {
+                            facilityMapper.insertFacilityServiceTag(facilityDTO.getMemberId(), service);
+                        }
+                        System.out.println("✅ 서비스 항목 업데이트 완료");
+                    } catch (Exception e) {
+                        System.out.println("⚠️ 서비스 항목 업데이트 중 오류 (기본 정보는 저장됨): " + e.getMessage());
+                    }
+                }
+            } else {
+                System.out.println("❌ 시설 정보 수정 실패");
+            }
+            
+            return result;
+            
+        } catch (Exception e) {
+            System.out.println("❌ 시설 정보 수정 중 오류: " + e.getMessage());
+            e.printStackTrace();
+            return 0;
+        }
+    }
 }
     
     
