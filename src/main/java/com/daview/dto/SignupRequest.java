@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class SignupRequest {
-	private Long memberId;
+    private Long memberId;
     private String username;
     private String password;
     private String name;
@@ -15,10 +15,8 @@ public class SignupRequest {
     private boolean agreeSms;
     private boolean agreeEmail;
     private boolean agreePush;
-    
+
     public boolean isSmsAgree() { return agreeSms; }
     public boolean isEmailAgree() { return agreeEmail; }
     public boolean isPushAgree() { return agreePush; }
-
-
 }
