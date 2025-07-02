@@ -8,6 +8,10 @@ public class ChatRoomDTO {
     private String lastMessage;
     private String sentAt;
     private int unreadCount;
+    
+    // 관리자용 필드들
+    private String status;        // 문의 상태 (pending, processing, completed, closed)
+    private String createdAt;     // 채팅방 생성일
   
 
 	// 구분
@@ -186,4 +190,11 @@ public class ChatRoomDTO {
 
     public String getFacilityPhone() { return facilityPhone; }
     public void setFacilityPhone(String facilityPhone) { this.facilityPhone = facilityPhone; }
+    
+    // 관리자용 필드 getter/setter
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+    
+    public String getCreatedAt() { return createdAt; }
+    public void setCreatedAt(String createdAt) { this.createdAt = createdAt; }
 }

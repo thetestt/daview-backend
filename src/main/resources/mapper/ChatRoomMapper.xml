@@ -445,5 +445,72 @@ WHERE cr.chatroom_id = #{chatroomId}
   WHERE chatroom_id = #{chatroomId}
 </update>
 
+<!-- 관리자용 모든 채팅방 조회 -->
+<select id="findAllChatRoomsForAdmin" resultType="com.daview.dto.ChatRoomDTO">
+  SELECT 
+    cr.chatroom_id AS chatroomId,
+    cr.sender_id AS senderId,
+    cr.receiver_id AS receiverId,
+    cr.facility_id AS facilityId,
+    cr.created_at AS createdAt,
+    cr.status AS status,
+    
+    -- 발신자 정보
+    sender.name AS senderName,
+    
+    -- 수신자 정보  
+    receiver.name AS receiverName,
+    
+    -- 마지막 메시지
+    cm.content AS lastMessage,
+    cm.sent_at AS lastTime,
+    
+    -- 읽지 않은 메시지 수
+    (
+      SELECT COUNT(*)
+      FROM chatmessage cm2
+      WHERE cm2.chatroom_id = cr.chatroom_id
+        AND cm2.is_read = 0
+    ) AS unreadCount
+    
+  FROM chatroom cr
+  LEFT JOIN dv_users sender ON cr.sender_id = sender.member_id
+  LEFT JOIN dv_users receiver ON cr.receiver_id = receiver.member_id
+  LEFT JOIN (
+    SELECT
+      a1.chatroom_id,
+      a1.content,
+      a1.sent_at
+    FROM chatmessage a1
+    INNER JOIN (
+      SELECT chatroom_id, MAX(sent_at) AS max_sent
+      FROM chatmessage
+      GROUP BY chatroom_id
+    ) a2 ON a1.chatroom_id = a2.chatroom_id
+         AND a1.sent_at = a2.max_sent
+  ) cm ON cr.chatroom_id = cm.chatroom_id
+  
+  WHERE 1=1
+  <if test="search != null and search != ''">
+    AND (
+      sender.name LIKE CONCAT('%', #{search}, '%') OR
+      receiver.name LIKE CONCAT('%', #{search}, '%') OR
+      cm.content LIKE CONCAT('%', #{search}, '%')
+    )
+  </if>
+  <if test="status != null and status != '' and status != 'all'">
+    AND cr.status = #{status}
+  </if>
+  
+  ORDER BY cm.sent_at DESC
+  LIMIT #{limit} OFFSET #{offset}
+</select>
+
+<!-- 관리자용 채팅방 상태 업데이트 -->
+<update id="updateChatRoomStatus">
+  UPDATE chatroom
+  SET status = #{status}
+  WHERE chatroom_id = #{chatroomId}
+</update>
    
 </mapper>

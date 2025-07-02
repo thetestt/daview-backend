@@ -27,4 +27,8 @@ public interface CaregiverMapper {
     //CaregiverDTO findByMemberId(@Param("memberId") Long memberId);
     CaregiverDTO findByCaregiverId(String caregiverId);
     
+    // 개인 프로필 관리 메소드들
+    int updateCaregiverProfile(CaregiverDTO caregiverDTO);
+    int deleteCaregiverCertificates(@Param("caregiverId") String caregiverId);
+    int deleteCaregiverCareer(@Param("caregiverId") String caregiverId);
 }

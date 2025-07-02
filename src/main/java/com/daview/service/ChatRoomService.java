@@ -14,5 +14,8 @@ public interface ChatRoomService {
     //boolean isUserInChatroom(String chatroomId, Long memberId);
     ChatRoomDTO getChatRoomDetailById(String chatroomId);
     public boolean isUserInChatroom(String chatroomId, Long memberId);
-   
+    
+    // 관리자용 메소드들
+    List<ChatRoomDTO> getAllChatRoomsForAdmin(int page, int size, String search, String status);
+    void updateChatRoomStatus(String chatroomId, String status);
 }
