@@ -245,33 +245,62 @@
   </insert>
   
   
-  <select id="findCaregiverInfoByMemberId" resultType="com.daview.dto.CaregiverDTO">
-  SELECT *
-  FROM caregiver
-  WHERE member_id = #{memberId}
-</select>
+  <select id="findCaregiverInfoByMemberId" resultMap="CaregiverMap">
+    SELECT
+      c.*,
+      u.username,
+      u.user_gender
+    FROM caregiver c
+    JOIN dv_users u ON c.member_id = u.member_id
+    WHERE c.member_id = #{memberId}
+      AND c.trash_can = 0
+  </select>
 
-<select id="findCaregiverByCaregiverId" resultType="com.daview.dto.CaregiverDTO">
-    SELECT *
-    FROM caregiver
-    WHERE caregiver_id = #{facilityId}
-</select>
+  <select id="findCaregiverByCaregiverId" resultType="com.daview.dto.CaregiverDTO">
+      SELECT *
+      FROM caregiver
+      WHERE caregiver_id = #{facilityId}
+  </select>
 
-<!-- 채팅 상단 인포 위한 사용자 나누기  -->
+  <!-- 채팅 상단 인포 위한 사용자 나누기  -->
 
   <select id="findByCaregiverId" resultType="com.daview.dto.CaregiverDTO">
-  SELECT
-    caregiver_id,
-    member_id,
-    hope_work_area_location,
-    hope_work_area_city,
-    default_message
-  FROM caregiver
-  WHERE caregiver_id = #{caregiverId}
-    AND trash_can = 0
-    AND caregiver_deleted_at IS NULL
-  LIMIT 1
-</select>
+    SELECT
+      caregiver_id,
+      member_id,
+      hope_work_area_location,
+      hope_work_area_city,
+      default_message
+    FROM caregiver
+    WHERE caregiver_id = #{caregiverId}
+      AND trash_can = 0
+      AND caregiver_deleted_at IS NULL
+    LIMIT 1
+  </select>
 
+  <!-- 개인 프로필 관리 쿼리들 -->
+  <update id="updateCaregiverProfile" parameterType="com.daview.dto.CaregiverDTO">
+    UPDATE caregiver SET
+      hope_work_area_location = #{hopeWorkAreaLocation},
+      hope_work_area_city = #{hopeWorkAreaCity},
+      hope_work_place = #{hopeWorkPlace},
+      hope_work_type = #{hopeWorkType},
+      hope_employment_type = #{hopeEmploymentType},
+      education_level = #{educationLevel},
+      introduction = #{introduction},
+      hope_work_amount = #{hopeWorkAmount},
+      caregiver_update_at = NOW()
+    WHERE caregiver_id = #{caregiverId}
+  </update>
+
+  <delete id="deleteCaregiverCertificates">
+    DELETE FROM caregiver_certificates
+    WHERE caregiver_id = #{caregiverId}
+  </delete>
+
+  <delete id="deleteCaregiverCareer">
+    DELETE FROM caregiver_career
+    WHERE caregiver_id = #{caregiverId}
+  </delete>
 
 </mapper>

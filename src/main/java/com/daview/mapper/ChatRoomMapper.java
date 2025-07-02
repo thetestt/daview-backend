@@ -67,5 +67,7 @@ public interface ChatRoomMapper {
     
     ChatRoomDTO findById(@Param("chatroomId") String chatroomId);
     
-    
+    // 관리자용 메소드들
+    List<ChatRoomDTO> findAllChatRoomsForAdmin(Map<String, Object> params);
+    void updateChatRoomStatus(Map<String, Object> params);
 }

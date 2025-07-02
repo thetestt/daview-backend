@@ -292,6 +292,24 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return chatRoomMapper.existsByChatroomIdAndMemberId(param);
     }
     
+    // 관리자용 메소드들 구현
+    @Override
+    public List<ChatRoomDTO> getAllChatRoomsForAdmin(int page, int size, String search, String status) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("offset", page * size);
+        params.put("limit", size);
+        params.put("search", search);
+        params.put("status", status);
+        
+        return chatRoomMapper.findAllChatRoomsForAdmin(params);
+    }
     
-    
+    @Override
+    public void updateChatRoomStatus(String chatroomId, String status) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("chatroomId", chatroomId);
+        params.put("status", status);
+        
+        chatRoomMapper.updateChatRoomStatus(params);
+    }
 }
