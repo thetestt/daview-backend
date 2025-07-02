@@ -3,6 +3,7 @@ package com.daview.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.daview.dto.ReviewDTO;
+import com.daview.dto.User;
 import com.daview.service.ReviewService;
 
 import lombok.RequiredArgsConstructor;
@@ -65,11 +67,13 @@ public class ReviewController {
 		return ResponseEntity.ok("후기 수정 완료");
 	}
 
-	@GetMapping("/member/{memberId}")
-	public ResponseEntity<?> getMyReviews(@PathVariable Long memberId) {
-		List<ReviewDTO> reviews = reviewService.getReviewsByMemberId(memberId);
-		return ResponseEntity.ok(reviews);
+	@GetMapping("/my")
+	public ResponseEntity<?> getMyReviewsByJwt(@AuthenticationPrincipal User user) {
+	    Long memberId = user.getMemberId();  
+	    List<ReviewDTO> reviews = reviewService.getReviewsByMemberId(memberId);
+	    return ResponseEntity.ok(reviews);
 	}
+
 
 	@GetMapping("/name/{memberId}")
 	public ResponseEntity<String> getUserName(@PathVariable Long memberId) {
