@@ -38,7 +38,7 @@ public class SecurityConfig {
         http.cors(withDefaults()).csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
             .authorizeHttpRequests(auth -> auth
-
+            	.requestMatchers("/api/mypage/**").authenticated()
                 .requestMatchers(
                     "/api/account/**",
                     "/api/auth/**",
@@ -57,7 +57,7 @@ public class SecurityConfig {
                     "/api/**"
                 ).permitAll()
 
-                .requestMatchers("/api/mypage/**").authenticated()
+
                 .requestMatchers("/admin/**").hasRole("ADMIN")
 
                 .anyRequest().permitAll()

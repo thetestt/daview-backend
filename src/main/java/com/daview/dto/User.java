@@ -33,6 +33,8 @@ public class User implements UserDetails {
     
     private int withdrawn;
     private LocalDateTime withdrawnAt;
+    
+    private String profileImage;
 
 
     private boolean agreeSms;
@@ -87,5 +89,9 @@ public class User implements UserDetails {
     
     public Long getMemberId() {
         return memberId;
+    }
+    
+    public String getProfileImage() {
+        return profileImage;
     }
 }
