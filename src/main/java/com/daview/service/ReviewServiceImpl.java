@@ -72,4 +72,8 @@ public class ReviewServiceImpl implements ReviewService{
 		return userMapper.findNameByMemberId(memberId);
 	}
 
+	@Override
+    public List<ReviewDTO> getReviewsByProdNm(String prodNm) {
+        return reviewMapper.getReviewsByProdNm(prodNm);
+    }
 }

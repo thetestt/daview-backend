@@ -24,5 +24,6 @@ public interface ReviewMapper {
 	void updateReview(ReviewDTO review);
 	
 	List<ReviewDTO> findByMemberId(Long memberId);
-
+	
+	List<ReviewDTO> getReviewsByProdNm(String prodNm);
 }

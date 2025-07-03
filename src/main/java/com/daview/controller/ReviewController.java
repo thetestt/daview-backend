@@ -71,10 +71,16 @@ public class ReviewController {
 		return ResponseEntity.ok(reviews);
 	}
 
+	@GetMapping("/product")
+	public ResponseEntity<List<ReviewDTO>> getReviews(@RequestParam String prodNm) {
+		List<ReviewDTO> reviews = reviewService.getReviewsByProdNm(prodNm);
+		return ResponseEntity.ok(reviews);
+	}
+
+	// UserMpper
 	@GetMapping("/name/{memberId}")
 	public ResponseEntity<String> getUserName(@PathVariable Long memberId) {
 		String name = reviewService.findNameByMemberId(memberId);
 		return ResponseEntity.ok(name);
 	}
-
 }

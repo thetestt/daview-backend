@@ -24,5 +24,6 @@ public interface ReviewService {
 	List<ReviewDTO> getReviewsByMemberId(Long memberId);
 	
 	String findNameByMemberId(Long memberId);
-
+	
+	List<ReviewDTO> getReviewsByProdNm(String prodNm);
 }

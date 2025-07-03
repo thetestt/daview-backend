@@ -50,10 +50,19 @@
 		rev_stars = #{revStars}
 		WHERE rev_id = #{revId}
 	</update>
+	<select id="getReviewsByProdNm" parameterType="string" resultType="com.daview.dto.ReviewDTO">
+		SELECT * 
+		  FROM review_board
+		 WHERE prod_nm = #{prodNm} 
+		 ORDER BY rev_reg_date DESC
+		 LIMIT 4
+	</select>
 	
 	<select id="findByMemberId" 
 		resultType="com.daview.dto.ReviewDTO">
 		SELECT * FROM review_board WHERE member_id = #{memberId}
 	</select>
+	
+	
 
 </mapper>
