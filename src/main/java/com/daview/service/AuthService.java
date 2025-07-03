@@ -59,6 +59,7 @@ public class AuthService {
 		user.setEmail(request.getEmail());
 		user.setPhone(request.getPhone());
 		user.setRole(request.getRole());
+		user.setGender(request.getGender());
 		user.setAgreeSms(request.isAgreeSms());
 		user.setAgreeEmail(request.isAgreeEmail());
 		user.setAgreePush(request.isAgreePush());

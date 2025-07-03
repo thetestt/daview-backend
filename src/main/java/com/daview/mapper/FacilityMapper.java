@@ -46,7 +46,25 @@ public interface FacilityMapper {
  // member_id로 시설 조회
     FacilityDTO findByMemberId(@Param("memberId") Long memberId);
     
+    // =================== 기업 대시보드 관련 메소드 ===================
     
+    /**
+     * 시설 기본 정보 업데이트
+     */
+    int updateFacilityProfile(FacilityDTO facilityDTO);
     
-	
+    /**
+     * 시설 서비스 태그 삭제 (memberId 기준)
+     */
+    int deleteFacilityServiceTags(@Param("memberId") Long memberId);
+    
+    /**
+     * 시설 서비스 태그 추가
+     */
+    int insertFacilityServiceTag(@Param("memberId") Long memberId, @Param("service") String service);
+    
+    /**
+     * 시설의 서비스 목록 조회
+     */
+    List<String> getFacilityServices(@Param("memberId") Long memberId);
 }

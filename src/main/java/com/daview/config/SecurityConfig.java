@@ -54,17 +54,12 @@ public class SecurityConfig {
                     "/api/chat/rooms/*/info",
                     "/api/chat/rooms/*/validate",
                     "/api/chat/messages/**",
-
-
                     "/api/**"
-                    
                 ).permitAll()
-                
-                
+
                 .requestMatchers("/api/mypage/**").authenticated()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
-                
-                
+
                 .anyRequest().permitAll()
             );
 

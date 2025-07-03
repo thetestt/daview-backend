@@ -404,6 +404,137 @@
     LIMIT 1
 </select>
 
+<!-- =================== 기업 대시보드 관련 쿼리 =================== -->
+
+<!-- 시설 기본 정보 업데이트 -->
+<update id="updateFacilityProfile" parameterType="com.daview.dto.FacilityDTO">
+    UPDATE facility
+    <set>
+        <!-- camelCase 필드명 지원 -->
+        <if test="facilityName != null and facilityName != ''">
+            facility_name = #{facilityName},
+        </if>
+        <if test="facilityType != null and facilityType != ''">
+            facility_type = #{facilityType},
+        </if>
+        <if test="facilityAddressLocation != null and facilityAddressLocation != ''">
+            facility_address_location = #{facilityAddressLocation},
+        </if>
+        <if test="facilityAddressCity != null and facilityAddressCity != ''">
+            facility_address_city = #{facilityAddressCity},
+        </if>
+        <if test="facilityDetailAddress != null">
+            facility_detail_address = #{facilityDetailAddress},
+        </if>
+        <if test="facilityPhone != null and facilityPhone != ''">
+            facility_phone = #{facilityPhone},
+        </if>
+        <if test="facilityEmail != null">
+            facility_email = #{facilityEmail},
+        </if>
+        <if test="facilityWebsite != null">
+            facility_homepage = #{facilityWebsite},
+        </if>
+        <if test="facilityTheme != null">
+            facility_theme = #{facilityTheme},
+        </if>
+        <if test="facilityCharge != null">
+            facility_charge = #{facilityCharge},
+        </if>
+        <if test="category != null">
+            category = #{category},
+        </if>
+        <if test="defaultMessage != null">
+            default_message = #{defaultMessage},
+        </if>
+        <if test="facilityTag != null">
+            facility_tag = #{facilityTag},
+        </if>
+        <if test="introduction != null">
+            facility_introduction = #{introduction},
+        </if>
+        <if test="capacity != null">
+            facility_capacity = #{capacity},
+        </if>
+        <if test="establishedDate != null">
+            facility_established_date = #{establishedDate},
+        </if>
+        
+        <!-- snake_case 필드명 지원 (프론트엔드 호환성) -->
+        <if test="facility_name != null and facility_name != ''">
+            facility_name = #{facility_name},
+        </if>
+        <if test="facility_type != null and facility_type != ''">
+            facility_type = #{facility_type},
+        </if>
+        <if test="facility_address_location != null and facility_address_location != ''">
+            facility_address_location = #{facility_address_location},
+        </if>
+        <if test="facility_address_city != null and facility_address_city != ''">
+            facility_address_city = #{facility_address_city},
+        </if>
+        <if test="facility_detail_address != null">
+            facility_detail_address = #{facility_detail_address},
+        </if>
+        <if test="facility_phone != null and facility_phone != ''">
+            facility_phone = #{facility_phone},
+        </if>
+        <if test="facility_email != null">
+            facility_email = #{facility_email},
+        </if>
+        <if test="facility_homepage != null">
+            facility_homepage = #{facility_homepage},
+        </if>
+        <if test="facility_theme != null">
+            facility_theme = #{facility_theme},
+        </if>
+        <if test="facility_charge != null">
+            facility_charge = #{facility_charge},
+        </if>
+        <if test="default_message != null">
+            default_message = #{default_message},
+        </if>
+        <if test="facility_tag != null">
+            facility_tag = #{facility_tag},
+        </if>
+        <if test="established_date != null">
+            facility_established_date = #{established_date},
+        </if>
+        
+        facility_update_at = NOW()
+    </set>
+    WHERE member_id = #{memberId}
+      AND trash_can = 0
+</update>
+
+<!-- 시설 서비스 태그 삭제 (memberId 기준) -->
+<delete id="deleteFacilityServiceTags" parameterType="java.lang.Long">
+    DELETE ft FROM facility_tag ft
+    INNER JOIN facility f ON ft.facility_id = f.facility_id
+    WHERE f.member_id = #{memberId}
+      AND ft.category = '서비스'
+</delete>
+
+<!-- 시설 서비스 태그 추가 -->
+<insert id="insertFacilityServiceTag">
+    INSERT INTO facility_tag (facility_id, facility_tag, category)
+    SELECT f.facility_id, #{service}, '서비스'
+    FROM facility f
+    WHERE f.member_id = #{memberId}
+      AND f.trash_can = 0
+    LIMIT 1
+</insert>
+
+<!-- 시설의 서비스 목록 조회 -->
+<select id="getFacilityServices" parameterType="java.lang.Long" resultType="java.lang.String">
+    SELECT ft.facility_tag
+    FROM facility_tag ft
+    INNER JOIN facility f ON ft.facility_id = f.facility_id
+    WHERE f.member_id = #{memberId}
+      AND ft.category = '서비스'
+      AND f.trash_can = 0
+</select>
+
 </mapper>
 
 
