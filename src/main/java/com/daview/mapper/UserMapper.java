@@ -47,7 +47,6 @@ public interface UserMapper {
 			@Param("username") String username, 
 			@Param("bankName") String bankName,
 			@Param("accountNumber") String accountNumber);
-	User getRefundAccount(@Param("username") String username);
 	void deleteRefundAccount(@Param("username") String username);
 	void updateMarketingConsent(@Param("username") String username, @Param("marketingAgreed") boolean marketingAgreed);
 	
@@ -76,9 +75,13 @@ public interface UserMapper {
     
     User findActiveUserByPhone(String phone);
     
-    //프로필 이미지
     void updateProfileImageUrl(@Param("memberId") Long memberId, @Param("imageUrl") String imageUrl);
-    String getProfileImageUrl(Long memberId);
+    
+    String findProfileImageByMemberId(Long memberId);
+    
+    void updateProfileImage(@Param("memberId") Long memberId, @Param("path") String path);
+
+
 
 
 	// 수안추가 - 채팅상단 정보불러오기용

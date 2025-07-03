@@ -137,7 +137,8 @@
 	<update id="useUserCoupon">
 		UPDATE user_coupons
 		SET used_at = NOW()
-		WHERE member_id = #{memberId} AND coupon_id = #{couponId}
+		WHERE member_id
+		= #{memberId} AND coupon_id = #{couponId}
 	</update>
 
 	<!-- 1. memberId로 유저 정보 조회 수안추가 채팅상단 정보 사용x -->
@@ -191,13 +192,6 @@
 		account_number = #{accountNumber}
 		WHERE username = #{username}
 	</update>
-
-	<select id="getRefundAccount" resultType="User">
-		SELECT bank_name,
-		account_number
-		FROM dv_users
-		WHERE username = #{username}
-	</select>
 
 	<delete id="deleteRefundAccount">
 		UPDATE dv_users
@@ -263,8 +257,7 @@
 		resultType="com.daview.dto.User">
 		SELECT * FROM dv_users
 		WHERE phone = #{phone}
-		AND withdrawn =
-		1
+		AND withdrawn = 1
 		AND TIMESTAMPDIFF(DAY, withdrawn_at, NOW()) &gt;= 14
 	</select>
 
@@ -272,26 +265,37 @@
 		resultType="com.daview.dto.User">
 		SELECT * FROM dv_users
 		WHERE phone = #{phone}
-		AND withdrawn =
-		0
+		AND withdrawn =0
 	</select>
-   <select id="findNameByMemberId" resultType="String">
-      SELECT name
-      FROM dv_users
-      WHERE member_id = #{memberId}
-   </select>
-   
+	
+	<select id="findNameByMemberId" resultType="String">
+		SELECT name
+		FROM
+		dv_users
+		WHERE member_id = #{memberId}
+	</select>
+
 	<update id="updateProfileImageUrl">
 		UPDATE dv_users
 		SET profile_image_url = #{imageUrl}
 		WHERE member_id = #{memberId}
 	</update>
 
-	<select id="getProfileImageUrl" resultType="String">
-		SELECT profile_image_url
+	<select id="findProfileImageByMemberId" resultType="string">
+		SELECT
+		profile_image_url
 		FROM dv_users
 		WHERE member_id = #{memberId}
 	</select>
+
+	<update id="updateProfileImage">
+		UPDATE dv_users
+		SET profile_image_url = #{path}
+		WHERE member_id = #{memberId}
+	</update>
+
+
+
 
 </mapper>
 
