@@ -24,12 +24,15 @@ public class FileUploadController {
     // 생성자에서 로딩 확인
     public FileUploadController() {
         System.out.println("🔥 FileUploadController 인스턴스 생성됨!");
+        System.out.println("🔍 현재 작업 디렉토리: " + System.getProperty("user.dir"));
+        System.out.println("🔍 설정된 업로드 경로: " + uploadPath);
+        System.out.println("🔍 설정된 URL 패턴: " + fileUrlPattern);
     }
 
     @Value("${file.upload.path:uploads/}")
     private String uploadPath;
 
-    @Value("${file.upload.url:/api/files/}")
+    @Value("${file.upload.url:/uploads/}")
     private String fileUrlPattern;
 
     // 허용된 이미지 확장자
@@ -50,12 +53,53 @@ public class FileUploadController {
     }
 
     /**
+     * 업로드 디렉토리 상태 확인
+     */
+    @GetMapping("/upload/debug")
+    public ResponseEntity<Map<String, Object>> debugUploadDir() {
+        Map<String, Object> debug = new HashMap<>();
+        
+        debug.put("currentWorkingDir", System.getProperty("user.dir"));
+        debug.put("uploadPath", uploadPath);
+        debug.put("fileUrlPattern", fileUrlPattern);
+        
+        File uploadDir = new File(uploadPath);
+        debug.put("uploadDirExists", uploadDir.exists());
+        debug.put("uploadDirAbsolutePath", uploadDir.getAbsolutePath());
+        
+        if (uploadDir.exists()) {
+            File[] files = uploadDir.listFiles();
+            debug.put("fileCount", files != null ? files.length : 0);
+            if (files != null && files.length > 0) {
+                debug.put("firstFileName", files[0].getName());
+            }
+        }
+        
+        return ResponseEntity.ok(debug);
+    }
+
+    /**
      * 또 다른 테스트 엔드포인트
      */
     @GetMapping("/test-simple")
     public String testSimple() {
         System.out.println("✅ 간단한 테스트 엔드포인트 호출됨");
         return "Simple test works!";
+    }
+
+    /**
+     * 일반 업로드 (기업페이지용)
+     */
+    @PostMapping(value = "/upload", consumes = "multipart/form-data")
+    public ResponseEntity<Map<String, Object>> uploadFile(
+            @RequestParam("file") MultipartFile file) {
+        
+        System.out.println("🔍 === 파일 업로드 디버깅 정보 ===");
+        System.out.println("🔍 현재 작업 디렉토리: " + System.getProperty("user.dir"));
+        System.out.println("🔍 설정된 업로드 경로: " + uploadPath);
+        System.out.println("🔍 설정된 URL 패턴: " + fileUrlPattern);
+        
+        return uploadFacilityPhoto(file);
     }
 
     /**
@@ -87,7 +131,13 @@ public class FileUploadController {
             response.put("originalName", file.getOriginalFilename());
             response.put("fileSize", file.getSize());
 
-            System.out.println("파일 업로드 성공: " + savedFileName);
+            System.out.println("🔍 파일 업로드 성공: " + savedFileName);
+            System.out.println("🔍 생성된 파일 URL: " + fileUrl);
+            
+            // 실제 파일 존재 확인
+            File savedFile = new File(uploadPath + savedFileName);
+            System.out.println("🔍 저장된 파일 절대 경로: " + savedFile.getAbsolutePath());
+            System.out.println("🔍 저장된 파일 존재 여부: " + savedFile.exists());
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
@@ -134,8 +184,12 @@ public class FileUploadController {
     private String saveFile(MultipartFile file) throws IOException {
         // 업로드 디렉토리 생성
         File uploadDir = new File(uploadPath);
+        System.out.println("🔍 업로드 디렉토리 경로: " + uploadDir.getAbsolutePath());
+        System.out.println("🔍 업로드 디렉토리 존재 여부: " + uploadDir.exists());
+        
         if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
+            boolean created = uploadDir.mkdirs();
+            System.out.println("🔍 디렉토리 생성 결과: " + created);
         }
 
         // 고유한 파일명 생성

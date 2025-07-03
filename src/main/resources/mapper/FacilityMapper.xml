@@ -510,6 +510,24 @@
       AND f.trash_can = 0
 </select>
 
+<!-- 시설 썸네일 사진 업데이트 (기존 썸네일 삭제 후 새로 추가) -->
+<delete id="deleteFacilityThumbnail" parameterType="java.lang.Long">
+    DELETE fp FROM facility_photo fp
+    INNER JOIN facility f ON fp.facility_id = f.facility_id
+    WHERE f.member_id = #{memberId}
+      AND fp.is_thumbnail = 1
+</delete>
+
+<!-- 새로운 썸네일 사진 추가 -->
+<insert id="insertFacilityThumbnail">
+    INSERT INTO facility_photo (facility_id, photo_url, is_thumbnail)
+    SELECT f.facility_id, #{photoUrl}, 1
+    FROM facility f
+    WHERE f.member_id = #{memberId}
+      AND f.trash_can = 0
+    LIMIT 1
+</insert>
+
 </mapper>
 
 
