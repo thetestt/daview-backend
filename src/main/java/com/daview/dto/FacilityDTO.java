@@ -447,4 +447,11 @@ public class FacilityDTO {
     public void setFacility_website(String facility_website) {
         this.facilityWebsite = facility_website;
     }
+    
+    public String getPhoto_url() {
+        return photoUrl;
+    }
+    public void setPhoto_url(String photo_url) {
+        this.photoUrl = photo_url;
+    }
 }
