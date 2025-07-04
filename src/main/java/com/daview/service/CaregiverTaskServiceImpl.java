@@ -53,14 +53,9 @@ public class CaregiverTaskServiceImpl implements CaregiverTaskService {
             task.setTaskDate(LocalDate.now());
         }
         
-        // ID 수동 생성 (현재 시간 기반)
-        if (task.getId() == null) {
-            task.setId(System.currentTimeMillis());
-        }
-        
         int result = caregiverTaskMapper.insertTask(task);
         if (result > 0) {
-            return task; // 생성된 task 그대로 반환
+            return caregiverTaskMapper.getTaskById(task.getId());
         }
         return null;
     }

@@ -11,8 +11,8 @@
     <result property="reportDate" column="report_date"/>
     <result property="content" column="content"/>
     <result property="status" column="status"/>
-    <result property="createdAt" column="created_at"/>
-    <result property="updatedAt" column="updated_at"/>
+    <!-- <result property="createdAt" column="created_at"/> -->
+    <!-- <result property="updatedAt" column="updated_at"/> -->
     <result property="caregiverName" column="caregiver_name"/>
     <result property="facilityName" column="facility_name"/>
   </resultMap>
@@ -24,12 +24,10 @@
       cr.caregiver_id,
       cr.report_date,
       cr.content,
-      cr.status,
-      cr.created_at,
-      cr.updated_at
+      cr.status
     FROM caregiver_reports cr
     WHERE cr.caregiver_id = #{caregiverId}
-    ORDER BY cr.report_date DESC, cr.created_at DESC
+    ORDER BY cr.report_date DESC, cr.id DESC
     LIMIT #{limit} OFFSET #{offset}
   </select>
 
@@ -47,9 +45,7 @@
       cr.caregiver_id,
       cr.report_date,
       cr.content,
-      cr.status,
-      cr.created_at,
-      cr.updated_at
+      cr.status
     FROM caregiver_reports cr
     WHERE cr.caregiver_id = #{caregiverId}
       AND cr.report_date = #{reportDate}
@@ -63,23 +59,19 @@
       cr.caregiver_id,
       cr.report_date,
       cr.content,
-      cr.status,
-      cr.created_at,
-      cr.updated_at
+      cr.status
     FROM caregiver_reports cr
     WHERE cr.id = #{id}
   </select>
 
   <!-- 보고서 생성 -->
-  <insert id="insertReport" parameterType="com.daview.dto.CaregiverReportDTO">
+  <insert id="insertReport" parameterType="com.daview.dto.CaregiverReportDTO" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO caregiver_reports (
-      id,
       caregiver_id,
       report_date,
       content,
       status
     ) VALUES (
-      #{id},
       #{caregiverId},
       #{reportDate},
       #{content},
@@ -117,12 +109,10 @@
       cr.caregiver_id,
       cr.report_date,
       cr.content,
-      cr.status,
-      cr.created_at,
-      cr.updated_at
+      cr.status
     FROM caregiver_reports cr
     WHERE cr.caregiver_id = #{caregiverId}
-    ORDER BY cr.created_at DESC
+    ORDER BY cr.report_date DESC, cr.id DESC
     LIMIT #{limit}
   </select>
 
@@ -133,9 +123,7 @@
       cr.caregiver_id,
       cr.report_date,
       cr.content,
-      cr.status,
-      cr.created_at,
-      cr.updated_at
+      cr.status
     FROM caregiver_reports cr
     WHERE cr.caregiver_id = #{caregiverId}
       AND cr.report_date BETWEEN #{startDate} AND #{endDate}
@@ -149,9 +137,7 @@
       cr.caregiver_id,
       cr.report_date,
       cr.content,
-      cr.status,
-      cr.created_at,
-      cr.updated_at
+      cr.status
     FROM caregiver_reports cr
     WHERE cr.caregiver_id = #{caregiverId}
       AND cr.status = #{status}

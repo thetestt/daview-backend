@@ -51,14 +51,9 @@ public class CaregiverReportServiceImpl implements CaregiverReportService {
             report.setReportDate(LocalDate.now());
         }
         
-        // ID 수동 생성 (현재 시간 기반)
-        if (report.getId() == null) {
-            report.setId(System.currentTimeMillis());
-        }
-        
         int result = caregiverReportMapper.insertReport(report);
         if (result > 0) {
-            return report; // 생성된 report 그대로 반환
+            return caregiverReportMapper.getReportById(report.getId());
         }
         return null;
     }
