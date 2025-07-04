@@ -20,20 +20,20 @@ public class CaregiverTaskServiceImpl implements CaregiverTaskService {
     
     @Override
     @Transactional(readOnly = true)
-    public List<CaregiverTaskDTO> getTasksByCaregiverId(Long caregiverId, int page, int size) {
+    public List<CaregiverTaskDTO> getTasksByCaregiverId(String caregiverId, int page, int size) {
         int offset = page * size;
         return caregiverTaskMapper.getTasksByCaregiverId(caregiverId, offset, size);
     }
     
     @Override
     @Transactional(readOnly = true)
-    public int getTasksCountByCaregiverId(Long caregiverId) {
+    public int getTasksCountByCaregiverId(String caregiverId) {
         return caregiverTaskMapper.getTasksCountByCaregiverId(caregiverId);
     }
     
     @Override
     @Transactional(readOnly = true)
-    public List<CaregiverTaskDTO> getTasksByDate(Long caregiverId, LocalDate taskDate) {
+    public List<CaregiverTaskDTO> getTasksByDate(String caregiverId, LocalDate taskDate) {
         return caregiverTaskMapper.getTasksByDate(caregiverId, taskDate);
     }
     
@@ -83,13 +83,13 @@ public class CaregiverTaskServiceImpl implements CaregiverTaskService {
     
     @Override
     @Transactional(readOnly = true)
-    public List<CaregiverTaskDTO> getTodayTasks(Long caregiverId) {
+    public List<CaregiverTaskDTO> getTodayTasks(String caregiverId) {
         return caregiverTaskMapper.getTodayTasks(caregiverId);
     }
     
     @Override
     @Transactional(readOnly = true)
-    public List<CaregiverTaskDTO> getWeeklyTasks(Long caregiverId) {
+    public List<CaregiverTaskDTO> getWeeklyTasks(String caregiverId) {
         LocalDate now = LocalDate.now();
         WeekFields weekFields = WeekFields.of(Locale.getDefault());
         LocalDate startOfWeek = now.with(weekFields.dayOfWeek(), 1);
@@ -100,37 +100,37 @@ public class CaregiverTaskServiceImpl implements CaregiverTaskService {
     
     @Override
     @Transactional(readOnly = true)
-    public List<CaregiverTaskDTO> getTasksByDateRange(Long caregiverId, LocalDate startDate, LocalDate endDate) {
+    public List<CaregiverTaskDTO> getTasksByDateRange(String caregiverId, LocalDate startDate, LocalDate endDate) {
         return caregiverTaskMapper.getTasksByDateRange(caregiverId, startDate, endDate);
     }
     
     @Override
     @Transactional(readOnly = true)
-    public List<CaregiverTaskDTO> getTasksByCompletion(Long caregiverId, Boolean completed) {
+    public List<CaregiverTaskDTO> getTasksByCompletion(String caregiverId, Boolean completed) {
         return caregiverTaskMapper.getTasksByCompletion(caregiverId, completed);
     }
     
     @Override
     @Transactional(readOnly = true)
-    public List<CaregiverTaskDTO> getTasksByType(Long caregiverId, String taskType) {
+    public List<CaregiverTaskDTO> getTasksByType(String caregiverId, String taskType) {
         return caregiverTaskMapper.getTasksByType(caregiverId, taskType);
     }
     
     @Override
     @Transactional(readOnly = true)
-    public List<CaregiverTaskDTO> getRecentTasks(Long caregiverId, int limit) {
+    public List<CaregiverTaskDTO> getRecentTasks(String caregiverId, int limit) {
         return caregiverTaskMapper.getRecentTasks(caregiverId, limit);
     }
     
     @Override
     @Transactional(readOnly = true)
-    public int getTodayCompletedTasksCount(Long caregiverId) {
+    public int getTodayCompletedTasksCount(String caregiverId) {
         return caregiverTaskMapper.getTodayCompletedTasksCount(caregiverId);
     }
     
     @Override
     @Transactional(readOnly = true)
-    public int getWeeklyTasksCount(Long caregiverId) {
+    public int getWeeklyTasksCount(String caregiverId) {
         LocalDate now = LocalDate.now();
         WeekFields weekFields = WeekFields.of(Locale.getDefault());
         LocalDate startOfWeek = now.with(weekFields.dayOfWeek(), 1);

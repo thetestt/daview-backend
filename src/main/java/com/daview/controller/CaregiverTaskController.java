@@ -2,6 +2,8 @@ package com.daview.controller;
 
 import com.daview.dto.CaregiverTaskDTO;
 import com.daview.service.CaregiverTaskService;
+import com.daview.service.CaregiverService;
+import com.daview.dto.CaregiverDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,9 @@ public class CaregiverTaskController {
     @Autowired
     private CaregiverTaskService caregiverTaskService;
     
+    @Autowired
+    private CaregiverService caregiverService;
+    
     // 일정 목록 조회 (페이징)
     @GetMapping
     public ResponseEntity<?> getTasks(
@@ -28,7 +33,7 @@ public class CaregiverTaskController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         try {
-            Long caregiverId = extractCaregiverIdFromToken(request);
+            String caregiverId = extractCaregiverIdFromToken(request);
             if (caregiverId == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "인증이 필요합니다."));
@@ -57,7 +62,7 @@ public class CaregiverTaskController {
             HttpServletRequest request,
             @PathVariable String date) {
         try {
-            Long caregiverId = extractCaregiverIdFromToken(request);
+            String caregiverId = extractCaregiverIdFromToken(request);
             if (caregiverId == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "인증이 필요합니다."));
@@ -95,7 +100,7 @@ public class CaregiverTaskController {
             HttpServletRequest request,
             @RequestBody CaregiverTaskDTO taskDTO) {
         try {
-            Long caregiverId = extractCaregiverIdFromToken(request);
+            String caregiverId = extractCaregiverIdFromToken(request);
             if (caregiverId == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "인증이 필요합니다."));
@@ -180,7 +185,7 @@ public class CaregiverTaskController {
     @GetMapping("/today")
     public ResponseEntity<?> getTodayTasks(HttpServletRequest request) {
         try {
-            Long caregiverId = extractCaregiverIdFromToken(request);
+            String caregiverId = extractCaregiverIdFromToken(request);
             if (caregiverId == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "인증이 필요합니다."));
@@ -198,7 +203,7 @@ public class CaregiverTaskController {
     @GetMapping("/weekly")
     public ResponseEntity<?> getWeeklyTasks(HttpServletRequest request) {
         try {
-            Long caregiverId = extractCaregiverIdFromToken(request);
+            String caregiverId = extractCaregiverIdFromToken(request);
             if (caregiverId == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "인증이 필요합니다."));
@@ -219,7 +224,7 @@ public class CaregiverTaskController {
             @RequestParam String startDate,
             @RequestParam String endDate) {
         try {
-            Long caregiverId = extractCaregiverIdFromToken(request);
+            String caregiverId = extractCaregiverIdFromToken(request);
             if (caregiverId == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "인증이 필요합니다."));
@@ -242,7 +247,7 @@ public class CaregiverTaskController {
             HttpServletRequest request,
             @RequestParam(defaultValue = "5") int limit) {
         try {
-            Long caregiverId = extractCaregiverIdFromToken(request);
+            String caregiverId = extractCaregiverIdFromToken(request);
             if (caregiverId == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "인증이 필요합니다."));
@@ -260,7 +265,7 @@ public class CaregiverTaskController {
     @GetMapping("/stats")
     public ResponseEntity<?> getTaskStats(HttpServletRequest request) {
         try {
-            Long caregiverId = extractCaregiverIdFromToken(request);
+            String caregiverId = extractCaregiverIdFromToken(request);
             if (caregiverId == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "인증이 필요합니다."));
@@ -281,10 +286,22 @@ public class CaregiverTaskController {
     }
     
     // 요청에서 요양사 ID 추출
-    private Long extractCaregiverIdFromToken(HttpServletRequest request) {
+    private String extractCaregiverIdFromToken(HttpServletRequest request) {
         try {
-            return (Long) request.getAttribute("memberId");
+            Long memberId = (Long) request.getAttribute("memberId");
+            if (memberId == null) {
+                return null;
+            }
+            
+            // memberId로 caregiver 정보 조회
+            CaregiverDTO caregiverProfile = caregiverService.getCaregiverProfileByMemberId(memberId);
+            if (caregiverProfile == null) {
+                return null;
+            }
+            
+            return caregiverProfile.getCaregiverId();
         } catch (Exception e) {
+            System.err.println("extractCaregiverIdFromToken 오류: " + e.getMessage());
             return null;
         }
     }

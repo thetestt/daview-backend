@@ -2,6 +2,8 @@ package com.daview.controller;
 
 import com.daview.dto.CaregiverReportDTO;
 import com.daview.service.CaregiverReportService;
+import com.daview.service.CaregiverService;
+import com.daview.dto.CaregiverDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,9 @@ public class CaregiverReportController {
     @Autowired
     private CaregiverReportService caregiverReportService;
     
+    @Autowired
+    private CaregiverService caregiverService;
+    
     // 보고서 목록 조회 (페이징)
     @GetMapping
     public ResponseEntity<?> getReports(
@@ -28,7 +33,7 @@ public class CaregiverReportController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         try {
-            Long caregiverId = extractCaregiverIdFromToken(request);
+            String caregiverId = extractCaregiverIdFromToken(request);
             if (caregiverId == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "인증이 필요합니다."));
@@ -57,7 +62,7 @@ public class CaregiverReportController {
             HttpServletRequest request,
             @PathVariable String date) {
         try {
-            Long caregiverId = extractCaregiverIdFromToken(request);
+            String caregiverId = extractCaregiverIdFromToken(request);
             if (caregiverId == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "인증이 필요합니다."));
@@ -95,7 +100,7 @@ public class CaregiverReportController {
             HttpServletRequest request,
             @RequestBody CaregiverReportDTO reportDTO) {
         try {
-            Long caregiverId = extractCaregiverIdFromToken(request);
+            String caregiverId = extractCaregiverIdFromToken(request);
             if (caregiverId == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "인증이 필요합니다."));
@@ -182,7 +187,7 @@ public class CaregiverReportController {
             HttpServletRequest request,
             @RequestParam(defaultValue = "5") int limit) {
         try {
-            Long caregiverId = extractCaregiverIdFromToken(request);
+            String caregiverId = extractCaregiverIdFromToken(request);
             if (caregiverId == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "인증이 필요합니다."));
@@ -203,7 +208,7 @@ public class CaregiverReportController {
             @RequestParam String startDate,
             @RequestParam String endDate) {
         try {
-            Long caregiverId = extractCaregiverIdFromToken(request);
+            String caregiverId = extractCaregiverIdFromToken(request);
             if (caregiverId == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of("error", "인증이 필요합니다."));
@@ -221,10 +226,22 @@ public class CaregiverReportController {
     }
     
     // 요청에서 요양사 ID 추출
-    private Long extractCaregiverIdFromToken(HttpServletRequest request) {
+    private String extractCaregiverIdFromToken(HttpServletRequest request) {
         try {
-            return (Long) request.getAttribute("memberId");
+            Long memberId = (Long) request.getAttribute("memberId");
+            if (memberId == null) {
+                return null;
+            }
+            
+            // memberId로 caregiver 정보 조회
+            CaregiverDTO caregiverProfile = caregiverService.getCaregiverProfileByMemberId(memberId);
+            if (caregiverProfile == null) {
+                return null;
+            }
+            
+            return caregiverProfile.getCaregiverId();
         } catch (Exception e) {
+            System.err.println("extractCaregiverIdFromToken 오류: " + e.getMessage());
             return null;
         }
     }

@@ -11,15 +11,15 @@ import java.util.List;
 public interface CaregiverReportMapper {
     
     // 특정 요양사의 보고서 목록 조회 (페이징)
-    List<CaregiverReportDTO> getReportsByCaregiverId(@Param("caregiverId") Long caregiverId,
+    List<CaregiverReportDTO> getReportsByCaregiverId(@Param("caregiverId") String caregiverId,
                                                      @Param("offset") int offset,
                                                      @Param("limit") int limit);
     
     // 특정 요양사의 보고서 총 개수
-    int getReportsCountByCaregiverId(@Param("caregiverId") Long caregiverId);
+    int getReportsCountByCaregiverId(@Param("caregiverId") String caregiverId);
     
     // 특정 날짜의 보고서 조회
-    CaregiverReportDTO getReportByDate(@Param("caregiverId") Long caregiverId,
+    CaregiverReportDTO getReportByDate(@Param("caregiverId") String caregiverId,
                                        @Param("reportDate") LocalDate reportDate);
     
     // 보고서 상세 조회
@@ -38,15 +38,15 @@ public interface CaregiverReportMapper {
     int updateReportStatus(@Param("id") Long id, @Param("status") String status);
     
     // 최근 보고서 목록 조회 (대시보드용)
-    List<CaregiverReportDTO> getRecentReports(@Param("caregiverId") Long caregiverId,
+    List<CaregiverReportDTO> getRecentReports(@Param("caregiverId") String caregiverId,
                                               @Param("limit") int limit);
     
     // 특정 기간의 보고서 목록 조회
-    List<CaregiverReportDTO> getReportsByDateRange(@Param("caregiverId") Long caregiverId,
+    List<CaregiverReportDTO> getReportsByDateRange(@Param("caregiverId") String caregiverId,
                                                    @Param("startDate") LocalDate startDate,
                                                    @Param("endDate") LocalDate endDate);
     
     // 상태별 보고서 목록 조회
-    List<CaregiverReportDTO> getReportsByStatus(@Param("caregiverId") Long caregiverId,
+    List<CaregiverReportDTO> getReportsByStatus(@Param("caregiverId") String caregiverId,
                                                 @Param("status") String status);
 } 

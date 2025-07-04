@@ -18,20 +18,20 @@ public class CaregiverReportServiceImpl implements CaregiverReportService {
     
     @Override
     @Transactional(readOnly = true)
-    public List<CaregiverReportDTO> getReportsByCaregiverId(Long caregiverId, int page, int size) {
+    public List<CaregiverReportDTO> getReportsByCaregiverId(String caregiverId, int page, int size) {
         int offset = page * size;
         return caregiverReportMapper.getReportsByCaregiverId(caregiverId, offset, size);
     }
     
     @Override
     @Transactional(readOnly = true)
-    public int getReportsCountByCaregiverId(Long caregiverId) {
+    public int getReportsCountByCaregiverId(String caregiverId) {
         return caregiverReportMapper.getReportsCountByCaregiverId(caregiverId);
     }
     
     @Override
     @Transactional(readOnly = true)
-    public CaregiverReportDTO getReportByDate(Long caregiverId, LocalDate reportDate) {
+    public CaregiverReportDTO getReportByDate(String caregiverId, LocalDate reportDate) {
         return caregiverReportMapper.getReportByDate(caregiverId, reportDate);
     }
     
@@ -43,19 +43,22 @@ public class CaregiverReportServiceImpl implements CaregiverReportService {
     
     @Override
     public CaregiverReportDTO createReport(CaregiverReportDTO report) {
-        // 기본값 설정
-        if (report.getStatus() == null) {
-            report.setStatus("pending");
+        try {
+            if (report.getReportDate() == null) {
+                report.setReportDate(LocalDate.now());
+            }
+            if (report.getStatus() == null || report.getStatus().isEmpty()) {
+                report.setStatus("pending");
+            }
+            
+            int result = caregiverReportMapper.insertReport(report);
+            if (result > 0) {
+                return caregiverReportMapper.getReportById(report.getId());
+            }
+            return null;
+        } catch (Exception e) {
+            throw new RuntimeException("보고서 생성 중 오류가 발생했습니다.", e);
         }
-        if (report.getReportDate() == null) {
-            report.setReportDate(LocalDate.now());
-        }
-        
-        int result = caregiverReportMapper.insertReport(report);
-        if (result > 0) {
-            return caregiverReportMapper.getReportById(report.getId());
-        }
-        return null;
     }
     
     @Override
@@ -81,19 +84,19 @@ public class CaregiverReportServiceImpl implements CaregiverReportService {
     
     @Override
     @Transactional(readOnly = true)
-    public List<CaregiverReportDTO> getRecentReports(Long caregiverId, int limit) {
+    public List<CaregiverReportDTO> getRecentReports(String caregiverId, int limit) {
         return caregiverReportMapper.getRecentReports(caregiverId, limit);
     }
     
     @Override
     @Transactional(readOnly = true)
-    public List<CaregiverReportDTO> getReportsByDateRange(Long caregiverId, LocalDate startDate, LocalDate endDate) {
+    public List<CaregiverReportDTO> getReportsByDateRange(String caregiverId, LocalDate startDate, LocalDate endDate) {
         return caregiverReportMapper.getReportsByDateRange(caregiverId, startDate, endDate);
     }
     
     @Override
     @Transactional(readOnly = true)
-    public List<CaregiverReportDTO> getReportsByStatus(Long caregiverId, String status) {
+    public List<CaregiverReportDTO> getReportsByStatus(String caregiverId, String status) {
         return caregiverReportMapper.getReportsByStatus(caregiverId, status);
     }
 } 

@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 public class CaregiverReportDTO {
     private Long id;
-    private Long caregiverId;
+    private String caregiverId;
     private LocalDate reportDate;
     private String content;
     private String status; // pending, submitted, approved, rejected
@@ -20,7 +20,7 @@ public class CaregiverReportDTO {
     public CaregiverReportDTO() {}
     
     // 전체 필드 생성자
-    public CaregiverReportDTO(Long id, Long caregiverId, LocalDate reportDate, 
+    public CaregiverReportDTO(Long id, String caregiverId, LocalDate reportDate, 
                              String content, String status, LocalDateTime createdAt, 
                              LocalDateTime updatedAt) {
         this.id = id;
@@ -41,11 +41,11 @@ public class CaregiverReportDTO {
         this.id = id;
     }
     
-    public Long getCaregiverId() {
+    public String getCaregiverId() {
         return caregiverId;
     }
     
-    public void setCaregiverId(Long caregiverId) {
+    public void setCaregiverId(String caregiverId) {
         this.caregiverId = caregiverId;
     }
     
