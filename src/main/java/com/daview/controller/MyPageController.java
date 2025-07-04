@@ -23,10 +23,14 @@ import com.daview.dto.User;
 import com.daview.mapper.UserMapper;
 import com.daview.service.MyPageService;
 import com.daview.service.ReviewService;
+import com.daview.util.JwtUtil;
 
 @RestController
 @RequestMapping("/api/mypage")
 public class MyPageController {
+	
+	@Autowired
+	private JwtUtil jwtUtil;
 
 	@Autowired
 	private UserMapper userMapper;
@@ -48,7 +52,7 @@ public class MyPageController {
 			@RequestBody Map<String, String> request) {
 
 		String inputPassword = request.get("password");
-		String username = user.getUsername(); // ✅ 이제 오류 안 남
+		String username = user.getUsername(); 
 
 		boolean isMatch = myPageService.checkPassword(username, inputPassword);
 
@@ -68,12 +72,11 @@ public class MyPageController {
 
 	@GetMapping("/account/refund")
 	public ResponseEntity<?> getRefundAccount(@AuthenticationPrincipal User user) {
-	    Map<String, Object> refundInfo = new HashMap<>();
-	    refundInfo.put("bankName", user.getBankName());
-	    refundInfo.put("accountNumber", user.getAccountNumber());
-	    return ResponseEntity.ok(refundInfo);
+		Map<String, Object> refundInfo = new HashMap<>();
+		refundInfo.put("bankName", user.getBankName());
+		refundInfo.put("accountNumber", user.getAccountNumber());
+		return ResponseEntity.ok(refundInfo);
 	}
-
 
 	@DeleteMapping("/account/refund")
 	public ResponseEntity<?> deleteRefundAccount(@AuthenticationPrincipal User user) {
@@ -117,52 +120,59 @@ public class MyPageController {
 			return ResponseEntity.badRequest().body("이미 사용 중인 아이디입니다.");
 		}
 
+		// DB 업데이트
 		userMapper.updateUsername(currentUsername, newUsername);
-		return ResponseEntity.ok("아이디 변경 완료");
+
+		// JWT 토큰 새로 발급
+		String newToken = jwtUtil.generateToken(
+			newUsername,
+			user.getRole(),
+			user.getMemberId()
+		);
+
+		// 새 토큰 응답
+		Map<String, String> response = new HashMap<>();
+		response.put("token", newToken);
+
+		return ResponseEntity.ok(response);
 	}
 
 	@PostMapping("/profile-image")
 	public ResponseEntity<?> uploadProfileImage(@AuthenticationPrincipal User user,
-	                                            @RequestPart("file") MultipartFile file) {
-	    if (file.isEmpty()) {
-	        return ResponseEntity.badRequest().body("파일이 없습니다.");
-	    }
+			@RequestPart("file") MultipartFile file) {
+		if (file.isEmpty()) {
+			return ResponseEntity.badRequest().body("파일이 없습니다.");
+		}
 
-	    try {
-	        myPageService.saveProfileImage(user.getMemberId(), file); // ✅ 이름 정리
-	        return ResponseEntity.ok("이미지 업로드 성공");
-	    } catch (IOException e) {
-	        return ResponseEntity.status(500).body("이미지 업로드 실패");
-	    }
+		try {
+			myPageService.saveProfileImage(user.getMemberId(), file); 
+			return ResponseEntity.ok("이미지 업로드 성공");
+		} catch (IOException e) {
+			return ResponseEntity.status(500).body("이미지 업로드 실패");
+		}
 	}
 
-	
 	@GetMapping("/profile-image")
 	public ResponseEntity<String> getProfileImage(@AuthenticationPrincipal User user) {
+		if (user == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+		}
 
-	    if (user == null) {
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-	    }
+		String imagePath = myPageService.getProfileImagePath(user.getMemberId());
+		if (imagePath == null || imagePath.trim().isEmpty()) {
+			imagePath = "/uploads/profile/default-profile.png";
+		}
 
-
-	    String imagePath = myPageService.getProfileImagePath(user.getMemberId());
-	    if (imagePath == null || imagePath.trim().isEmpty()) {
-	        imagePath = "/uploads/profile/default-profile.png";
-	    }
-
-	    return ResponseEntity.ok(imagePath);
+		return ResponseEntity.ok(imagePath);
 	}
-	
+
 	@PostMapping("/profile-image/default")
 	public ResponseEntity<?> resetToDefault(@AuthenticationPrincipal User user) {
-	    try {
-	        myPageService.resetProfileImageToDefault(user.getMemberId());
-	        return ResponseEntity.ok("기본 이미지로 변경됨");
-	    } catch (Exception e) {
-	        return ResponseEntity.status(500).body("기본 이미지 설정 실패");
-	    }
+		try {
+			myPageService.resetProfileImageToDefault(user.getMemberId());
+			return ResponseEntity.ok("기본 이미지로 변경됨");
+		} catch (Exception e) {
+			return ResponseEntity.status(500).body("기본 이미지 설정 실패");
+		}
 	}
-
-
-	
 }

@@ -77,30 +77,35 @@ public class AuthService {
 	}
 
 	public Map<String, Object> login(LoginRequest request) {
-		Map<String, Object> response = new HashMap<>();
+	    Map<String, Object> response = new HashMap<>();
 
-		User user = userMapper.findByUsername(request.getUsername());
+	    User user = userMapper.findByUsername(request.getUsername());
 
-		// 비밀번호 확인용
-		System.out.println("입력된 비밀번호: " + request.getPassword());
-		System.out.println("DB에 저장된 암호화 비밀번호: " + user.getPassword());
-		System.out.println("matches 결과: " + passwordEncoder.matches(request.getPassword(), user.getPassword()));
-		// 비밀번호 확인용
+	    // user가 null인 경우 바로 에러 반환
+	    if (user == null) {
+	        response.put("success", false);
+	        response.put("message", "존재하지 않는 아이디입니다.");
+	        return response;
+	    }
 
-		if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-			response.put("success", false);
-			return response;
-		}
+	    // 비밀번호 일치 여부 확인
+	    if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+	        response.put("success", false);
+	        response.put("message", "비밀번호가 일치하지 않습니다.");
+	        return response;
+	    }
 
-		String token = jwtUtil.generateToken(user.getUsername(), user.getRole(), user.getMemberId());
+	    // 토큰 발급
+	    String token = jwtUtil.generateToken(user.getUsername(), user.getRole(), user.getMemberId());
 
-		response.put("success", true);
-		response.put("token", token);
-		response.put("username", user.getUsername());
-		response.put("role", user.getRole());
+	    response.put("success", true);
+	    response.put("token", token);
+	    response.put("username", user.getUsername());
+	    response.put("role", user.getRole());
 
-		return response;
+	    return response;
 	}
+
 
 	public boolean checkUsernameDuplicate(String username) {
 		return userMapper.countByUsername(username) > 0;
