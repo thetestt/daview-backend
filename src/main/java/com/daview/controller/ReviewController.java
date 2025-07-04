@@ -80,10 +80,10 @@ public class ReviewController {
 		return ResponseEntity.ok(reviews);
 	}
 
-	// UserMpper
-	@GetMapping("/name/{memberId}")
-	public ResponseEntity<String> getUserName(@PathVariable Long memberId) {
-		String name = reviewService.findNameByMemberId(memberId);
-		return ResponseEntity.ok(name);
-	}
+    @GetMapping("/page/comment")
+    public List<ReviewDTO> getReviewsWithCommentCount(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return reviewService.getReviewsWithCommentCount(page, size);
+    }
 }

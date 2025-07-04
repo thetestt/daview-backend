@@ -19,11 +19,11 @@
 	</select>
 	<select id="getReviewsByPage" parameterType="map"
 		resultType="com.daview.dto.ReviewDTO">
-		SELECT *
-		FROM review_board
-		ORDER BY rev_reg_date DESC
-		LIMIT
-		#{size} OFFSET #{offset}
+		SELECT r.*, u.name AS member_name
+		FROM review_board r
+		JOIN dv_users u ON r.member_id = u.member_id
+		ORDER BY r.rev_reg_date DESC
+		LIMIT #{size} OFFSET #{offset}
 	</select>
 	<select id="getTotalReviewCount" resultType="int">
 		SELECT COUNT(*)
@@ -57,12 +57,19 @@
 		 ORDER BY rev_reg_date DESC
 		 LIMIT 4
 	</select>
+	<select id="getReviewsWithCommentCount" parameterType="map" resultType="com.daview.dto.ReviewDTO">
+		SELECT r.*, COUNT(c.comment_id) AS comment_count, u.name AS member_name
+		  FROM review_board r
+		  LEFT JOIN review_comment c ON r.rev_id = c.rev_id AND c.is_deleted = 0
+		  LEFT JOIN dv_users u ON r.member_id = u.member_id
+		 GROUP BY r.rev_id
+		 ORDER BY r.rev_reg_date DESC
+		 LIMIT #{size} OFFSET #{offset} 
+	</select>
 	
 	<select id="findByMemberId" 
 		resultType="com.daview.dto.ReviewDTO">
 		SELECT * FROM review_board WHERE member_id = #{memberId}
 	</select>
-	
-	
 
 </mapper>

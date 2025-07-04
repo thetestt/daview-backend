@@ -26,4 +26,7 @@ public interface ReviewService {
 	String findNameByMemberId(Long memberId);
 	
 	List<ReviewDTO> getReviewsByProdNm(String prodNm);
+	
+	List<ReviewDTO> getReviewsWithCommentCount(int page, int size);
+
 }

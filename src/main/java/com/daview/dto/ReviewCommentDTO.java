@@ -10,6 +10,7 @@ public class ReviewCommentDTO {
 	private String commentText;
 	private Date commentRegDate;
 	private Boolean isDeleted;
+	private String memberName;
 
 	public ReviewCommentDTO() {
 	}
@@ -68,5 +69,13 @@ public class ReviewCommentDTO {
 
 	public void setIsDeleted(Boolean isDeleted) {
 		this.isDeleted = isDeleted;
+	}
+
+	public String getMemberName() {
+		return memberName;
+	}
+
+	public void setMemberName(String memberName) {
+		this.memberName = memberName;
 	}
 }
