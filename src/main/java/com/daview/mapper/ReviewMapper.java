@@ -26,4 +26,7 @@ public interface ReviewMapper {
 	List<ReviewDTO> findByMemberId(Long memberId);
 	
 	List<ReviewDTO> getReviewsByProdNm(String prodNm);
+	
+	List<ReviewDTO> getReviewsWithCommentCount(Map<String, Object> param);
+
 }

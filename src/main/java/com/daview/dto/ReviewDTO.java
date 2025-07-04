@@ -3,14 +3,17 @@ package com.daview.dto;
 import java.util.Date;
 
 public class ReviewDTO {
-	Long revId;
-	Long memberId;
-	String prodNm;
-	String revTtl;
-	String revCont;
-	int revStars;
-	int revViews;
-	Date revRegDate;
+	private Long revId;
+	private Long memberId;
+	private String prodNm;
+	private String revTtl;
+	private String revCont;
+	private int revStars;
+	private int revViews;
+	private Date revRegDate;
+	private String memberName;
+	private int commentCount;
+	
 
 	public Long getRevId() {
 		return revId;
@@ -74,6 +77,22 @@ public class ReviewDTO {
 
 	public void setRevRegDate(Date revRegDate) {
 		this.revRegDate = revRegDate;
+	}
+
+	public String getMemberName() {
+		return memberName;
+	}
+
+	public void setMemberName(String memberName) {
+		this.memberName = memberName;
+	}
+
+	public int getCommentCount() {
+		return commentCount;
+	}
+
+	public void setCommentCount(int commentCount) {
+		this.commentCount = commentCount;
 	}
 
 }

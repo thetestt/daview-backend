@@ -76,4 +76,13 @@ public class ReviewServiceImpl implements ReviewService{
     public List<ReviewDTO> getReviewsByProdNm(String prodNm) {
         return reviewMapper.getReviewsByProdNm(prodNm);
     }
+	
+	@Override
+    public List<ReviewDTO> getReviewsWithCommentCount(int page, int size) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("size", size);
+        param.put("offset", (page - 1) * size);
+        return reviewMapper.getReviewsWithCommentCount(param);
+    }
+
 }

@@ -11,11 +11,12 @@
     VALUES (#{revId}, #{memberId}, #{parentCommentId}, #{commentText}, NOW())
   </insert>
   <select id="getCommentsByReviewId" parameterType="long" resultType="com.daview.dto.ReviewCommentDTO">
-    SELECT * 
-      FROM review_comment 
-     WHERE rev_id = #{revId} 
-       AND is_deleted = 0
-     ORDER BY comment_reg_date ASC
+    SELECT c.*, u.name AS member_name
+      FROM review_comment c
+      JOIN dv_users u ON c.member_id = u.member_id 
+     WHERE c.rev_id = #{revId} 
+       AND c.is_deleted = 0
+     ORDER BY c.comment_reg_date ASC
   </select>
   <update id="updateComment" parameterType="com.daview.dto.ReviewCommentDTO">
     UPDATE review_comment 
@@ -26,5 +27,6 @@
     UPDATE review_comment
        SET is_deleted = TRUE
      WHERE comment_id = #{commentId}
+        OR parent_comment_id = #{commentId}
   </update> 
 </mapper>
