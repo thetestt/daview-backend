@@ -143,6 +143,25 @@ public class FacilityService {
             if (result > 0) {
                 System.out.println("✅ 시설 기본 정보 수정 성공");
                 
+                // 사진 업데이트 (있는 경우) - camelCase와 snake_case 모두 체크
+                String photoUrl = facilityDTO.getPhotoUrl();
+                if (photoUrl == null || photoUrl.trim().isEmpty()) {
+                    photoUrl = facilityDTO.getPhoto_url(); // snake_case도 체크
+                }
+                if (photoUrl != null && !photoUrl.trim().isEmpty()) {
+                    try {
+                        // 기존 썸네일 사진 삭제
+                        facilityMapper.deleteFacilityThumbnail(facilityDTO.getMemberId());
+                        
+                        // 새로운 썸네일 사진 추가
+                        facilityMapper.insertFacilityThumbnail(facilityDTO.getMemberId(), photoUrl);
+                        
+                        System.out.println("✅ 시설 사진 업데이트 완료: " + photoUrl);
+                    } catch (Exception e) {
+                        System.out.println("⚠️ 시설 사진 업데이트 중 오류 (기본 정보는 저장됨): " + e.getMessage());
+                    }
+                }
+                
                 // 서비스 항목 업데이트 (있는 경우)
                 if (facilityDTO.getServices() != null && !facilityDTO.getServices().isEmpty()) {
                     try {

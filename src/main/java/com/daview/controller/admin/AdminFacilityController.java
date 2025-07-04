@@ -35,7 +35,7 @@ public class AdminFacilityController {
     @Value("${file.upload.path:uploads/}")
     private String uploadPath;
 
-    @Value("${file.upload.url:/api/files/}")
+    @Value("${file.upload.url:/uploads/}")
     private String fileUrlPattern;
 
     // 허용된 이미지 확장자

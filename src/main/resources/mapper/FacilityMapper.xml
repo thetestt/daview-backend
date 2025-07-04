@@ -401,6 +401,8 @@
     SELECT *
     FROM facility
     WHERE member_id = #{memberId}
+      AND trash_can = 0
+      AND facility_deleted_at IS NULL
     LIMIT 1
 </select>
 
@@ -429,9 +431,6 @@
         <if test="facilityPhone != null and facilityPhone != ''">
             facility_phone = #{facilityPhone},
         </if>
-        <if test="facilityEmail != null">
-            facility_email = #{facilityEmail},
-        </if>
         <if test="facilityWebsite != null">
             facility_homepage = #{facilityWebsite},
         </if>
@@ -441,23 +440,8 @@
         <if test="facilityCharge != null">
             facility_charge = #{facilityCharge},
         </if>
-        <if test="category != null">
-            category = #{category},
-        </if>
         <if test="defaultMessage != null">
             default_message = #{defaultMessage},
-        </if>
-        <if test="facilityTag != null">
-            facility_tag = #{facilityTag},
-        </if>
-        <if test="introduction != null">
-            facility_introduction = #{introduction},
-        </if>
-        <if test="capacity != null">
-            facility_capacity = #{capacity},
-        </if>
-        <if test="establishedDate != null">
-            facility_established_date = #{establishedDate},
         </if>
         
         <!-- snake_case 필드명 지원 (프론트엔드 호환성) -->
@@ -479,9 +463,6 @@
         <if test="facility_phone != null and facility_phone != ''">
             facility_phone = #{facility_phone},
         </if>
-        <if test="facility_email != null">
-            facility_email = #{facility_email},
-        </if>
         <if test="facility_homepage != null">
             facility_homepage = #{facility_homepage},
         </if>
@@ -493,12 +474,6 @@
         </if>
         <if test="default_message != null">
             default_message = #{default_message},
-        </if>
-        <if test="facility_tag != null">
-            facility_tag = #{facility_tag},
-        </if>
-        <if test="established_date != null">
-            facility_established_date = #{established_date},
         </if>
         
         facility_update_at = NOW()
@@ -534,6 +509,24 @@
       AND ft.category = '서비스'
       AND f.trash_can = 0
 </select>
+
+<!-- 시설 썸네일 사진 업데이트 (기존 썸네일 삭제 후 새로 추가) -->
+<delete id="deleteFacilityThumbnail" parameterType="java.lang.Long">
+    DELETE fp FROM facility_photo fp
+    INNER JOIN facility f ON fp.facility_id = f.facility_id
+    WHERE f.member_id = #{memberId}
+      AND fp.is_thumbnail = 1
+</delete>
+
+<!-- 새로운 썸네일 사진 추가 -->
+<insert id="insertFacilityThumbnail">
+    INSERT INTO facility_photo (facility_id, photo_url, is_thumbnail)
+    SELECT f.facility_id, #{photoUrl}, 1
+    FROM facility f
+    WHERE f.member_id = #{memberId}
+      AND f.trash_can = 0
+    LIMIT 1
+</insert>
 
 </mapper>
 

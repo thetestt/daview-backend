@@ -1,24 +1,26 @@
 package com.daview.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.daview.dto.User;
 import com.daview.mapper.UserMapper;
 
 @Service
 public class MyPageService {
-	@Autowired
-    private UserMapper userMapper;
 
-    public User getUserProfile(Long memberId) {
-        return userMapper.findByMemberId(memberId);
-    }
-    
     //마이페이지 - 비밀번호 변경
     @Autowired
     private PasswordEncoder passwordEncoder; // BCryptPasswordEncoder
+    
+    @Autowired
+    private UserMapper userMapper;
 
     public boolean checkPassword(String username, String inputPassword) {
         String hashedPassword = userMapper.getPasswordByUsername(username);
@@ -37,10 +39,6 @@ public class MyPageService {
     	System.out.println("저장할 bankName: " + bankName);
     	System.out.println("저장할 accountNumber: " + accountNumber);
         userMapper.updateRefundAccount(username, bankName, accountNumber);
-    }
-
-    public User getRefundAccount(String username) {
-        return userMapper.getRefundAccount(username);
     }
 
     public void deleteRefundAccount(String username) {
@@ -70,6 +68,28 @@ public class MyPageService {
     public void withdrawUser(String username, String reason) {
         userMapper.withdrawUser(username, reason);
     }
+    
+    public void saveProfileImage(Long memberId, MultipartFile file) throws IOException {
+        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        String savePath = "/uploads/profile/" + fileName;
+        String fullPath = new File("uploads/profile", fileName).getAbsolutePath();
+
+        File dest = new File(fullPath);
+        dest.getParentFile().mkdirs();
+        file.transferTo(dest);
+
+        userMapper.updateProfileImageUrl(memberId, savePath);
+    }
+  
+    public String getProfileImagePath(Long memberId) {
+        return userMapper.findProfileImageByMemberId(memberId);
+    }
+    
+    public void resetProfileImageToDefault(Long memberId) {
+        userMapper.updateProfileImage(memberId, "/uploads/profile/default-profile.png");
+    }
+
+
 
 
 }

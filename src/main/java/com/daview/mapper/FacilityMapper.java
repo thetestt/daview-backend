@@ -67,4 +67,14 @@ public interface FacilityMapper {
      * 시설의 서비스 목록 조회
      */
     List<String> getFacilityServices(@Param("memberId") Long memberId);
+    
+    /**
+     * 시설 썸네일 사진 삭제 (기존 썸네일 제거)
+     */
+    int deleteFacilityThumbnail(@Param("memberId") Long memberId);
+    
+    /**
+     * 새로운 썸네일 사진 추가
+     */
+    int insertFacilityThumbnail(@Param("memberId") Long memberId, @Param("photoUrl") String photoUrl);
 }
