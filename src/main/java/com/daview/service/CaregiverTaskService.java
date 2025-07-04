@@ -7,13 +7,13 @@ import java.util.List;
 public interface CaregiverTaskService {
     
     // 일정 목록 조회 (페이징)
-    List<CaregiverTaskDTO> getTasksByCaregiverId(Long caregiverId, int page, int size);
+    List<CaregiverTaskDTO> getTasksByCaregiverId(String caregiverId, int page, int size);
     
     // 일정 총 개수
-    int getTasksCountByCaregiverId(Long caregiverId);
+    int getTasksCountByCaregiverId(String caregiverId);
     
     // 특정 날짜의 일정 목록 조회
-    List<CaregiverTaskDTO> getTasksByDate(Long caregiverId, LocalDate taskDate);
+    List<CaregiverTaskDTO> getTasksByDate(String caregiverId, LocalDate taskDate);
     
     // 일정 상세 조회
     CaregiverTaskDTO getTaskById(Long id);
@@ -31,26 +31,26 @@ public interface CaregiverTaskService {
     boolean toggleTaskCompletion(Long id, Boolean completed);
     
     // 오늘의 일정 목록 조회
-    List<CaregiverTaskDTO> getTodayTasks(Long caregiverId);
+    List<CaregiverTaskDTO> getTodayTasks(String caregiverId);
     
     // 이번 주 일정 목록 조회
-    List<CaregiverTaskDTO> getWeeklyTasks(Long caregiverId);
+    List<CaregiverTaskDTO> getWeeklyTasks(String caregiverId);
     
     // 특정 기간의 일정 목록 조회
-    List<CaregiverTaskDTO> getTasksByDateRange(Long caregiverId, LocalDate startDate, LocalDate endDate);
+    List<CaregiverTaskDTO> getTasksByDateRange(String caregiverId, LocalDate startDate, LocalDate endDate);
     
     // 완료/미완료 일정 목록 조회
-    List<CaregiverTaskDTO> getTasksByCompletion(Long caregiverId, Boolean completed);
+    List<CaregiverTaskDTO> getTasksByCompletion(String caregiverId, Boolean completed);
     
     // 일정 타입별 목록 조회
-    List<CaregiverTaskDTO> getTasksByType(Long caregiverId, String taskType);
+    List<CaregiverTaskDTO> getTasksByType(String caregiverId, String taskType);
     
     // 최근 일정 목록 조회 (대시보드용)
-    List<CaregiverTaskDTO> getRecentTasks(Long caregiverId, int limit);
+    List<CaregiverTaskDTO> getRecentTasks(String caregiverId, int limit);
     
     // 오늘의 완료된 일정 개수
-    int getTodayCompletedTasksCount(Long caregiverId);
+    int getTodayCompletedTasksCount(String caregiverId);
     
     // 이번 주 총 일정 개수
-    int getWeeklyTasksCount(Long caregiverId);
+    int getWeeklyTasksCount(String caregiverId);
 } 

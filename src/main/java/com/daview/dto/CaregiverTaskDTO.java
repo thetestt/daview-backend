@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public class CaregiverTaskDTO {
     private Long id;
-    private Long caregiverId;
+    private String caregiverId;
     private LocalDate taskDate;
     private LocalTime taskTime;
     private String taskType;
@@ -23,7 +23,7 @@ public class CaregiverTaskDTO {
     public CaregiverTaskDTO() {}
     
     // 전체 필드 생성자
-    public CaregiverTaskDTO(Long id, Long caregiverId, LocalDate taskDate, 
+    public CaregiverTaskDTO(Long id, String caregiverId, LocalDate taskDate, 
                            LocalTime taskTime, String taskType, Boolean completed,
                            LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
@@ -45,11 +45,11 @@ public class CaregiverTaskDTO {
         this.id = id;
     }
     
-    public Long getCaregiverId() {
+    public String getCaregiverId() {
         return caregiverId;
     }
     
-    public void setCaregiverId(Long caregiverId) {
+    public void setCaregiverId(String caregiverId) {
         this.caregiverId = caregiverId;
     }
     
