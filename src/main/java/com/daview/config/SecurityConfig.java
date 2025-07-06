@@ -43,6 +43,7 @@ public class SecurityConfig {
                     "/api/account/**",
                     "/api/auth/**",
                     "/api/payment/**",
+                    "/api/chatbot/**",
                     "/uploads/**",
                     "/ws-chat",
                     "/ws-chat/**",

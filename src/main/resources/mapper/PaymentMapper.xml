@@ -32,6 +32,7 @@
         LEFT JOIN payment_reservation_map prm ON p.pym_id = prm.pym_id
         LEFT JOIN reservation r ON prm.rsv_id = r.rsv_id
         WHERE p.member_id = #{memberId}
+          AND (r.member_id = #{memberId} OR r.member_id IS NULL)
         ORDER BY p.pym_date DESC
 	</select>
 	<resultMap id="PaymentWithReservationsMap" type="com.daview.dto.PaymentWithReservationsDTO">

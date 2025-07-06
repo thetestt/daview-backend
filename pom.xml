@@ -129,12 +129,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
-	    <!-- 아임포트 SDK -->
 	    <dependency>
 	      <groupId>com.github.iamport</groupId>
 	      <artifactId>iamport-rest-client-java</artifactId>
 	      <version>0.2.23</version>
 	    </dependency>
+	    <dependency>
+		  <groupId>io.github.cdimascio</groupId>
+		  <artifactId>java-dotenv</artifactId>
+		  <version>5.2.2</version>
+		</dependency>
 	  </dependencies>
       <repositories>
 	    <repository>
