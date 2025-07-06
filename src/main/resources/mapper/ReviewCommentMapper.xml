@@ -16,7 +16,7 @@
       JOIN dv_users u ON c.member_id = u.member_id 
      WHERE c.rev_id = #{revId} 
        AND c.is_deleted = 0
-     ORDER BY c.comment_reg_date ASC
+     ORDER BY c.comment_reg_date DESC
   </select>
   <update id="updateComment" parameterType="com.daview.dto.ReviewCommentDTO">
     UPDATE review_comment 
