@@ -55,7 +55,6 @@
 		  FROM review_board
 		 WHERE prod_nm = #{prodNm} 
 		 ORDER BY rev_reg_date DESC
-		 LIMIT 4
 	</select>
 	<select id="getReviewsWithCommentCount" parameterType="map" resultType="com.daview.dto.ReviewDTO">
 		SELECT r.*, COUNT(c.comment_id) AS comment_count, u.name AS member_name
