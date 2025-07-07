@@ -7,46 +7,82 @@
 <mapper namespace="com.daview.mapper.WishlistMapper">
 
 	<select id="getNursingWishlist"
-		resultType="com.daview.dto.WishlistResponseDTO">
-		SELECT f.facility_id AS id, f.facility_name AS name
+		resultType="com.daview.dto.FacilityDTO">
+		SELECT
+		f.*,
+		p.photo_url
 		FROM wishlist w
 		JOIN facility f ON w.facility_id = f.facility_id
-		WHERE w.member_id = #{memberId} AND f.facility_type = '요양원'
+		LEFT JOIN (
+		SELECT facility_id, MIN(photo_id) AS min_photo_id
+		FROM facility_photo
+		GROUP BY facility_id
+		) fp ON f.facility_id = fp.facility_id
+		LEFT JOIN facility_photo p ON p.photo_id = fp.min_photo_id
+		WHERE w.member_id = #{memberId}
+		AND f.facility_type = '요양원'
 	</select>
 
-	<select id="getCaregiverWishlist"
-		resultType="com.daview.dto.WishlistResponseDTO">
-		SELECT c.caregiver_id AS id, c.introduction AS name
-		FROM wishlist w
-		JOIN caregiver c ON w.facility_id = c.caregiver_id
-		WHERE w.member_id = #{memberId}
-	</select>
+
+
 
 	<select id="getSilvertownWishlist"
-		resultType="com.daview.dto.WishlistResponseDTO">
-		SELECT f.facility_id AS id, f.facility_name AS name
+		resultType="com.daview.dto.FacilityDTO">
+		SELECT
+		f.*,
+		p.photo_url
 		FROM wishlist w
 		JOIN facility f ON w.facility_id = f.facility_id
-		WHERE w.member_id = #{memberId} AND f.facility_type = '실버타운'
+		LEFT JOIN (
+		SELECT facility_id, MIN(photo_id) AS min_photo_id
+		FROM facility_photo
+		WHERE is_thumbnail = 1
+		GROUP BY facility_id
+		) fp ON f.facility_id = fp.facility_id
+		LEFT JOIN facility_photo p ON p.photo_id = fp.min_photo_id
+		WHERE w.member_id = #{memberId}
+		AND f.facility_type = '실버타운'
 	</select>
 
+
+
+
+
+
+	<!-- 요양사 위시리스트 쿼리 (수정) -->
+	<select id="getCaregiverWishlist"
+		resultType="com.daview.dto.CaregiverDTO">
+		SELECT
+		c.*,
+		u.name,
+		u.user_gender
+		FROM wishlist w
+		JOIN caregiver
+		c ON w.facility_id = c.caregiver_id
+		JOIN dv_users u ON c.member_id =
+		u.member_id
+		WHERE w.member_id = #{memberId}
+	</select>
 
 
 
 	<select id="isWishlisted" resultType="boolean">
 		SELECT EXISTS (
-		SELECT 1 FROM wishlist WHERE member_id = #{memberId} AND facility_id =
+		SELECT 1
+		FROM wishlist WHERE member_id = #{memberId} AND facility_id =
 		#{facilityId}
 		)
 	</select>
 
 	<insert id="insertWishlist">
 		INSERT INTO wishlist (member_id, facility_id)
-		VALUES (#{memberId}, #{facilityId})
+		VALUES
+		(#{memberId}, #{facilityId})
 	</insert>
 
 	<delete id="deleteWishlist">
-		DELETE FROM wishlist WHERE member_id = #{memberId} AND facility_id =
+		DELETE FROM wishlist WHERE member_id = #{memberId}
+		AND facility_id =
 		#{facilityId}
 	</delete>
 

@@ -5,8 +5,9 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.daview.dto.CaregiverDTO;
+import com.daview.dto.FacilityDTO;
 import com.daview.dto.WishlistDTO;
-import com.daview.dto.WishlistResponseDTO;
 
 @Mapper
 public interface WishlistMapper {
@@ -14,7 +15,8 @@ public interface WishlistMapper {
     void insertWishlist(WishlistDTO wishlistDTO);
     void deleteWishlist(WishlistDTO wishlistDTO);
     
-    List<WishlistResponseDTO> getNursingWishlist(Long memberId);
-    List<WishlistResponseDTO> getCaregiverWishlist(Long memberId);
-    List<WishlistResponseDTO> getSilvertownWishlist(Long memberId);
+    List<FacilityDTO> getNursingWishlist(Long memberId);
+    List<FacilityDTO> getSilvertownWishlist(Long memberId);
+    List<CaregiverDTO> getCaregiverWishlist(Long memberId);
+
 }
