@@ -257,7 +257,8 @@
 		resultType="com.daview.dto.User">
 		SELECT * FROM dv_users
 		WHERE phone = #{phone}
-		AND withdrawn = 1
+		AND withdrawn =
+		1
 		AND TIMESTAMPDIFF(DAY, withdrawn_at, NOW()) &gt;= 14
 	</select>
 
@@ -265,9 +266,10 @@
 		resultType="com.daview.dto.User">
 		SELECT * FROM dv_users
 		WHERE phone = #{phone}
-		AND withdrawn =0
+		AND withdrawn
+		=0
 	</select>
-	
+
 	<select id="findNameByMemberId" resultType="String">
 		SELECT name
 		FROM
@@ -291,8 +293,16 @@
 	<update id="updateProfileImage">
 		UPDATE dv_users
 		SET profile_image_url = #{path}
-		WHERE member_id = #{memberId}
+		WHERE
+		member_id = #{memberId}
 	</update>
+
+	<select id="existsByPhone" resultType="boolean">
+		SELECT COUNT(*) > 0
+		FROM dv_users
+		WHERE REPLACE(phone, '-', '') = #{phone}
+	</select>
+
 
 
 

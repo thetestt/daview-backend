@@ -132,6 +132,10 @@ public class AuthService {
 	    if (user != null) {
 	        throw new IllegalStateException("해당 번호는 탈퇴 후 14일 이내 재가입이 불가합니다.");
 	    }
+	    
+	    if (userMapper.existsByPhone(phone)) {
+	        throw new IllegalStateException("이미 가입된 전화번호입니다.");
+	    }
 	}
 	
 	// 회원가입 전에 모든 조건 검사
