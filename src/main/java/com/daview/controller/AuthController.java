@@ -111,11 +111,21 @@ public class AuthController {
         try {
             String code = String.valueOf((int) ((Math.random() * 900000) + 100000));
             String subject = "[다뷰] 이메일 인증번호";
-            String text = "인증번호: " + code;
 
-            emailUtil.sendEmail(email, subject, text);
+            String html = "<div style='font-family: sans-serif; line-height: 1.6;'>"
+            	    + "<h2 style='color: #222;'>내가 선택한 삶의 품격.<br>"
+            	    + "내가 선택한 돌봄의 파트너.<br>"
+            	    + "내가 선택한 새로운 인생.</h2>"
+            	    + "<p style='margin: 10px 0;'>다뷰와 함께 새로운 시작을 찾아보세요.</p>"
+            	    + "<h3>[다뷰] 이메일 인증번호</h3>"
+            	    + "<div style='font-size: 20px; font-weight: bold; color: #0a3d62;'>" + code + "</div>"
+            	    + "<img src='https://i.imgur.com/OertrcR.png' alt='다뷰 이미지' style='margin-top: 30px; max-width: 100%; height: auto;' />"
+            	    + "</div>";
+
+
+            emailUtil.sendEmail(email, subject, html);
             session.setAttribute("emailCode", code);
-
+            
             return ResponseEntity.ok("이메일 발송 완료");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("이메일 전송 실패");
@@ -151,9 +161,18 @@ public class AuthController {
 
     @PostMapping("/signup/send-sms-code")
     public ResponseEntity<?> sendSignupSmsCode(@RequestBody SmsRequest request) {
-        smsService.sendSignupSmsCode(request.getPhone());
-        return ResponseEntity.ok().build();
+        String phone = request.getPhone();
+
+        if (userMapper.existsByPhone(phone)) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("이미 가입된 전화번호입니다.");
+        }
+
+        smsService.sendSignupSmsCode(phone);
+        return ResponseEntity.ok("인증번호 전송 완료");
     }
+
 
     @PostMapping("/signup/verify-sms-code")
     public ResponseEntity<?> verifySignupSmsCode(@RequestBody SmsVerifyRequest request) {

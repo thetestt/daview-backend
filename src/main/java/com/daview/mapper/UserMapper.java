@@ -80,6 +80,9 @@ public interface UserMapper {
     String findProfileImageByMemberId(Long memberId);
     
     void updateProfileImage(@Param("memberId") Long memberId, @Param("path") String path);
+    
+    boolean existsByPhone(@Param("phone") String phone);
+
 
 
 
