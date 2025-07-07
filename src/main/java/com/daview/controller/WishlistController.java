@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.daview.dto.WishlistDTO;
-import com.daview.dto.WishlistResponseDTO;
 import com.daview.service.WishlistService;
 
 @RestController
@@ -45,8 +44,9 @@ public class WishlistController {
     }
     
     @GetMapping("/list/{memberId}")
-    public ResponseEntity<Map<String, List<WishlistResponseDTO>>> getWishlist(@PathVariable Long memberId) {
+    public ResponseEntity<Map<String, List<?>>> getWishlist(@PathVariable Long memberId) {
         return ResponseEntity.ok(wishlistService.getWishlistByMember(memberId));
     }
+
 
 }
