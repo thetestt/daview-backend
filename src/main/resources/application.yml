@@ -21,6 +21,20 @@ spring:
     properties:
       'allow.auto.create.topics': true
 
+  # Redis 설정 (Care Pulse Tracker 캐싱)
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: # 비밀번호 없음
+      timeout: 2000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+
   mail:
     host: smtp.gmail.com
     port: 587
@@ -79,5 +93,74 @@ iamport:
   api:
     key: "test"
     secret: "test"
+
+# ===== Care Pulse Tracker 설정 =====
+care-pulse:
+  # Flink 설정
+  flink:
+    jobmanager-url: http://localhost:8081
+    parallelism: 2
+    checkpoint-interval: 10000
+    
+  # InfluxDB 설정 (시계열 데이터 저장)
+  influxdb:
+    url: http://localhost:8086
+    token: care-pulse-token-123456789
+    org: care-pulse
+    bucket: vital-signs
+    
+  # PostgreSQL 설정 (관계형 데이터)
+  postgres:
+    url: jdbc:postgresql://localhost:5432/care_pulse_db
+    username: care_pulse_user
+    password: care_pulse_pass
+    
+  # OpenAI 설정
+  openai:
+    api-key: ${OPENAI_API_KEY:your-openai-api-key}
+    model: gpt-4-turbo
+    max-tokens: 1000
+    temperature: 0.3
+    
+  # 실시간 데이터 처리 설정
+  streaming:
+    kafka:
+      topics:
+        vital-signs: care-pulse-vitals
+        alerts: care-pulse-alerts
+        analysis: care-pulse-analysis
+      consumer-group: care-pulse-consumers
+    
+  # WebSocket 설정
+  websocket:
+    endpoint: /ws/care-pulse
+    heartbeat-interval: 30000
+    connection-timeout: 60000
+    
+  # 알림 설정
+  alerts:
+    high-priority-threshold: 80
+    medium-priority-threshold: 60
+    low-priority-threshold: 40
+    
+  # 캐시 설정
+  cache:
+    patient-data-ttl: 300 # 5분
+    analysis-result-ttl: 1800 # 30분
+    alert-ttl: 3600 # 1시간
+
+# 관리 도구 설정 (Actuator)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
 
 
